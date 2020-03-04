@@ -1,0 +1,16 @@
+.login-page {
+	display: flex;
+	width: 100%;
+	min-height: 100vh;
+	justify-content: center;
+	align-items: center;
+	background-image: url("/images/bg.jpg");
+	background-color: rgba(200, 200, 255, 0.4);
+	background-blend-mode: lighten;
+}
+
+@media (max-width: 576px) {
+	.login-page {
+		padding: 0 12px;
+	}
+}

@@ -1,0 +1,15 @@
+.slide {
+	width: 100%;
+	min-height: 720px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-image: url("/images/bg.jpg");
+	background-color: rgba(200, 200, 255, 0.4);
+	background-blend-mode: lighten;
+}
+@media (max-width: 576px) {
+	.slide {
+		height: 100vh;
+	}
+}

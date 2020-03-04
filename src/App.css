@@ -1,0 +1,198 @@
+:root {
+	--colorPrimary: #f80;
+	--colorSecondary: #fff;
+	--colorBg: #e8e8e8;
+	--colorText: #333;
+	--colorTextSecondary: white;
+	--colorBorder: #d8d8d8;
+	--colorHighlight: #333;
+}
+
+.color-primary {
+	color: var(--colorPrimary);
+}
+
+button,
+input {
+	outline: none !important;
+}
+
+input {
+	padding: 8px 10px;
+	border: 1px solid var(--colorBorder);
+	border-radius: 4px;
+}
+
+input:focus {
+	border: 1px solid var(--colorPrimary);
+}
+
+a {
+	text-decoration: none !important;
+}
+
+a:hover {
+	color: var(--colorPrimary) !important;
+}
+
+button {
+	border: 0;
+	font-size: 16px;
+	color: var(--colorSecondary);
+	padding: 10px;
+	min-width: 120px;
+	background: var(--colorPrimary);
+	border-radius: 27px;
+	transition: all 0.2s;
+}
+
+button:hover {
+	background: var(--colorHighlight);
+}
+
+.txt-upper {
+	text-transform: uppercase;
+}
+
+/* range slider custom*/
+.rangeslider {
+	margin: 8px 0 !important;
+}
+.rangeslider-horizontal .rangeslider__fill,
+.rangeslider-horizontal .rangeslider__handle:after {
+	background-color: var(--colorPrimary) !important;
+}
+.rangeslider .rangeslider__handle {
+	box-shadow: none !important;
+	outline: 0;
+}
+
+/* react tag autocomplete custom*/
+.react-tags {
+	position: relative;
+	padding: 0 6px;
+	border: 1px solid var(--colorBorder);
+	border-radius: 4px;
+
+	/* shared font styles */
+	font-size: 1em;
+
+	/* clicking anywhere will focus the input */
+	cursor: text;
+}
+
+.react-tags.is-focused {
+	border-color: #b1b1b1;
+}
+
+.react-tags__selected {
+	display: inline;
+}
+
+.react-tags__selected-tag {
+	display: inline-block;
+	box-sizing: border-box;
+	margin: 0 4px 4px 0;
+	padding: 3px 6px;
+	border-radius: 2px;
+	background: var(--colorPrimary);
+	color: #fff;
+	min-width: 50px;
+
+	/* match the font styles */
+	font-size: 14px;
+}
+
+.react-tags__selected-tag:after {
+	content: "\2715";
+	color: #fff;
+	margin-left: 8px;
+}
+
+.react-tags__selected-tag:hover,
+.react-tags__selected-tag:focus {
+	background: #d60;
+}
+
+.react-tags__search {
+	display: inline-block;
+
+	/* match tag layout */
+	padding: 7px 2px;
+
+	/* prevent autoresize overflowing the container */
+	max-width: 100%;
+}
+
+@media screen and (min-width: 30em) {
+	.react-tags__search {
+		/* this will become the offsetParent for suggestions */
+		position: relative;
+	}
+}
+
+.react-tags__search-input {
+	/* prevent autoresize overflowing the container */
+	max-width: 100%;
+
+	/* remove styles and layout from this element */
+	margin: 0 !important;
+	padding: 0 !important;
+	border: 0 !important;
+	outline: none;
+
+	/* match the font styles */
+	font-size: 14px;
+}
+
+.react-tags__search-input::-ms-clear {
+	display: none;
+}
+
+.react-tags__suggestions {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	width: 100%;
+}
+
+@media screen and (min-width: 30em) {
+	.react-tags__suggestions {
+		width: 240px;
+	}
+}
+
+.react-tags__suggestions ul {
+	margin: 4px -1px;
+	padding: 0;
+	list-style: none;
+	background: white;
+	border: 1px solid #d1d1d1;
+	border-radius: 2px;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.react-tags__suggestions li {
+	border-bottom: 1px solid #ddd;
+	padding: 6px 8px;
+}
+
+.react-tags__suggestions li mark {
+	text-decoration: underline;
+	background: none;
+	font-weight: 600;
+}
+
+.react-tags__suggestions li:hover {
+	cursor: pointer;
+	background: #eee;
+}
+
+.react-tags__suggestions li.is-active {
+	background: #b7cfe0;
+}
+
+.react-tags__suggestions li.is-disabled {
+	opacity: 0.5;
+	cursor: auto;
+}

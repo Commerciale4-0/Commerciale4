@@ -1,0 +1,72 @@
+.register-page > form {
+	width: 500px;
+	background: #fff;
+	border-radius: 10px;
+	padding: 30px;
+	margin: 80px 0;
+}
+
+.register-page span {
+	color: var(--colorText);
+	text-transform: uppercase;
+	display: block;
+}
+
+.register-page > form .title {
+	font-size: 32px;
+	font-weight: 500;
+	padding-bottom: 28px;
+}
+
+.register-page > form .label {
+	font-size: 13px;
+	margin-bottom: 8px;
+}
+
+.register-page input {
+	width: 100%;
+	min-height: 28px;
+	font-size: 16px;
+}
+
+.register-page .checkbox {
+	font-size: 13px;
+	color: var(--colorText);
+	display: block;
+	position: relative;
+	padding-left: 26px;
+	cursor: pointer;
+}
+
+.register-page input[type="checkbox"] {
+	display: none;
+}
+
+.register-page .checkbox::before {
+	content: "\f00c";
+	font-family: FontAwesome;
+	font-size: 13px;
+	color: transparent;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	position: absolute;
+	width: 18px;
+	height: 18px;
+	border-radius: 2px;
+	background: #fff;
+	border: 1px solid var(--colorBorder);
+	left: 0;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.register-page button.back {
+	min-width: 0;
+	background: transparent;
+	float: left;
+	font-size: 44px;
+	padding: 0;
+	margin-top: -10px;
+	color: var(--colorText);
+}
