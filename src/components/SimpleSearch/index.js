@@ -12,7 +12,9 @@ import {
 	REVENUES,
 	COMPANY_TYPES,
 	REGIONS,
-	CITIES
+	citiesInRegion,
+	maxsFromMin,
+	minsFromMax
 } from "../../utils";
 
 export default class SimpleSearch extends Component {
@@ -20,14 +22,19 @@ export default class SimpleSearch extends Component {
 		radius: 1,
 		tags: [],
 		suggestions: [],
+		cities: [],
+		minEmployees: N_EMPOYEES,
+		maxEmployees: N_EMPOYEES,
+		minRevenues: REVENUES,
+		maxRevenues: REVENUES,
 
 		selectedRegion: null,
 		selectedCity: null,
 		selectedType: null,
-		selectedEmployeeMin: null,
-		selectedEmployeeMax: null,
-		selectedRevenueMin: null,
-		selectedRevenueMax: null,
+		selectedEmployeeMin: N_EMPOYEES[0],
+		selectedEmployeeMax: N_EMPOYEES[0],
+		selectedRevenueMin: REVENUES[0],
+		selectedRevenueMax: REVENUES[0],
 		selectedCode: null
 	};
 
@@ -41,6 +48,15 @@ export default class SimpleSearch extends Component {
 
 	handleRegionChange = selectedRegion => {
 		this.setState({ selectedRegion });
+		let cities = citiesInRegion(selectedRegion.value);
+		if (cities && cities.length) {
+			this.setState({
+				selectedCity: cities[0]
+			});
+		}
+		this.setState({
+			cities: cities
+		});
 	};
 
 	handleCityChange = selectedCity => {
@@ -60,18 +76,38 @@ export default class SimpleSearch extends Component {
 
 	handleEmployeeMinChange = selectedEmployeeMin => {
 		this.setState({ selectedEmployeeMin });
+
+		let values = maxsFromMin(selectedEmployeeMin.value, N_EMPOYEES);
+		this.setState({
+			maxEmployees: values
+		});
 	};
 
 	handleEmployeeMaxChange = selectedEmployeeMax => {
 		this.setState({ selectedEmployeeMax });
+
+		let values = minsFromMax(selectedEmployeeMax.value, N_EMPOYEES);
+		this.setState({
+			minEmployees: values
+		});
 	};
 
 	handleRevenueMinChange = selectedRevenueMin => {
 		this.setState({ selectedRevenueMin });
+
+		let values = maxsFromMin(selectedRevenueMin.value, REVENUES);
+		this.setState({
+			maxRevenues: values
+		});
 	};
 
 	handleRevenueMaxChange = selectedRevenueMax => {
 		this.setState({ selectedRevenueMax });
+
+		let values = minsFromMax(selectedRevenueMax.value, REVENUES);
+		this.setState({
+			minRevenues: values
+		});
 	};
 
 	handleCodeChange = selectedCode => {
@@ -83,6 +119,11 @@ export default class SimpleSearch extends Component {
 			radius,
 			tags,
 			suggestions,
+			cities,
+			minEmployees,
+			maxEmployees,
+			minRevenues,
+			maxRevenues,
 			selectedRegion,
 			selectedCity,
 			selectedType,
@@ -120,7 +161,7 @@ export default class SimpleSearch extends Component {
 						<Select
 							value={selectedCity}
 							onChange={this.handleCityChange}
-							options={CITIES}
+							options={cities}
 							placeholder="City"
 							theme={theme => ({
 								...theme,
@@ -134,11 +175,11 @@ export default class SimpleSearch extends Component {
 				</Row>
 				<Row className="px-3">
 					<Col xs={6}>Radius</Col>
-					<Col xs={6}>{radius} miles</Col>
+					<Col xs={6}>{radius} km</Col>
 					<Col className="mt-1">
 						<Slider
 							min={0}
-							max={50}
+							max={200}
 							value={radius}
 							onChange={this.handleSliderChange}
 						/>
@@ -185,7 +226,7 @@ export default class SimpleSearch extends Component {
 						<Select
 							value={selectedEmployeeMin}
 							onChange={this.handleEmployeeMinChange}
-							options={N_EMPOYEES}
+							options={minEmployees}
 							placeholder="Min"
 							theme={theme => ({
 								...theme,
@@ -200,7 +241,7 @@ export default class SimpleSearch extends Component {
 						<Select
 							value={selectedEmployeeMax}
 							onChange={this.handleEmployeeMaxChange}
-							options={N_EMPOYEES}
+							options={maxEmployees}
 							placeholder="Max"
 							theme={theme => ({
 								...theme,
@@ -220,7 +261,7 @@ export default class SimpleSearch extends Component {
 						<Select
 							value={selectedRevenueMin}
 							onChange={this.handleRevenueMinChange}
-							options={REVENUES}
+							options={minRevenues}
 							placeholder="Min"
 							theme={theme => ({
 								...theme,
@@ -235,7 +276,7 @@ export default class SimpleSearch extends Component {
 						<Select
 							value={selectedRevenueMax}
 							onChange={this.handleRevenueMaxChange}
-							options={REVENUES}
+							options={maxRevenues}
 							placeholder="Max"
 							theme={theme => ({
 								...theme,

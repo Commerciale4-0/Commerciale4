@@ -1,11 +1,15 @@
 :root {
-	--colorPrimary: #f80;
+	--colorPrimary: #faab17;
 	--colorSecondary: #fff;
 	--colorBg: #e8e8e8;
 	--colorText: #333;
 	--colorTextSecondary: white;
 	--colorBorder: #d8d8d8;
 	--colorHighlight: #333;
+}
+
+.body {
+	min-height: calc(100vh - 66px);
 }
 
 .color-primary {
@@ -31,9 +35,9 @@ a {
 	text-decoration: none !important;
 }
 
-a:hover {
-	color: var(--colorPrimary) !important;
-}
+/* a:hover {
+  color: var(--colorPrimary) !important;
+} */
 
 button {
 	border: 0;
@@ -195,4 +199,42 @@ button:hover {
 .react-tags__suggestions li.is-disabled {
 	opacity: 0.5;
 	cursor: auto;
+}
+
+/* checkbox */
+.label-checkbox {
+	font-size: 13px;
+	color: var(--colorText);
+	line-height: 1.4;
+	display: block;
+	position: relative;
+	padding-left: 26px;
+	cursor: pointer;
+}
+
+input[type="checkbox"] {
+	display: none;
+}
+
+.label-checkbox::before {
+	content: "\f00c";
+	font-family: FontAwesome;
+	font-size: 13px;
+	color: transparent;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	width: 18px;
+	height: 18px;
+	border-radius: 2px;
+	background: #fff;
+	border: 1px solid var(--colorBorder);
+	left: 0;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.input-checkbox:checked + .label-checkbox::before {
+	color: var(--colorPrimary);
 }

@@ -1,9 +1,19 @@
 import React, { Component } from "react";
 import "./index.css";
 export default class LoginForm extends Component {
+	state = {
+		remember: false
+	};
+
 	handleClickSignup = e => {
 		e.preventDefault();
 		window.location.href = "/register";
+	};
+
+	handleClickRemember = e => {
+		this.setState({
+			remember: !this.state.remember
+		});
 	};
 
 	render() {
@@ -19,8 +29,18 @@ export default class LoginForm extends Component {
 					<input type="password" name="password" />
 				</div>
 				<div className="d-flex justify-content-between">
-					<input id="rememberme" type="checkbox" name="remember-me" />
-					<label className="checkbox" htmlFor="rememberme">
+					<input
+						id="rememberme"
+						type="checkbox"
+						name="remember-me"
+						className="input-checkbox"
+					/>
+					<label
+						// className={`checkbox ${this.state.remember ? "checked" : ""}`}
+						className="label-checkbox"
+						htmlFor="rememberme"
+						onClick={this.handleClickRemember}
+					>
 						Remember me
 					</label>
 
