@@ -76,6 +76,21 @@
   cursor: pointer;
 }
 
+.header .item a:hover {
+  color: var(--colorHighlight);
+}
+
+.header .item.user {
+  font-size: 18px;
+  padding-top: 3px;
+}
+.header img {
+  width: 30px;
+  height: 30px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
 .header-mobile {
   background-color: var(--colorPrimary);
   display: none;
@@ -160,6 +175,12 @@ button.expand {
   }
 
   .header {
+    display: none;
+  }
+}
+
+@media (min-width: 576px) {
+  .sidebar {
     display: none;
   }
 }

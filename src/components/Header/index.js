@@ -5,9 +5,6 @@ import "./index.css";
 const menus = [
   { id: 1, title: "log in", link: "/login" },
   { id: 2, title: "register", link: "/register" }
-  // { id: 3, title: "Search", link: "/dashboard" },
-  // { id: 4, title: "Terms & Conditions", link: "/terms" },
-  // { id: 5, title: "Privacy Policy", link: "/policy" }
 ];
 
 export default class Header extends Component {
