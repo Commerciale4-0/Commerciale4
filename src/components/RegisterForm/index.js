@@ -1,13 +1,14 @@
 import React, { Component } from "react";
 import "./index.css";
-import Select from "react-select";
 import { Row, Col } from "react-bootstrap";
 
 import { ATECO_CODES, CITIES } from "../../utils";
+import MySelect from "../Custom/MySelect";
 
 export default class RegisterForm extends Component {
     state = {
         step: 1,
+        atecoCodes: ATECO_CODES.slice(1),
         selectedCity: null,
         selectedCode: null
     };
@@ -37,57 +38,61 @@ export default class RegisterForm extends Component {
     };
 
     render() {
-        const { step, selectedCity, selectedCode } = this.state;
+        const { step, atecoCodes, selectedCity, selectedCode } = this.state;
 
         const stepOne = (
             <div>
-                <span className="title text-center">Step 1</span>
-                <div>
-                    <span className="label">Official name</span>
-                    <input type="text" name="officialName" />
-                </div>
-                <div className="mt-3">
-                    <span className="label">City</span>
-                    <Select
-                        value={selectedCity}
-                        onChange={this.handleCityChange}
-                        options={CITIES}
-                        placeholder="Select a City"
-                        theme={theme => ({
-                            ...theme,
-                            colors: {
-                                ...theme.colors,
-                                primary: "var(--colorPrimary)"
-                            }
-                        })}
-                    />
-                </div>
-                <div className="mt-3">
-                    <span className="label">Vat number</span>
-                    <input type="text" name="vatNumber" />
-                </div>
-                <div className="mt-3">
-                    <span className="label">Ateco code</span>
-                    <Select
-                        value={selectedCode}
-                        onChange={this.handleCodeChange}
-                        options={ATECO_CODES}
-                        placeholder="Select a code"
-                        theme={theme => ({
-                            ...theme,
-                            colors: {
-                                ...theme.colors,
-                                primary: "var(--colorPrimary)"
-                            }
-                        })}
-                    />
-                </div>
-                <div className="mt-3">
-                    <span className="label">pec</span>
-                    <input type="text" name="vatNumber" />
-                </div>
-                <Row className="mt-3 justify-content-end">
-                    <Col sm={4} xs={12}>
+                <span className="title text-center">Step 1/2</span>
+                <Row className="justify-content-center mb-3">
+                    <Col md={6}>
+                        <input
+                            type="text"
+                            name="officialName"
+                            placeholder="Official Name"
+                        />
+                    </Col>
+                </Row>
+                <Row className="justify-content-center mb-3">
+                    <Col md={6}>
+                        <MySelect
+                            value={selectedCity}
+                            onChange={this.handleCityChange}
+                            options={CITIES}
+                            placeholder="City"
+                        />
+                    </Col>
+                </Row>
+                <Row className="justify-content-center mb-3">
+                    <Col md={6}>
+                        <input
+                            type="text"
+                            name="vatNumber"
+                            placeholder="VAT number"
+                        />
+                    </Col>
+                </Row>
+                <Row className="justify-content-center mb-3">
+                    <Col md={6}>
+                        <MySelect
+                            value={selectedCode}
+                            onChange={this.handleCodeChange}
+                            options={atecoCodes}
+                            placeholder="ATECO CODE"
+                        />
+                    </Col>
+                </Row>
+                <Row className="mb-3">
+                    <Col md={{ span: 6, offset: 3 }}>
+                        <input type="text" name="vatNumber" placeholder="PEC" />
+                    </Col>
+                    <Col md={3} className="info-hint">
+                        <i className="fa fa-info-circle pr-1" />
+                        This inbox will be use only to certify the attendibility
+                        of the user
+                    </Col>
+                </Row>
+                <Row className="justify-content-center mb-3">
+                    <Col sm={3} xs={12}>
                         <button
                             className="txt-upper w-100"
                             onClick={this.handleClickNext}
@@ -104,45 +109,67 @@ export default class RegisterForm extends Component {
                 <button className="back" onClick={this.handleClickBack}>
                     <i className="fa fa-angle-left" />
                 </button>
-                <span className="title text-center">Step 2</span>
-                <div>
-                    <span className="label">Email</span>
-                    <input type="text" name="email" />
-                </div>
-                <div className="mt-3">
-                    <span className="label">Password</span>
-                    <input type="password" name="password" />
-                </div>
-                <div className="mt-3">
-                    <span className="label">Confirm</span>
-                    <input type="password" />
-                </div>
-                <div className="mt-3">
-                    <input
-                        id="rememberme"
-                        type="checkbox"
-                        name="remember-me"
-                        className="input-checkbox"
-                    />
-                    <label className="label-checkbox" htmlFor="rememberme">
-                        In order to continue, confirm to accept the Privacy
-                        policy and Terms and conditions
-                    </label>
-                </div>
-                <div className="mt-3 d-flex">
-                    <button className="txt-upper w-100">
-                        Complete registration
-                    </button>
-                </div>
-                <div className="mt-3 d-flex">
-                    <label style={{ fontSize: 13 }}>
-                        After "Complete registration", you will receive a
-                        confirmation message in your PEC inbox
-                    </label>
+                <span className="title text-center">Step 2/2</span>
+                <Row className="mb-3">
+                    <Col md={{ span: 6, offset: 3 }}>
+                        <input
+                            type="text"
+                            name="email"
+                            placeholder="Email address"
+                        />
+                    </Col>
+                    <Col md={3} className="info-hint">
+                        <i className="fa fa-info-circle pr-1" />
+                        This inbox will be use to receive informations related
+                        to the service
+                    </Col>
+                </Row>
+                <Row className="justify-content-center mb-3">
+                    <Col md={6}>
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="Password"
+                        />
+                    </Col>
+                </Row>
+                <Row className="justify-content-center mb-3">
+                    <Col md={6}>
+                        <input type="password" placeholder="Confirm" />
+                    </Col>
+                </Row>
+                <Row className="justify-content-center mb-3">
+                    <Col md={6}>
+                        <input
+                            id="rememberme"
+                            type="checkbox"
+                            name="remember-me"
+                            className="input-checkbox"
+                        />
+                        <label className="label-checkbox" htmlFor="rememberme">
+                            In order to continue, confirm to accept the Privacy
+                            policy and Terms and conditions
+                        </label>
+                    </Col>
+                </Row>
+                <Row className="justify-content-center mb-3">
+                    <Col md={5}>
+                        <button className="txt-upper w-100">
+                            Complete registration
+                        </button>
+                    </Col>
+                </Row>
+                <div className="text-center mb-3">
+                    After "Complete registration", you will receive a
+                    confirmation message in your PEC inbox
                 </div>
             </div>
         );
 
-        return <form className="form">{step === 1 ? stepOne : stepTwo}</form>;
+        return (
+            <form className="my-form register-form">
+                {step === 1 ? stepOne : stepTwo}
+            </form>
+        );
     }
 }

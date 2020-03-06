@@ -2,7 +2,7 @@
     padding: 20px;
 }
 
-.input-row {
+.login-form .input-row {
     display: flex;
     margin-bottom: 30px;
 }
@@ -14,7 +14,6 @@
 @media (max-width: 576px) {
     .login-form {
         width: 100%;
-        padding: 20px;
     }
     .bottom-panel-xs {
         display: block;
@@ -22,12 +21,15 @@
     .bottom-panel-sm {
         display: none;
     }
+    .login-form .title {
+        font-size: 24px !important;
+    }
 }
 
 .login-form .title {
     font-size: 18px;
     padding-bottom: 28px;
-    font-weight: bold;
+    font-weight: 500;
 }
 
 .login-form span {

@@ -65,7 +65,7 @@ export default class LoginForm extends Component {
 
         return (
             <form className="my-form login-form">
-                <span className="title text-center mt-3">login</span>
+                <span className="title text-center mt-3">log in</span>
                 <div className="input-row">
                     <div className="mx-auto">
                         <img src="images/login/username.png" alt="" />

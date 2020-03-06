@@ -10,8 +10,9 @@
 }
 
 .slide > div:first-child {
-    margin: 68px 30px 24px 0;
+    margin: 100px 30px 60px 0;
 }
+
 @media (min-width: 576px) {
     .slide > div:last-child {
         margin-left: 30px;
@@ -31,16 +32,16 @@
 }
 
 .about {
-    margin: 30px 0;
-    max-width: 960px;
-    padding: 0 20px;
+    margin: 40px 0;
+    max-width: 768px;
+    padding: 0 10px;
     margin-left: auto;
     margin-right: auto;
 }
 
 .about .avatar {
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
 }
 
 .about .content {
@@ -65,5 +66,9 @@
 @media (max-width: 768px) {
     .slide > div:first-child {
         display: none !important;
+    }
+    .slide > div:last-child {
+        justify-content: center !important;
+        margin-left: 0;
     }
 }

@@ -26,13 +26,13 @@ export default class LandingPage extends Component {
                     </div>
                 </div>
                 <div className="about">
-                    <div className="d-flex py-2">
+                    <div className="d-flex py-3">
                         <img
                             src="images/profile.png"
                             className="avatar"
                             alt=""
                         />
-                        <div className="content">
+                        <div className="pl-4 pt-3">
                             <p className="title">Company Profile</p>
                             <p>
                                 You can make your company profile including
@@ -42,9 +42,9 @@ export default class LandingPage extends Component {
                         </div>
                     </div>
                     <hr />
-                    <div className="d-flex py-2">
+                    <div className="d-flex py-3">
                         <img src="images/earth.png" className="avatar" alt="" />
-                        <div className="content">
+                        <div className="pl-4 pt-3">
                             <p className="title">Advanced search system</p>
                             <p>
                                 Thanks to our #TAGS system. It's much easier to
