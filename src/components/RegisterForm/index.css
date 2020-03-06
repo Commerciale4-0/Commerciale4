@@ -38,3 +38,9 @@
   margin-top: -10px;
   color: var(--colorText);
 }
+
+@media (max-width: 576px) {
+  .register-page > form {
+    width: 100%;
+  }
+}

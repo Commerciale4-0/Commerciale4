@@ -1,14 +1,25 @@
-.landing .search-form {
-	background: white;
-	margin-top: 88px;
-	margin-bottom: 24px;
-	border-radius: 10px;
-	padding: 16px;
-	max-width: 720px;
+.search-form {
+    margin: 68px 0 24px 0;
+    max-width: 460px;
+}
+
+.search-form .group-title {
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-left: 14px;
+    font-size: 16px;
+}
+.search-form .group-title i {
+    color: var(--colorPrimary);
 }
 
 @media (max-width: 576px) {
-	.landing .search-form {
-		width: calc(100% - 24px);
-	}
+    .search-form {
+        margin: 60px 14px 14px 14px;
+        width: 100%;
+    }
+    .search-form .group-title {
+        text-align: center;
+        margin-left: 0;
+    }
 }
