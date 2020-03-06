@@ -10,14 +10,18 @@
 }
 
 .slide > div:first-child {
-    margin: 68px 0 24px 0;
+    margin: 68px 30px 24px 0;
+}
+@media (min-width: 576px) {
+    .slide > div:last-child {
+        margin-left: 30px;
+    }
 }
 
 .intro {
     font-size: 13px;
     padding: 14px;
     margin-bottom: 20px;
-    max-width: 460px;
 }
 .intro > span {
     color: var(--colorPrimary);

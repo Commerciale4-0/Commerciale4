@@ -18,25 +18,8 @@ export default class LoginForm extends Component {
     };
 
     render() {
-        return (
-            <form className="my-form login-form">
-                <span className="title text-center">login</span>
-                <div className="d-flex align-items-center mb-3">
-                    <div className="mx-auto">
-                        <img src="images/login/username.png" alt="" />
-                        <input type="text" name="email" placeholder="Email" />
-                    </div>
-                </div>
-                <div className="d-flex align-items-center">
-                    <div className="mx-auto">
-                        <img src="images/login/pass.png" alt="" />
-                        <input
-                            type="password"
-                            name="password"
-                            placeholder="Password"
-                        />
-                    </div>
-                </div>
+        const bottomPanelSM = (
+            <div className="bottom-panel-sm">
                 <div className="mx-auto w-25 mt-4">
                     <button className="txt-upper">log in</button>
                 </div>
@@ -51,6 +34,56 @@ export default class LoginForm extends Component {
                         Register
                     </button>
                 </div>
+            </div>
+        );
+
+        const bottomPanelXS = (
+            <div className="bottom-panel-xs">
+                <div className="d-flex justify-content-center">
+                    <a href="/" className="">
+                        Forgot Password?
+                    </a>
+                </div>
+                <div className="d-flex justify-content-center mt-5">
+                    <input
+                        id="rememberme"
+                        type="checkbox"
+                        name="remember-me"
+                        className="input-checkbox"
+                    />
+                    <label
+                        className="label-checkbox"
+                        htmlFor="rememberme"
+                        onClick={this.handleClickRemember}
+                    >
+                        Remember me
+                    </label>
+                </div>
+                <button className="txt-upper w-100 mt-4">Sign in</button>
+            </div>
+        );
+
+        return (
+            <form className="my-form login-form">
+                <span className="title text-center mt-3">login</span>
+                <div className="input-row">
+                    <div className="mx-auto">
+                        <img src="images/login/username.png" alt="" />
+                        <input type="text" name="email" placeholder="Email" />
+                    </div>
+                </div>
+                <div className="input-row">
+                    <div className="mx-auto">
+                        <img src="images/login/pass.png" alt="" />
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="Password"
+                        />
+                    </div>
+                </div>
+                {bottomPanelSM}
+                {bottomPanelXS}
             </form>
         );
     }

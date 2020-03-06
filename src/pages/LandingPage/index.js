@@ -8,7 +8,7 @@ export default class LandingPage extends Component {
         return (
             <div className="landing">
                 <div className="slide">
-                    <div className="d-flex justify-content-center w-100">
+                    <div className="d-flex justify-content-end w-100">
                         <div>
                             <div className="my-form intro">
                                 <span>COMMERCIALE4.0.COM</span> is community of
@@ -21,7 +21,7 @@ export default class LandingPage extends Component {
                             <LoginForm />
                         </div>
                     </div>
-                    <div className="d-flex justify-content-center w-100">
+                    <div className="d-flex justify-content-start w-100">
                         <SimpleSearch />
                     </div>
                 </div>

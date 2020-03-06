@@ -1,6 +1,27 @@
 .login-form {
-    max-width: 460px;
     padding: 20px;
+}
+
+.input-row {
+    display: flex;
+    margin-bottom: 30px;
+}
+
+.bottom-panel-xs {
+    display: none;
+}
+
+@media (max-width: 576px) {
+    .login-form {
+        width: 100%;
+        padding: 20px;
+    }
+    .bottom-panel-xs {
+        display: block;
+    }
+    .bottom-panel-sm {
+        display: none;
+    }
 }
 
 .login-form .title {
@@ -16,8 +37,8 @@
 }
 
 .login-form img {
-    width: 30px;
-    height: 30px;
+    width: 26px;
+    height: 26px;
 }
 
 .login-form input {
@@ -33,4 +54,12 @@
     font-size: 13px;
     color: var(--colorText);
     font-weight: bold;
+}
+
+.login-form .label-checkbox {
+    font-weight: bold;
+}
+
+.login-form .label-checkbox::before {
+    border: 1px solid var(--colorText);
 }

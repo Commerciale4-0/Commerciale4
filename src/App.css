@@ -64,6 +64,7 @@ button:hover {
     padding: 16px 5px;
     background: white;
     font-size: 14px;
+    max-width: 480px;
 }
 /* range slider custom*/
 .rangeslider {
@@ -217,45 +218,6 @@ button:hover {
 .label-checkbox {
     font-size: 13px;
     color: var(--colorText);
-    line-height: 1.4;
-    display: block;
-    position: relative;
-    padding-left: 26px;
-    cursor: pointer;
-}
-
-input[type="checkbox"] {
-    display: none;
-}
-
-.label-checkbox::before {
-    content: "\f00c";
-    font-family: FontAwesome;
-    font-size: 13px;
-    color: transparent;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    width: 18px;
-    height: 18px;
-    border-radius: 2px;
-    background: #fff;
-    border: 1px solid var(--colorBorder);
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-.input-checkbox:checked + .label-checkbox::before {
-    color: var(--colorPrimary);
-}
-
-/* checkbox */
-.label-checkbox {
-    font-size: 13px;
-    color: var(--colorText);
-    line-height: 1.4;
     display: block;
     position: relative;
     padding-left: 26px;
