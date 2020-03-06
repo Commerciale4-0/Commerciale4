@@ -1,5 +1,5 @@
 .register-form {
-    min-width: 740px;
+    min-width: 760px;
     padding: 20px 10px;
 }
 
@@ -48,7 +48,6 @@
     font-size: 12px;
     padding-left: 0;
     padding-right: 0;
-    margin-left: -10px;
 }
 .register-form .info-hint i {
     font-size: 15px;

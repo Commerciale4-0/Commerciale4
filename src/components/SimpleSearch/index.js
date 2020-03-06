@@ -142,7 +142,7 @@ export default class SimpleSearch extends Component {
                         <i className="fa fa-map-marker pr-2" /> Area
                     </Col>
                 </Row>
-                <Row className="px-3 mb-1">
+                <Row className="px-2 mb-1">
                     <Col sm={6} xs={12} className="mb-2">
                         <MySelect
                             value={selectedRegion}
@@ -160,7 +160,7 @@ export default class SimpleSearch extends Component {
                         />
                     </Col>
                 </Row>
-                <Row className="px-3">
+                <Row className="px-2">
                     <Col xs={6}>Radius</Col>
                     <Col xs={6}>{radius} km</Col>
                     <Col className="mt-1">
@@ -177,7 +177,7 @@ export default class SimpleSearch extends Component {
                         <i className="fa fa-info-circle pr-2" /> Company info
                     </Col>
                 </Row>
-                <Row className="px-3">
+                <Row className="px-2">
                     <Col>
                         <MySelect
                             value={selectedType}
@@ -187,7 +187,7 @@ export default class SimpleSearch extends Component {
                         />
                     </Col>
                 </Row>
-                <Row className="mt-2 px-3">
+                <Row className="mt-2 px-2">
                     <Col>
                         <ReactTags
                             tags={tags}
@@ -199,7 +199,7 @@ export default class SimpleSearch extends Component {
                         />
                     </Col>
                 </Row>
-                <Row className="mt-2 px-3 align-items-center">
+                <Row className="mt-2 px-2 align-items-center">
                     <Col className="mb-1">N employees</Col>
                     <Col>
                         <MySelect
@@ -218,7 +218,7 @@ export default class SimpleSearch extends Component {
                         />
                     </Col>
                 </Row>
-                <Row className="mt-2 px-3 align-items-center">
+                <Row className="mt-2 px-2 align-items-center">
                     <Col className="mb-1">Revenues</Col>
                     <Col>
                         <MySelect
@@ -237,7 +237,7 @@ export default class SimpleSearch extends Component {
                         />
                     </Col>
                 </Row>
-                <Row className="mt-2 px-3 align-items-center">
+                <Row className="mt-2 px-2 align-items-center">
                     <Col>
                         <MySelect
                             value={selectedCode}
@@ -247,7 +247,7 @@ export default class SimpleSearch extends Component {
                         />
                     </Col>
                 </Row>
-                <Row className="mt-3 px-3 justify-content-end">
+                <Row className="mt-3 px-2 justify-content-end">
                     <Col sm={4} xs={12}>
                         <button className="txt-upper w-100">Search</button>
                     </Col>
