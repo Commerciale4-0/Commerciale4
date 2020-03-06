@@ -5,7 +5,7 @@ export default class PrivacyPolicy extends Component {
   render() {
     return (
       <div className="policy container">
-        <h2>Privacy Policy</h2>
+        <h2>PRIVACY POLICY</h2>
         <br />
         <p>DATI RELATIVI A AZIENDE ACQUISITI IN MODO AUTOMATICO DAL SITO </p>
 
@@ -31,16 +31,28 @@ export default class PrivacyPolicy extends Component {
         <p>
           Se una Azienda decide di registrarsi al Sito, le verrà richiesto di
           inserire nell’apposito form di registrazione i seguenti dati
-          personali: - nome (che sarà visibile sul Sito); - Codice Ateco; -
-          Partita IVA; - Indirizzo PEC; - Provincia; - indirizzo e-mail; -
-          password. Se una Azienda deciderà di completare l’iscrizione al sito
-          (inserendo tutte le informazioni richieste nel profilo), la stessa
-          dovrà fornire gli ulteriori dati personali richiesti nel form di
-          iscrizione, quali: Logo aziendale; Foto; Descrizione della propria
-          attività; Numero dipendenti; Fatturato; Parole chiave (destianate alla
-          ricerca della stessa); Prodotti & servizi offerti; - l’URL del proprio
-          sito web. I dati personali così raccolti saranno trattati da
-          Commerciale4.0 per le finalità di seguito indicate.
+          personali: - nome (che sarà visibile sul Sito);
+          <br />
+          - Codice Ateco;
+          <br />
+          - Partita IVA;
+          <br />
+          - Indirizzo PEC;
+          <br />
+          - Provincia;
+          <br />
+          - indirizzo e-mail;
+          <br />
+          - password.
+          <br />
+          Se una Azienda deciderà di completare l’iscrizione al sito (inserendo
+          tutte le informazioni richieste nel profilo), la stessa dovrà fornire
+          gli ulteriori dati personali richiesti nel form di iscrizione, quali:
+          Logo aziendale; Foto; Descrizione della propria attività; Numero
+          dipendenti; Fatturato; Parole chiave (destianate alla ricerca della
+          stessa); Prodotti & servizi offerti; - l’URL del proprio sito web. I
+          dati personali così raccolti saranno trattati da Commerciale4.0 per le
+          finalità di seguito indicate.
         </p>
       </div>
     );

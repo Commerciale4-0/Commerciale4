@@ -81,9 +81,10 @@
 }
 
 .header .item.user {
-  font-size: 18px;
-  padding-top: 3px;
+  font-size: 15px;
+  padding-top: 1px;
 }
+
 .header img {
   width: 30px;
   height: 30px;

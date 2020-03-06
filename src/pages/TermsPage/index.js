@@ -5,7 +5,7 @@ export default class TermsAndConditions extends Component {
   render() {
     return (
       <div className="terms container">
-        <h2>Terms and Conditions</h2>
+        <h2>TERMINI E CONDIZIONI</h2>
         <br />
         <p>
           Utilizzando il Sito, accetti e ti impegni a rispettare le presenti
