@@ -1,0 +1,17 @@
+.footer {
+  background: #e1e1e1;
+  padding: 20px 0 50px 50px;
+  text-align: right;
+}
+
+.footer a {
+  color: black;
+  text-transform: uppercase;
+  font-size: 13px;
+}
+
+@media (max-width: 576px) {
+  .footer {
+    display: none;
+  }
+}

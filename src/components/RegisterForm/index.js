@@ -115,8 +115,13 @@ export default class RegisterForm extends Component {
 					<input type="password" />
 				</div>
 				<div className="mt-3">
-					<input id="rememberme" type="checkbox" name="remember-me" />
-					<label className="checkbox" htmlFor="rememberme">
+					<input
+						id="rememberme"
+						type="checkbox"
+						name="remember-me"
+						className="input-checkbox"
+					/>
+					<label className="label-checkbox" htmlFor="rememberme">
 						In order to continue, confirm to accept the Privacy policy and Terms
 						and conditions
 					</label>
