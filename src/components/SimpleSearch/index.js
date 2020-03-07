@@ -71,6 +71,13 @@ export default class SimpleSearch extends Component {
     };
 
     handleTagAddition = tag => {
+        if (this.state.tags.filter(elem => elem.name === tag.name).length) {
+            return;
+        }
+
+        if (this.state.length > 6) {
+            return;
+        }
         const tags = [].concat(this.state.tags, tag);
         this.setState({ tags });
     };
@@ -189,14 +196,23 @@ export default class SimpleSearch extends Component {
                 </Row>
                 <Row className="mt-2 px-2">
                     <Col>
-                        <ReactTags
-                            tags={tags}
-                            suggestions={suggestions}
-                            placeholder="Search with #TAGS"
-                            onDelete={this.handleTagDelete.bind(this)}
-                            onAddition={this.handleTagAddition.bind(this)}
-                            allowNew
-                        />
+                        <div>
+                            <ReactTags
+                                tags={tags}
+                                suggestions={suggestions}
+                                placeholderText="Search with #TAGS"
+                                onDelete={this.handleTagDelete.bind(this)}
+                                onAddition={this.handleTagAddition.bind(this)}
+                                allowNew
+                            />
+                        </div>
+                        <div className="tag-hint">
+                            Examples : <label>LASERCUT</label>
+                            <label>WELDING</label>
+                            <label>CNC</label>
+                            {/* <span style={{ float: "right" }}>(Max:7)</span> */}
+                            (Max:7)
+                        </div>
                     </Col>
                 </Row>
                 <Row className="mt-2 px-2 align-items-center">

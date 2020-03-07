@@ -12,6 +12,22 @@
     color: var(--colorPrimary);
 }
 
+.search-form .tag-hint {
+    border-radius: 4px;
+    background: #eee;
+    padding: 4px 8px;
+    margin-top: 2px;
+    color: var(--colorText);
+    font-size: 13px;
+}
+.search-form .tag-hint label {
+    background: white;
+    padding: 0 5px;
+    margin-bottom: 0;
+    margin-right: 4px;
+    border-radius: 2px;
+}
+
 @media (max-width: 576px) {
     .search-form {
         margin: 60px 14px 14px 14px;

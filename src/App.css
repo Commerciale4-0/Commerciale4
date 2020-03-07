@@ -112,7 +112,7 @@ button:hover {
 .react-tags__selected-tag {
     display: inline-block;
     box-sizing: border-box;
-    margin: 0 4px 4px 0;
+    margin: 4px 4px 0 0;
     padding: 3px 6px;
     border-radius: 2px;
     background: var(--colorBg);
