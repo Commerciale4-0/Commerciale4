@@ -90,7 +90,7 @@ button:hover {
 /* react tag autocomplete custom*/
 .react-tags {
     position: relative;
-    padding: 0 6px;
+    padding: 2px 4px;
     border-radius: 4px;
     background: var(--colorInputBg);
 
@@ -112,7 +112,7 @@ button:hover {
 .react-tags__selected-tag {
     display: inline-block;
     box-sizing: border-box;
-    margin: 4px 4px 0 0;
+    margin: 2px 4px;
     padding: 3px 6px;
     border-radius: 2px;
     background: var(--colorBg);
@@ -142,7 +142,7 @@ button:hover {
     display: inline-block;
 
     /* match tag layout */
-    padding: 7px 2px;
+    padding: 5px 2px;
 
     /* prevent autoresize overflowing the container */
     max-width: 100%;

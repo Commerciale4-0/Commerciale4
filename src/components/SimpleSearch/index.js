@@ -35,7 +35,9 @@ export default class SimpleSearch extends Component {
         selectedEmployeeMax: N_EMPOYEES[0],
         selectedRevenueMin: REVENUES[0],
         selectedRevenueMax: REVENUES[0],
-        selectedCode: null
+        selectedCode: null,
+
+        tagsPlaceholder: "Search with #TAGS"
     };
 
     handleSliderChange = radius => {
@@ -68,18 +70,46 @@ export default class SimpleSearch extends Component {
         const tags = this.state.tags.slice(0);
         tags.splice(i, 1);
         this.setState({ tags });
+        let elems = document.getElementsByClassName("react-tags__search-input");
+        if (elems && elems.length) {
+            elems[0].style.display = "block";
+            elems[0].focus();
+        }
+        if (!tags || !tags.length) {
+            this.setState({
+                tagsPlaceholder: "Search with #TAGS"
+            });
+            if (elems && elems.length) {
+                elems[0].style.width = "16ch";
+            }
+        } else {
+            this.setState({
+                tagsPlaceholder: "Max:5(Left:" + (5 - tags.length) + ")"
+            });
+        }
     };
 
     handleTagAddition = tag => {
-        if (this.state.tags.filter(elem => elem.name === tag.name).length) {
+        const { tags, tagsPlaceholder } = this.state;
+        if (tags.filter(elem => elem.name === tag.name).length) {
             return;
         }
 
-        if (this.state.length > 6) {
-            return;
+        if (tags.length == 4) {
+            let elems = document.getElementsByClassName(
+                "react-tags__search-input"
+            );
+            if (elems && elems.length) {
+                elems[0].style.display = "none";
+            }
+        } else {
+            this.setState({
+                tagsPlaceholder: "Max:5(Left:" + (5 - tags.length - 1) + ")"
+            });
         }
-        const tags = [].concat(this.state.tags, tag);
-        this.setState({ tags });
+
+        const newTags = [].concat(tags, tag);
+        this.setState({ tags: newTags });
     };
 
     handleEmployeeMinChange = selectedEmployeeMin => {
@@ -139,7 +169,8 @@ export default class SimpleSearch extends Component {
             selectedEmployeeMax,
             selectedRevenueMin,
             selectedRevenueMax,
-            selectedCode
+            selectedCode,
+            tagsPlaceholder
         } = this.state;
 
         return (
@@ -200,7 +231,7 @@ export default class SimpleSearch extends Component {
                             <ReactTags
                                 tags={tags}
                                 suggestions={suggestions}
-                                placeholderText="Search with #TAGS"
+                                placeholderText={tagsPlaceholder}
                                 onDelete={this.handleTagDelete.bind(this)}
                                 onAddition={this.handleTagAddition.bind(this)}
                                 allowNew
@@ -210,8 +241,8 @@ export default class SimpleSearch extends Component {
                             Examples : <label>LASERCUT</label>
                             <label>WELDING</label>
                             <label>CNC</label>
-                            {/* <span style={{ float: "right" }}>(Max:7)</span> */}
-                            (Max:7)
+                            {/* <span style={{ float: "right" }}>(Max:7)</span>
+                            (Max:5) */}
                         </div>
                     </Col>
                 </Row>
