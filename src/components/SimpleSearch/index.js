@@ -90,12 +90,12 @@ export default class SimpleSearch extends Component {
     };
 
     handleTagAddition = tag => {
-        const { tags, tagsPlaceholder } = this.state;
+        const { tags } = this.state;
         if (tags.filter(elem => elem.name === tag.name).length) {
             return;
         }
 
-        if (tags.length == 4) {
+        if (tags.length === 4) {
             let elems = document.getElementsByClassName(
                 "react-tags__search-input"
             );
