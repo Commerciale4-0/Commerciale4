@@ -78,12 +78,23 @@ button:hover {
 .rangeslider {
     margin: 8px 0 !important;
 }
-.rangeslider-horizontal .rangeslider__fill,
+.rangeslider-horizontal {
+    height: 8px !important;
+    border-radius: 4px !important;
+}
+.rangeslider-horizontal .rangeslider__handle {
+    width: 12px !important;
+    border-radius: 4px !important;
+}
 .rangeslider-horizontal .rangeslider__handle:after {
+    display: none;
+}
+.rangeslider-horizontal .rangeslider__fill {
     background-color: var(--colorPrimary) !important;
 }
 .rangeslider .rangeslider__handle {
     box-shadow: none !important;
+    background: #eee !important;
     outline: 0;
 }
 

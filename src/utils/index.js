@@ -255,34 +255,3 @@ export const minsFromMax = (maxId, items) => {
     }
     return mins;
 };
-
-export const validateNormal = value => {
-    if (!value.trim().length) {
-        return false;
-    }
-
-    return true;
-};
-
-export const validateVAT = value => {
-    if (value.trim().length !== 11) {
-        return false;
-    }
-
-    return true;
-};
-
-export const validatePassword = value => {
-    if (value.length < 7) {
-        return false;
-    }
-
-    return true;
-};
-
-export const validateEmail = value => {
-    if (/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,15}/g.test(value)) {
-        return true;
-    }
-    return false;
-};

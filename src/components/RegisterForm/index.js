@@ -2,14 +2,7 @@ import React, { Component } from "react";
 import "./index.css";
 import { Row, Col, Alert } from "react-bootstrap";
 
-import {
-    ATECO_CODES,
-    CITIES,
-    validateNormal,
-    validateVAT,
-    validateEmail,
-    validatePassword
-} from "../../utils";
+import { ATECO_CODES, CITIES } from "../../utils";
 
 import * as Validate from "../../utils/Validate";
 
