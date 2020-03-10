@@ -1,0 +1,108 @@
+type User {
+  email: String
+  password: String
+  officalName: String
+  city: String
+  vatNumber: String
+  atecoCode: String
+  pec: String
+  active: String
+  verify: String
+}
+
+type Query {
+  allUsers: [User]
+  findUserByEmailAndPassAndActive(
+    email: String
+    password: String
+    active: String
+  ): [User]
+  findUserByEmailAndActive(email: String, active: String): [User]
+}
+
+# /////create
+# mutation CreateUser {
+#   createUser(data: {
+#     email: "star97529@hotmail.com"
+#     password: "dkrsusuvkrdhdksu"
+#     active: "1"
+#     verify: "1111111111"
+#   }) {
+#     email
+# 		password
+# 		active
+# 		verify
+#   }
+# }
+
+# /////read
+# query FindUserByID {
+#   findUserByID(id: 259252467157434899) {
+#     email
+#     password
+#     active
+#     verify
+#   }
+# }
+
+# query FindAllUsers {
+#   allUsers {
+#     data {
+#       _id
+#       email
+#       password
+#       active
+#       verify
+#     }
+#   }
+# }
+
+# /////update
+# mutation UpdateUser {
+#   updateUser(id: "259252467157434899", data: {
+#     email: "star97529@hotmail.com"
+#     password: "dkrsusuvkrdhdksu"
+#     active: "1"
+#     verify: "1111111111"
+#   }) {
+#     email
+#     password
+#     active
+#     verify
+#   }
+# }
+
+# /////delete
+# mutation DeleteUser {
+#   deleteUser(id: "259252467157434899") {
+#     email
+#     password
+#     active
+#     verify
+#   }
+# }
+
+# /////register
+# mutation UserRegister {
+#   createUser(data: {
+#     email: "star97529@hotmail.com"
+#     password: "dkrsusuvkrdhdksu"
+#     active: "0"
+#     verify: "1111111111"
+#   }) {
+#     _id
+#   }
+# }
+
+# /////login
+# query UserLogin {
+#   findUserByEmailAndPassAndActive(
+#     email: "star97529@hotmail.com"
+#     password: "dkrsusuvkrdhdksu"
+#     active: "1"
+#   ) {
+#     data {
+#       _id
+#     }
+#   }
+# }

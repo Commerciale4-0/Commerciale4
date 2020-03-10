@@ -18,51 +18,59 @@ export const MSG_INVALID_VAT = " should be 11 characters!";
 export const MSG_PASSWORD_NOT_MATCH = "Password not match!";
 
 export const checkEmpty = value => {
-    if (!value.trim().length) {
-        return { code: EMPTY, msg: MSG_EMPTY };
-    }
+	if (!value.trim().length) {
+		return { code: EMPTY, msg: MSG_EMPTY };
+	}
 
-    return { code: VALID, msg: MSG_VALID };
+	return { code: VALID, msg: MSG_VALID };
 };
 
 export const checkVAT = value => {
-    if (!value.trim().length) {
-        return { code: EMPTY, msg: MSG_EMPTY };
-    }
+	if (!value.trim().length) {
+		return { code: EMPTY, msg: MSG_EMPTY };
+	}
 
-    if (value.trim().length !== 11) {
-        return { code: INVALID_VAT, msg: MSG_INVALID_VAT };
-    }
+	if (value.trim().length !== 11) {
+		return { code: INVALID_VAT, msg: MSG_INVALID_VAT };
+	}
 
-    return { code: VALID, msg: MSG_VALID };
+	return { code: VALID, msg: MSG_VALID };
 };
 
 export const checkPassword = value => {
-    if (!value.trim().length) {
-        return { code: EMPTY, msg: MSG_EMPTY };
-    }
-    if (value.length < 7) {
-        return { code: INVALID_PASSWORD, msg: MSG_INVALID_PASSWORD };
-    }
+	if (!value.trim().length) {
+		return { code: EMPTY, msg: MSG_EMPTY };
+	}
+	if (value.length < 7) {
+		return { code: INVALID_PASSWORD, msg: MSG_INVALID_PASSWORD };
+	}
 
-    return { code: VALID, msg: MSG_VALID };
+	return { code: VALID, msg: MSG_VALID };
 };
 
 export const checkConfirmPassword = (password, confirm) => {
-    if (password !== confirm) {
-        return { code: PASSWORD_NOT_MATCH, msg: MSG_PASSWORD_NOT_MATCH };
-    }
+	if (password !== confirm) {
+		return { code: PASSWORD_NOT_MATCH, msg: MSG_PASSWORD_NOT_MATCH };
+	}
 
-    return { code: VALID, msg: MSG_VALID };
+	return { code: VALID, msg: MSG_VALID };
 };
 
 export const checkEmail = value => {
-    if (!value.trim().length) {
-        return { code: EMPTY, msg: MSG_EMPTY };
-    }
-    if (/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,15}/g.test(value)) {
-        return { code: VALID, msg: MSG_VALID };
-    }
+	if (!value.trim().length) {
+		return { code: EMPTY, msg: MSG_EMPTY };
+	}
+	if (/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,15}/g.test(value)) {
+		return { code: VALID, msg: MSG_VALID };
+	}
 
-    return { code: INVALID_EMAIL, msg: MSG_INVALID_EMAIL };
+	return { code: INVALID_EMAIL, msg: MSG_INVALID_EMAIL };
+};
+
+export const applyToInput = (input, code) => {
+	if (code === VALID) {
+		input.style.border = 0;
+	} else {
+		input.style.border = "1px solid red";
+	}
 };

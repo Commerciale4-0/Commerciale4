@@ -1,171 +1,191 @@
 .header,
 .header-mobile {
-    width: 100%;
-    position: absolute;
-    align-items: center;
-    background: #e1e1e1;
-    color: var(--colorSecondary);
+	width: 100%;
+	position: absolute;
+	align-items: center;
+	background: #e1e1e1;
+	color: var(--colorSecondary);
 }
 
 .header {
-    padding: 5px 0;
-    justify-content: center;
+	padding: 5px 0;
+	justify-content: center;
 }
 
 .header .item {
-    padding-left: 5px;
-    padding-right: 5px;
+	padding-left: 5px;
+	padding-right: 5px;
 }
 
 .header .item.title,
 .header-mobile .title {
-    text-align: center;
-    font-size: 24px;
-    font-weight: 600;
-    background: linear-gradient(to right, #30cfd0 0%, #330867 80%);
-    background-clip: border-box;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+	text-align: center;
+	font-size: 24px;
+	font-weight: 600;
+	background: linear-gradient(to right, #30cfd0 0%, #330867 80%);
+	background-clip: border-box;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
 }
 
 .header .item.search {
-    background-color: white;
-    display: flex;
-    border-radius: 5px;
-    padding: 0;
-    width: 100%;
-    align-items: center;
-    overflow: hidden;
+	background-color: white;
+	display: flex;
+	border-radius: 5px;
+	padding: 0;
+	width: 100%;
+	align-items: center;
+	overflow: hidden;
 }
 
 .header .item.search span {
-    color: black;
-    margin-left: 10px;
+	color: black;
+	margin-left: 10px;
 }
 
 .header .item.search input {
-    border: none;
-    margin-left: 5px;
-    padding: 6px 3px;
-    border-radius: 0;
-    width: 100%;
-    height: 100%;
+	border: none;
+	margin-left: 5px;
+	padding: 6px 3px;
+	border-radius: 0;
+	width: 100%;
+	height: 100%;
 }
 
 .header .item.user {
-    font-size: 15px;
-    text-align: center;
+	font-size: 15px;
+	text-align: center;
 }
 
 .header .item.user button {
-    background: var(--colorSecondary);
-    border-radius: 4px;
-    color: var(--colorText);
-    padding: 7px 10px;
+	background: var(--colorSecondary);
+	border-radius: 4px;
+	color: var(--colorText);
+	padding: 7px 10px;
 }
 .header .item.user button:hover {
-    background: #bbb;
+	background: #bbb;
 }
 
 .header .item.user i {
-    margin-left: 10px;
+	margin-left: 10px;
 }
 
 .lang img {
-    height: 30px;
-    padding-right: 10px;
-    cursor: pointer;
+	height: 30px;
+	padding-right: 10px;
+	cursor: pointer;
 }
 
 .header .item a:hover {
-    color: var(--colorHighlight);
+	color: var(--colorHighlight);
 }
 
 .header-mobile {
-    background-color: var(--colorPrimary);
-    display: none;
-    position: fixed;
-    z-index: 5;
+	background-color: var(--colorPrimary);
+	display: none;
+	position: fixed;
+	z-index: 5;
 }
 
 .header-mobile .title {
-    font-size: 22px;
+	font-size: 22px;
 }
 
 .sidebar {
-    color: var(--colorSecondary);
-    width: 100vw;
-    top: 46px;
-    height: calc(100% - 46px);
-    transition: transform 0.3s;
-    position: fixed;
-    z-index: 2;
-    display: flex;
+	color: var(--colorSecondary);
+	width: 100vw;
+	top: 46px;
+	height: calc(100% - 46px);
+	transition: transform 0.3s;
+	position: fixed;
+	z-index: 2;
+	display: flex;
 }
 
 .sidebar > div:first-child {
-    padding: 20px 10px 10px 10px;
-    width: 40%;
-    height: 100%;
-    background: #eee;
-    box-shadow: 0.1em 0.1em 0.2em #333;
+	padding: 20px 10px 10px 10px;
+	width: 40%;
+	height: 100%;
+	background: #eee;
+	box-shadow: 0.1em 0.1em 0.2em #333;
 }
 
 .sidebar.normal {
-    transform: translateX(-100vw);
+	transform: translateX(-100vw);
 }
 
 .sidebar.expanded {
-    transform: translateX(0);
-    width: 100vw;
+	transform: translateX(0);
+	width: 100vw;
 }
 
 .sidebar .hidden-area {
-    width: 60%;
+	width: 60%;
 }
 
 .sidebar .item {
-    padding: 5px;
-    background: var(--colorSecondary);
-    border: 1px solid #aaa;
-    margin-bottom: 10px;
-    text-align: center;
-    color: black;
+	padding: 5px;
+	background: var(--colorSecondary);
+	border: 1px solid #aaa;
+	margin-bottom: 10px;
+	text-align: center;
+	color: black;
 }
 
 .sidebar .item:hover {
-    background: #cccccc;
+	background: #cccccc;
 }
 
 .header-mobile a {
-    color: var(--colorSecondary);
+	color: var(--colorSecondary);
 }
 
 button.expand {
-    min-width: 0;
-    background: transparent;
-    width: 32px;
-    height: 32px;
-    font-size: 12px;
-    color: var(--colorText);
-    border: 1px solid var(--colorText);
+	min-width: 0;
+	background: transparent;
+	width: 32px;
+	height: 32px;
+	font-size: 12px;
+	color: var(--colorText);
+	border: 1px solid var(--colorText);
+}
+
+.dropdown-toggle {
+	border: none !important;
+}
+
+.btn-primary.dropdown-toggle:focus {
+	box-shadow: 0 0 0 0 transparent !important;
+}
+
+.dropdown-menu {
+	padding: 2px 0;
+	min-width: 170px;
+}
+.dropdown-menu.show {
+	display: block;
+	text-align: center;
+}
+.dropdown-item:active {
+	background-color: #bbb !important;
 }
 
 @media (max-width: 576px) {
-    .header-mobile {
-        display: flex;
-        padding: 6px 10px;
-        justify-content: space-between;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.3);
-    }
+	.header-mobile {
+		display: flex;
+		padding: 6px 10px;
+		justify-content: space-between;
+		border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+	}
 
-    .header {
-        display: none;
-    }
+	.header {
+		display: none;
+	}
 }
 
 @media (min-width: 576px) {
-    .sidebar {
-        display: none;
-    }
+	.sidebar {
+		display: none;
+	}
 }
