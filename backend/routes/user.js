@@ -50,11 +50,11 @@ function sendMailer(toEmail, type, value) {
     if (type === Utils.EMAIL_VERIFY) {
         toSubject = Utils.VERIFY_EMAIL_SUBJECT; // verify code
         toHtml = `${Utils.VERIFY_EMAIL_MESSAGE}
-          <br/><a href="${Utils.SERVER_URL}${Utils.NETLIFY_FUNCTIONS_URL}/user/verify?code=${value}"></a>`;
+          <br/><a href="${Utils.SERVER_URL}${Utils.NETLIFY_FUNCTIONS_URL}/user/verify?code=${value}">Verify your email</a>`;
     } else {
         toSubject = Utils.RESET_PASSWORD_SUBJECT;
         toHtml = `${Utils.RESET_PASSWORD_MESSAGE}
-          <br/><a href="${Utils.SERVER_URL}/reset-password?id=${value}"></a>`;
+          <br/><a href="${Utils.SERVER_URL}/reset-password?id=${value}">Reset your password</a>`;
     }
 
     const transporter = nodemailer.createTransport({
