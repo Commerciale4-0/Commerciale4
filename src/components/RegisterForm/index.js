@@ -167,31 +167,46 @@ export default class RegisterForm extends Component {
             };
 
             let that = this;
-            requestAPI("/user/register", "POST", data).then(res => {
-                console.log(res);
-                if (res.status === 0) {
-                    this.setAlertData(0, res.message);
+            requestAPI("/user/verify-pec", "POST", {
+                pec: data.pec,
+                id: "111"
+            }).then(res1 => {
+                console.log(res1);
+                if (res1.status === 0) {
+                    that.setAlertData(0, res1.message);
                 } else {
-                    setTimeout(function() {
-                        console.log(data.pec);
-                        requestAPI("/user/verify-pec", "POST", {
-                            pec: data.pec,
-                            id: res.id
-                        }).then(res1 => {
-                            console.log(res1);
-                            if (res1.status === 0) {
-                                that.setAlertData(0, res1.message);
-                            } else {
-                                that.setState({ step: 3 });
-                                that.setAlertData(
-                                    1,
-                                    `We've sent an email to ${data.email} to verify your account. Please check your email inbox to coutinue.`
-                                );
-                            }
-                        });
-                    }, 5000);
+                    that.setState({ step: 3 });
+                    that.setAlertData(
+                        1,
+                        `We've sent an email to ${data.pec} to verify your account. Please check your email inbox to coutinue.`
+                    );
                 }
             });
+            // requestAPI("/user/register", "POST", data).then(res => {
+            // 	console.log(res);
+            // 	if (res.status === 0) {
+            // 		this.setAlertData(0, res.message);
+            // 	} else {
+            // 		setTimeout(function() {
+            // 			console.log(data.pec);
+            // 			requestAPI("/user/verify-pec", "POST", {
+            // 				pec: data.pec,
+            // 				id: res.id
+            // 			}).then(res1 => {
+            // 				console.log(res1);
+            // 				if (res1.status === 0) {
+            // 					that.setAlertData(0, res1.message);
+            // 				} else {
+            // 					that.setState({ step: 3 });
+            // 					that.setAlertData(
+            // 						1,
+            // 						`We've sent an email to ${data.email} to verify your account. Please check your email inbox to coutinue.`
+            // 					);
+            // 				}
+            // 			});
+            // 		}, 3000);
+            // 	}
+            // });
         }
     };
 
