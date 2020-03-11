@@ -27,6 +27,7 @@ function sendMailer(emailData, response, message) {
 
     transporter.sendMail(mailOption, (error, info) => {
         if (error) {
+            console.log(error);
             if (response) {
                 response.send({
                     status: 0,
@@ -34,6 +35,7 @@ function sendMailer(emailData, response, message) {
                 });
             }
         } else {
+            console.log(info);
             if (response) {
                 response.send({ status: 1, message: message });
             }
