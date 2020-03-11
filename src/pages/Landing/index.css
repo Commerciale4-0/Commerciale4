@@ -24,13 +24,13 @@
 .search-panel {
 	justify-content: start;
 }
-@media (min-width: 769px) {
+@media (min-width: 768px) {
 	.search-panel.logged {
 		justify-content: center;
 		margin-left: 0;
 	}
 	.search-panel.logged .search-form {
-		max-width: 960px;
+		max-width: 600px;
 	}
 }
 

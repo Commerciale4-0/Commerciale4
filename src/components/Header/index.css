@@ -3,7 +3,7 @@
 	width: 100%;
 	position: absolute;
 	align-items: center;
-	background: #e1e1e1;
+	background: rgba(180, 180, 180, 0.5);
 	color: var(--colorSecondary);
 }
 

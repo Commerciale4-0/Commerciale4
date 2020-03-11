@@ -52,6 +52,9 @@ export default class ResetPasswordPage extends Component {
 				isSuccess: true,
 				alertText: "Password has just been reseted "
 			});
+			setTimeout(function() {
+				window.location.href = "/";
+			}, 1000);
 		});
 	}
 

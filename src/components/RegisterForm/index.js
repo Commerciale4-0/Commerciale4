@@ -20,7 +20,8 @@ export default class RegisterForm extends Component {
 			selectedCode: null,
 			checkValidCity: false,
 			checkValidCode: false,
-			alertData: null
+			alertData: null,
+			policyChecked: false
 		};
 
 		this.inputName = React.createRef();
@@ -106,6 +107,11 @@ export default class RegisterForm extends Component {
 			return false;
 		}
 
+		if (!this.state.policyChecked) {
+			this.setAlertData(0, "Please check Privacy and Policy");
+			return false;
+		}
+
 		return true;
 	};
 
@@ -159,21 +165,39 @@ export default class RegisterForm extends Component {
 				atecoCode: this.state.selectedCode.label,
 				pec: this.inputPEC.current.value
 			};
-			console.log(data);
+
 			requestAPI("/user/register", "POST", data).then(res => {
 				console.log(res);
 				if (res.status === 0) {
 					this.setAlertData(0, res.message);
 				} else {
-					this.setState({ step: 3 });
-					this.setAlertData(
-						1,
-						`We've sent an email to ${data.email} to verify your account. Please check your email inbox to coutinue.`
-					);
+					// setTimeout(function() {
+					requestAPI("/user/verify-pec", "POST", {
+						pec: data.pec,
+						id: res.id
+					}).then(res1 => {
+						console.log(res1);
+						if (res1.status === 0) {
+							this.setAlertData(0, res1.message);
+						} else {
+							this.setState({ step: 3 });
+							this.setAlertData(
+								1,
+								`We've sent an email to ${data.email} to verify your account. Please check your email inbox to coutinue.`
+							);
+						}
+					});
+					// }, 2000);
 				}
 			});
 		}
 	};
+
+	handleCheck(e) {
+		this.setState({
+			policyChecked: e.target.checked
+		});
+	}
 
 	render() {
 		const {
@@ -306,6 +330,7 @@ export default class RegisterForm extends Component {
 							type="checkbox"
 							name="remember-me"
 							className="input-checkbox"
+							onClick={e => this.handleCheck(e)}
 						/>
 						<label className="label-checkbox" htmlFor="rememberme">
 							In order to continue, confirm to accept the Privacy

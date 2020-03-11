@@ -11,13 +11,13 @@ type User {
 }
 
 type Query {
-  allUsers: [User]
+  allUsers: [User!]
   findUserByEmailAndPassAndActive(
     email: String
     password: String
     active: String
-  ): [User]
-  findUserByEmailAndActive(email: String, active: String): [User]
+  ): [User!]
+  findUserByEmailAndActive(email: String, active: String): [User!]
 }
 
 # /////create

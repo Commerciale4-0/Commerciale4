@@ -27,8 +27,6 @@ export default class Header extends Component {
 		if (menu.link === "/logout") {
 			sessionStorage.removeItem("userEmail");
 			window.location.href = "/";
-		} else {
-			window.location.href = menu.link;
 		}
 	};
 
@@ -77,63 +75,44 @@ export default class Header extends Component {
 						<Col className="item title" sm={4}>
 							<a href="/">Commerciale 4.0</a>
 						</Col>
-						<Col className="item search" sm={3}>
+						<Col className="item search" sm={userEmail ? 3 : 5}>
 							<span>
 								<i className="fa fa-search"></i>
 							</span>
 							<input type="text" placeholder="Company search" />
 						</Col>
-						<Col className="item user" sm={3}>
-							{/* <button>
-                                useremail@gmail.com
-                                <i className="fa fa-angle-down"></i>
-                            </button> */}
-							<DropdownButton
-								id="dropdown-basic-button"
-								title={
-									userEmail
-										? userEmail
-										: "User email address "
-								}
-							>
-								{userEmail ? (
-									<div>
-										<Dropdown.Item
-											onClick={() =>
-												this.handleClickProfile()
-											}
-										>
-											Profile
-										</Dropdown.Item>
-										<Dropdown.Item
-											onClick={() =>
-												this.handleClickLogout()
-											}
-										>
-											Log Out
-										</Dropdown.Item>
-									</div>
-								) : (
-									<div>
-										<Dropdown.Item
-											onClick={() =>
-												this.handleClickLogin()
-											}
-										>
-											Log In
-										</Dropdown.Item>
-										<Dropdown.Item
-											onClick={() =>
-												this.handleClickRegister()
-											}
-										>
-											Register
-										</Dropdown.Item>
-									</div>
-								)}
-							</DropdownButton>
-						</Col>
-						<Col className="item lang" sm={2}>
+						{userEmail ? (
+							<Col className="item user" sm={3}>
+								<DropdownButton
+									id="dropdown-basic-button"
+									title={
+										userEmail
+											? userEmail
+											: "User email address "
+									}
+								>
+									<Dropdown.Item
+										onClick={() =>
+											this.handleClickProfile()
+										}
+									>
+										Profile
+									</Dropdown.Item>
+									<Dropdown.Item
+										onClick={() => this.handleClickLogout()}
+									>
+										Log Out
+									</Dropdown.Item>
+								</DropdownButton>
+							</Col>
+						) : (
+							<></>
+						)}
+
+						<Col
+							className="item lang"
+							sm={{ span: "2", offset: userEmail ? "0" : "1" }}
+						>
 							<a href="/">
 								<img src="images/flag/italy.png" alt="" />
 							</a>
