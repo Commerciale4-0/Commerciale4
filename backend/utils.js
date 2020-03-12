@@ -1,8 +1,8 @@
-const FAUNADB_SECRET = process.env.REACT_APP_FAUNADB_SECRET;
-const SERVER_URL = process.env.REACT_APP_SERVER_URL;
-const NETLIFY_FUNCTIONS_URL = process.env.REACT_APP_NETLIFY_FUNCTIONS_URL;
-const NODEMAILER_ACCOUNT = process.env.REACT_APP_NODEMAILER_ACCOUNT;
-const NODEMAILER_PASSWORD = process.env.REACT_APP_NODEMAILER_PASSWORD;
+const FAUNADB_SECRET = process.env.FAUNADB_SECRET;
+const SERVER_URL = process.env.SERVER_URL;
+const NETLIFY_FUNCTIONS_URL = process.env.NETLIFY_FUNCTIONS_URL;
+const NODEMAILER_ACCOUNT = process.env.NODEMAILER_ACCOUNT;
+const NODEMAILER_PASSWORD = process.env.NODEMAILER_PASSWORD;
 
 const VERIFY_EMAIL_SUBJECT = "Verify your account";
 const RESET_PASSWORD_SUBJECT = "Reset password";
@@ -29,16 +29,16 @@ const VERIFY_SUCCESS_PAGE = `<html lang="en"><head><title>Verify</title></head>
 							line-height: 44px; font-size: 15px; color: #ffffff; display: block; width: 50%; margin-left: auto; margin-right: auto;">
 							Welcome to the COMMERCIALE4.0! You have been successfully verified.<div></body></html>`;
 module.exports.Utils = {
-	FAUNADB_SECRET,
-	SERVER_URL,
-	NETLIFY_FUNCTIONS_URL,
-	NODEMAILER_ACCOUNT,
-	NODEMAILER_PASSWORD,
-	VERIFY_EMAIL_SUBJECT,
-	RESET_PASSWORD_SUBJECT,
-	VERIFY_EMAIL_MESSAGE,
-	RESET_PASSWORD_MESSAGE,
-	MESSAGE_FOOTER,
-	EMAIL_STYLE,
-	VERIFY_SUCCESS_PAGE
+    FAUNADB_SECRET,
+    SERVER_URL,
+    NETLIFY_FUNCTIONS_URL,
+    NODEMAILER_ACCOUNT,
+    NODEMAILER_PASSWORD,
+    VERIFY_EMAIL_SUBJECT,
+    RESET_PASSWORD_SUBJECT,
+    VERIFY_EMAIL_MESSAGE,
+    RESET_PASSWORD_MESSAGE,
+    MESSAGE_FOOTER,
+    EMAIL_STYLE,
+    VERIFY_SUCCESS_PAGE
 };

@@ -8,6 +8,7 @@ const client = new faunadb.Client({
 });
 
 function sendMailer(emailData, response, message) {
+    // console.log(Utils.NODEMAILER_ACCOUNT, Utils.NODEMAILER_PASSWORD);
     const transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
         port: 587,
@@ -27,18 +28,20 @@ function sendMailer(emailData, response, message) {
 
     transporter.sendMail(mailOption, (error, info) => {
         if (error) {
-            console.log(error);
+            console.log("error", error);
             if (response) {
                 response.send({
                     status: 0,
                     message: "Email has not been sent due to an error"
                 });
             }
+            return error;
         } else {
-            console.log(info);
+            console.log("info", info);
             if (response) {
                 response.send({ status: 1, message: message });
             }
+            return info;
         }
     });
 }
@@ -54,8 +57,9 @@ router.post("/verify-pec", async (req, res) => {
             html: Utils.VERIFY_EMAIL_MESSAGE + Utils.MESSAGE_FOOTER
         },
         null,
-        null
+        "Email has been sent"
     );
+    // console.log("result", result);
     res.send({ status: 1, message: "Email has been sent" });
 });
 
