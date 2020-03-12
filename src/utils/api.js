@@ -5,11 +5,14 @@ export const requestAPI = async (path, method, data) => {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(data)
-    }).then(res => {
-        console.log(res);
-        if (res.status === 200) {
-            return res.json();
-        }
-        return { status: 0, message: "Connection Failed!" };
-    });
+    })
+        .then(res => {
+            if (res.status === 200) {
+                return res.json();
+            }
+            return { status: 0, message: "Connection failed!" };
+        })
+        .catch(err => {
+            return { status: 0, message: "Connection failed" };
+        });
 };

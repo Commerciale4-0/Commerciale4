@@ -153,7 +153,7 @@ export default class RegisterForm extends Component {
         });
     };
 
-    handleClickDone = e => {
+    handleClickDone = async e => {
         e.preventDefault();
         if (this.validateStepTwo()) {
             let data = {
@@ -166,47 +166,45 @@ export default class RegisterForm extends Component {
                 pec: this.inputPEC.current.value
             };
 
-            let that = this;
-            // requestAPI("/user/verify-pec", "POST", {
-            //     pec: data.pec,
-            //     id: "111"
-            // }).then(res1 => {
-            //     console.log(res1);
-            //     if (res1.status === 0) {
-            //         that.setAlertData(0, res1.message);
+            // requestAPI("/user/register", "POST", data).then(res => {
+            //     console.log("response", res);
+            //     if (res.status !== 1) {
+            //         this.setAlertData(0, res.message);
             //     } else {
-            //         that.setState({ step: 3 });
-            //         that.setAlertData(
+            //         this.setState({ step: 3 });
+            //         this.setAlertData(
             //             1,
-            //             `We've sent an email to ${data.pec} to verify your account. Please check your email inbox to coutinue.`
+            //             `We've sent an email to ${data.email} to verify your account. Please check your email inbox to coutinue.`
             //         );
             //     }
             // });
-            requestAPI("/user/register", "POST", data).then(res => {
-                console.log(res);
-                if (res.status === 0) {
+            try {
+                let res = await requestAPI("/user/register", "POST", data);
+                if (res.status !== 1) {
                     this.setAlertData(0, res.message);
-                } else {
-                    setTimeout(function() {
-                        console.log(data.pec);
-                        requestAPI("/user/verify-pec", "POST", {
-                            pec: data.pec,
-                            id: res.id
-                        }).then(res1 => {
-                            console.log(res1);
-                            if (res1.status === 0) {
-                                that.setAlertData(0, res1.message);
-                            } else {
-                                that.setState({ step: 3 });
-                                that.setAlertData(
-                                    1,
-                                    `We've sent an email to ${data.email} to verify your account. Please check your email inbox to coutinue.`
-                                );
-                            }
-                        });
-                    }, 3000);
+                    return;
                 }
-            });
+
+                try {
+                    let res = await requestAPI("/user/verify-pec", "POST", {
+                        pec: data.pec
+                    });
+
+                    if (res.status === 0) {
+                        this.setAlertData(0, res.message);
+                    } else {
+                        this.setState({ step: 3 });
+                        this.setAlertData(
+                            1,
+                            `We've sent an email to ${data.pec} to verify your account. Please check your email inbox to coutinue.`
+                        );
+                    }
+                } catch (e) {
+                    this.setAlertData(0, "Connection failed!");
+                }
+            } catch (e) {
+                this.setAlertData(0, "Connection failed!");
+            }
         }
     };
 
@@ -228,7 +226,11 @@ export default class RegisterForm extends Component {
         } = this.state;
 
         const stepOne = (
-            <div style={{ display: step === 2 ? "none" : "block" }}>
+            <div
+                style={{
+                    display: step === 2 ? "none" : "block"
+                }}
+            >
                 <span className="title text-center">Step 1/2</span>
                 <Row className="justify-content-center mb-3">
                     <Col md={6}>
@@ -301,7 +303,11 @@ export default class RegisterForm extends Component {
         );
 
         const stepTwo = (
-            <div style={{ display: step === 1 ? "none" : "block" }}>
+            <div
+                style={{
+                    display: step === 1 ? "none" : "block"
+                }}
+            >
                 <button className="back" onClick={this.handleClickBack}>
                     <i className="fa fa-angle-left" />
                 </button>

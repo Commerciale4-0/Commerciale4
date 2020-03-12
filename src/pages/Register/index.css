@@ -11,9 +11,9 @@
 }
 
 @media (max-width: 576px) {
-    .register-page {
+    /* .register-page {
         background: var(--colorBg);
-    }
+    } */
     .register-page .intro {
         display: none;
     }
