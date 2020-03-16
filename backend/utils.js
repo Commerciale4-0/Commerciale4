@@ -3,6 +3,7 @@ const SERVER_URL = process.env.SERVER_URL;
 const NETLIFY_FUNCTIONS_URL = process.env.NETLIFY_FUNCTIONS_URL;
 const NODEMAILER_ACCOUNT = process.env.NODEMAILER_ACCOUNT;
 const NODEMAILER_PASSWORD = process.env.NODEMAILER_PASSWORD;
+const SENDER_EMAIL = process.env.SENDER_EMAIL;
 
 const VERIFY_EMAIL_SUBJECT = "Verify your account";
 const RESET_PASSWORD_SUBJECT = "Reset password";

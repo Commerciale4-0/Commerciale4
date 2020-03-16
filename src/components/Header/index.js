@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Row, Col, DropdownButton, Dropdown } from "react-bootstrap";
 import "./index.css";
+import Sidebar from "../Sidebar";
 
 const menusInNotLoggedin = [
     { id: 1, title: "Log in", link: "/login" },
@@ -23,8 +24,14 @@ export default class Header extends Component {
         });
     };
 
+    handleDidCollapse = () => {
+        this.setState({
+            isExpanded: false
+        });
+    };
+
     handleClickMenu = menu => {
-        if (menu.link === "/logout") {
+        if (menu.link === "/") {
             sessionStorage.removeItem("userEmail");
         }
         window.location.href = menu.link;
@@ -49,23 +56,20 @@ export default class Header extends Component {
         let userEmail = sessionStorage.getItem("userEmail");
         let menus = userEmail ? menusInLoggedin : menusInNotLoggedin;
         const sideBar = (
-            <div className={`sidebar ${isExpanded ? "expanded" : "normal"}`}>
-                <div>
-                    {menus.map(menu => (
-                        <div
-                            key={menu.id}
-                            className="item"
-                            onClick={this.handleClickMenu.bind(this, menu)}
-                        >
-                            {menu.title}
-                        </div>
-                    ))}
-                </div>
-                <div
-                    className="hidden-area"
-                    onClick={this.handleClickExpand}
-                ></div>
-            </div>
+            <Sidebar
+                isExpanded={isExpanded}
+                handleCollapse={this.handleDidCollapse}
+            >
+                {menus.map(menu => (
+                    <div
+                        key={menu.id}
+                        className="item"
+                        onClick={this.handleClickMenu.bind(this, menu)}
+                    >
+                        {menu.title}
+                    </div>
+                ))}
+            </Sidebar>
         );
 
         return (
@@ -75,7 +79,7 @@ export default class Header extends Component {
                         <Col className="item title" sm={4}>
                             <a href="/">Commerciale 4.0</a>
                         </Col>
-                        <Col className="item search" sm={userEmail ? 3 : 5}>
+                        <Col className="item search" sm={userEmail ? 3 : 4}>
                             <span>
                                 <i className="fa fa-search"></i>
                             </span>
@@ -111,7 +115,7 @@ export default class Header extends Component {
 
                         <Col
                             className="item lang"
-                            sm={{ span: "2", offset: userEmail ? "0" : "1" }}
+                            sm={{ span: "2", offset: userEmail ? "0" : "2" }}
                         >
                             <a href="/">
                                 <img src="images/flag/italy.png" alt="" />

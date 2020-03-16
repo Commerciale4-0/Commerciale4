@@ -17,7 +17,7 @@ import {
 } from "../../utils";
 import MySelect from "../Custom/MySelect";
 
-export default class SimpleSearch extends Component {
+export default class SearchForm extends Component {
     state = {
         radius: 1,
         tags: [],
@@ -40,6 +40,17 @@ export default class SimpleSearch extends Component {
         tagsPlaceholder: "Search with #TAGS"
     };
 
+    componentWillReceiveProps = props => {
+        if (props.initialFilter && props.update) {
+            this.setState({
+                selectedCity: props.initialFilter.city,
+                selectedRegion: props.initialFilter.region,
+                selectedCode: props.initialFilter.ateco,
+                radius: props.initialFilter.radius
+            });
+        }
+    };
+
     handleSliderChange = radius => {
         this.setState({ radius });
     };
@@ -49,7 +60,6 @@ export default class SimpleSearch extends Component {
     };
 
     handleRegionChange = selectedRegion => {
-        console.log(selectedRegion);
         this.setState({ selectedRegion });
         let cities = citiesInRegion(selectedRegion.value);
         if (cities && cities.length) {
@@ -152,6 +162,15 @@ export default class SimpleSearch extends Component {
         this.setState({ selectedCode });
     };
 
+    handleClickSearch = () => {
+        this.props.handleSearch({
+            city: this.state.selectedCity,
+            region: this.state.selectedRegion,
+            radius: this.state.radius,
+            ateco: this.state.selectedCode
+        });
+    };
+
     render() {
         const {
             radius,
@@ -173,6 +192,8 @@ export default class SimpleSearch extends Component {
             tagsPlaceholder
         } = this.state;
 
+        const { isInDashboard } = this.props;
+
         return (
             <Container className="my-form search-form">
                 <Row className="mb-2">
@@ -181,7 +202,7 @@ export default class SimpleSearch extends Component {
                     </Col>
                 </Row>
                 <Row className="px-2 mb-1">
-                    <Col sm={6} xs={12} className="mb-2">
+                    <Col sm={isInDashboard ? 12 : 6} xs={12} className="mb-2">
                         <MySelect
                             value={selectedRegion}
                             onChange={this.handleRegionChange}
@@ -189,7 +210,7 @@ export default class SimpleSearch extends Component {
                             placeholder="Region"
                         />
                     </Col>
-                    <Col sm={6} xs={12} className="mb-2">
+                    <Col sm={isInDashboard ? 12 : 6} xs={12} className="mb-2">
                         <MySelect
                             value={selectedCity}
                             onChange={this.handleCityChange}
@@ -247,8 +268,10 @@ export default class SimpleSearch extends Component {
                     </Col>
                 </Row>
                 <Row className="mt-2 px-2 align-items-center">
-                    <Col className="mb-1">N employees</Col>
-                    <Col>
+                    <Col className="mb-1" xs={isInDashboard ? 12 : 4}>
+                        N employees
+                    </Col>
+                    <Col xs={isInDashboard ? 6 : 4}>
                         <MySelect
                             value={selectedEmployeeMin}
                             onChange={this.handleEmployeeMinChange}
@@ -256,7 +279,7 @@ export default class SimpleSearch extends Component {
                             placeholder="Min"
                         />
                     </Col>
-                    <Col>
+                    <Col xs={isInDashboard ? 6 : 4}>
                         <MySelect
                             value={selectedEmployeeMax}
                             onChange={this.handleEmployeeMaxChange}
@@ -266,8 +289,10 @@ export default class SimpleSearch extends Component {
                     </Col>
                 </Row>
                 <Row className="mt-2 px-2 align-items-center">
-                    <Col className="mb-1">Revenues</Col>
-                    <Col>
+                    <Col className="mb-1" xs={isInDashboard ? 12 : 4}>
+                        Revenues
+                    </Col>
+                    <Col xs={isInDashboard ? 6 : 4}>
                         <MySelect
                             value={selectedRevenueMin}
                             onChange={this.handleRevenueMinChange}
@@ -275,7 +300,7 @@ export default class SimpleSearch extends Component {
                             placeholder="Min"
                         />
                     </Col>
-                    <Col>
+                    <Col xs={isInDashboard ? 6 : 4}>
                         <MySelect
                             value={selectedRevenueMax}
                             onChange={this.handleRevenueMaxChange}
@@ -295,8 +320,13 @@ export default class SimpleSearch extends Component {
                     </Col>
                 </Row>
                 <Row className="mt-3 px-2 justify-content-end">
-                    <Col sm={4} xs={12}>
-                        <button className="txt-upper w-100">Search</button>
+                    <Col sm={isInDashboard ? 12 : 4} xs={12}>
+                        <button
+                            className="txt-upper w-100"
+                            onClick={this.handleClickSearch}
+                        >
+                            Search
+                        </button>
                     </Col>
                 </Row>
             </Container>

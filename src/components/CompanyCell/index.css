@@ -1,0 +1,89 @@
+.company-cell {
+	font-size: 13px;
+	box-shadow: 0 0.12em 0.3em gray;
+	padding: 10px 20px;
+	margin-bottom: 20px;
+	background-color: var(--colorBg);
+	border-radius: 2px;
+}
+
+.company-cell .title {
+	margin: auto 0;
+	padding: 5px;
+	font-size: 18px;
+	font-weight: 500;
+	display: none;
+}
+.company-cell .title,
+.company-cell h5 {
+	text-transform: uppercase;
+}
+
+.company-cell h5 {
+	text-align: center;
+}
+
+.company-cell .content {
+	padding-left: 20px;
+}
+.company-cell hr {
+	margin-top: 8px;
+	margin-bottom: 8px;
+}
+
+.company-cell .logo {
+	margin: auto 0;
+	padding: 0;
+}
+
+.company-cell .logo img {
+	width: 100%;
+	padding: 10px 10px;
+	border: 1px solid var(--colorBorder);
+}
+
+.company-cell .field {
+	padding: 0;
+}
+
+.company-cell .distance {
+	background: #ddd;
+	border-radius: 4px;
+	padding: 0 4px;
+}
+
+@media (min-width: 769px) {
+	.company-cell .field.location hr {
+		display: none;
+	}
+}
+@media (max-width: 768px) {
+	.company-cell .field.location {
+		padding: 4px 0;
+	}
+	.company-cell .field.location hr {
+		margin: 8px 0 4px 0;
+	}
+}
+
+@media (max-width: 576px) {
+	.company-cell {
+		padding: 10px 14px;
+	}
+	.company-cell .title {
+		display: block;
+	}
+	.company-cell h5 {
+		display: none;
+	}
+	.company-cell hr {
+		border-top: 0;
+		margin: 6px 0;
+	}
+	.company-cell .content {
+		padding: 10px 0 0 0;
+	}
+	.company-cell .field.location {
+		padding: 0;
+	}
+}

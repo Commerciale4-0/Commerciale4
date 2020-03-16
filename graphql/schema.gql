@@ -1,7 +1,7 @@
 type User {
   email: String
   password: String
-  officalName: String
+  officialName: String
   city: String
   vatNumber: String
   atecoCode: String
