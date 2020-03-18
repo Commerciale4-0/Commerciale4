@@ -282,3 +282,19 @@ export const distanceFromCoords = (lat1, lon1, lat2, lon2, unit = "K") => {
 		return dist;
 	}
 };
+
+export const numberFromStringWithUnit = str => {
+	if (!str || !str.length) {
+		return 0;
+	}
+
+	let index = str.search("K");
+	if (index !== -1) {
+		return parseInt(str.substr(0, index)) * 1000;
+	}
+	index = str.search("M");
+	if (index !== -1) {
+		return parseInt(str.substr(0, index)) * 1000000;
+	}
+	return parseInt(str);
+};

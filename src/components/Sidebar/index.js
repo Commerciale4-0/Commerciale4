@@ -5,7 +5,7 @@ export default class Sidebar extends Component {
     state = {
         background: "#eee",
         offsetTop: 46,
-        contentWidth: 40
+        contentWidth: 50
     };
 
     render() {

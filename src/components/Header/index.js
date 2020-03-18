@@ -14,8 +14,20 @@ const menusInLoggedin = [
 ];
 
 export default class Header extends Component {
+    constructor(props) {
+        super(props);
+
+        this.inputKey = React.createRef();
+    }
     state = {
         isExpanded: false
+    };
+
+    componentDidMount = () => {
+        let filter = JSON.parse(sessionStorage.getItem("filter"));
+        if (filter && filter.key) {
+            this.inputKey.current.value = filter.key;
+        }
     };
 
     handleClickExpand = () => {
@@ -32,13 +44,13 @@ export default class Header extends Component {
 
     handleClickMenu = menu => {
         if (menu.link === "/") {
-            sessionStorage.removeItem("userEmail");
+            sessionStorage.removeItem("userData");
         }
         window.location.href = menu.link;
     };
 
     handleClickLogout() {
-        sessionStorage.removeItem("userEmail");
+        sessionStorage.removeItem("userData");
         window.location.href = "/";
     }
 
@@ -51,10 +63,21 @@ export default class Header extends Component {
     }
 
     handleClickProfile() {}
+
+    handleKeySearch = e => {
+        if (e.key === "Enter") {
+            sessionStorage.setItem(
+                "filter",
+                JSON.stringify({ key: e.target.value })
+            );
+            window.location.href = "/dashboard";
+        }
+    };
+
     render() {
         const { isExpanded } = this.state;
-        let userEmail = sessionStorage.getItem("userEmail");
-        let menus = userEmail ? menusInLoggedin : menusInNotLoggedin;
+        let userData = JSON.parse(sessionStorage.getItem("userData"));
+        let menus = userData ? menusInLoggedin : menusInNotLoggedin;
         const sideBar = (
             <Sidebar
                 isExpanded={isExpanded}
@@ -79,19 +102,24 @@ export default class Header extends Component {
                         <Col className="item title" sm={4}>
                             <a href="/">Commerciale 4.0</a>
                         </Col>
-                        <Col className="item search" sm={userEmail ? 3 : 4}>
+                        <Col className="item search" sm={userData ? 3 : 4}>
                             <span>
                                 <i className="fa fa-search"></i>
                             </span>
-                            <input type="text" placeholder="Company search" />
+                            <input
+                                type="text"
+                                placeholder="Company search"
+                                onKeyPress={this.handleKeySearch}
+                                ref={this.inputKey}
+                            />
                         </Col>
-                        {userEmail ? (
+                        {userData ? (
                             <Col className="item user" sm={3}>
                                 <DropdownButton
                                     id="dropdown-basic-button"
                                     title={
-                                        userEmail
-                                            ? userEmail
+                                        userData
+                                            ? userData.email
                                             : "User email address "
                                     }
                                 >
@@ -115,7 +143,7 @@ export default class Header extends Component {
 
                         <Col
                             className="item lang"
-                            sm={{ span: "2", offset: userEmail ? "0" : "2" }}
+                            sm={{ span: "2", offset: userData ? "0" : "2" }}
                         >
                             <a href="/">
                                 <img src="images/flag/italy.png" alt="" />

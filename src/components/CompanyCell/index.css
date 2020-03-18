@@ -2,11 +2,14 @@
 	font-size: 13px;
 	box-shadow: 0 0.12em 0.3em gray;
 	padding: 10px 20px;
-	margin-bottom: 20px;
+	margin-bottom: 14px;
 	background-color: var(--colorBg);
 	border-radius: 2px;
 }
 
+.company-cell.grid {
+	min-height: 264px;
+}
 .company-cell .title {
 	margin: auto 0;
 	padding: 5px;
@@ -27,8 +30,8 @@
 	padding-left: 20px;
 }
 .company-cell hr {
-	margin-top: 8px;
-	margin-bottom: 8px;
+	margin-top: 4px;
+	margin-bottom: 4px;
 }
 
 .company-cell .logo {
@@ -40,6 +43,8 @@
 	width: 100%;
 	padding: 10px 10px;
 	border: 1px solid var(--colorBorder);
+	max-height: 160px;
+	max-width: 160px;
 }
 
 .company-cell .field {
@@ -47,22 +52,61 @@
 }
 
 .company-cell .distance {
+	font-weight: bold;
 	background: #ddd;
 	border-radius: 4px;
 	padding: 0 4px;
 }
 
-@media (min-width: 769px) {
-	.company-cell .field.location hr {
+.company-cell i {
+	color: #888;
+	font-size: 16px;
+	padding-right: 8px;
+}
+.company-cell span {
+	font-weight: 600;
+}
+.company-cell .fixed-span {
+	text-align: left;
+}
+
+.company-cell.grid {
+	padding: 10px 14px;
+}
+.company-cell.grid .title {
+	display: block;
+}
+.company-cell.grid h5 {
+	display: none;
+}
+.company-cell.grid hr {
+	border-top: 0;
+	margin: 6px 0;
+}
+.company-cell.grid .content {
+	padding: 10px 0 0 0;
+}
+
+@media (max-width: 768px) and (min-width: 576px) {
+	.company-cell.grid .title {
 		display: none;
 	}
-}
-@media (max-width: 768px) {
-	.company-cell .field.location {
-		padding: 4px 0;
+	.company-cell.grid h5 {
+		display: block;
 	}
-	.company-cell .field.location hr {
-		margin: 8px 0 4px 0;
+	.company-cell.grid hr {
+		margin-top: 4px;
+		margin-bottom: 4px;
+		border-top: 1px solid rgba(0, 0, 0, 0.1);
+	}
+	.company-cell.grid .content {
+		padding-left: 14px;
+		flex: 0 0 75%;
+		max-width: 75%;
+	}
+	.company-cell.grid .logo {
+		flex: 0 0 25%;
+		max-width: 25%;
 	}
 }
 
@@ -82,8 +126,5 @@
 	}
 	.company-cell .content {
 		padding: 10px 0 0 0;
-	}
-	.company-cell .field.location {
-		padding: 0;
 	}
 }

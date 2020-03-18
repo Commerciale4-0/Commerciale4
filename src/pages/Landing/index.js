@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./index.css";
 import LoginForm from "../../components/LoginForm";
 import SearchForm from "../../components/SearchForm";
+import SearchInput from "../../components/SearchInput";
 
 export default class LandingPage extends Component {
 	// componentDidMount() {
@@ -16,21 +17,24 @@ export default class LandingPage extends Component {
 	// 	if (response.status !== 200) throw Error(body.message);
 
 	// 	return body;
-	// };♦
+	// };
 
 	handleClickSearch = filter => {
 		sessionStorage.setItem("filter", JSON.stringify(filter));
 		window.location.href = "/dashboard";
 	};
 
+	handleKeySearch = key => {
+		sessionStorage.setItem("filter", JSON.stringify({ key: key }));
+		window.location.href = "/dashboard";
+	};
+
 	render() {
-		const isLoggedIn = sessionStorage.getItem("userEmail");
+		const userData = JSON.parse(sessionStorage.getItem("userData"));
 		return (
 			<div className="landing">
 				<div className="slide">
-					<div
-						className={`login-panel ${isLoggedIn ? "logged" : ""}`}
-					>
+					<div className={`login-panel ${userData ? "logged" : ""}`}>
 						<div>
 							<div className="my-form intro">
 								<span>COMMERCIALE4.0.COM</span> is community of
@@ -43,9 +47,10 @@ export default class LandingPage extends Component {
 							<LoginForm />
 						</div>
 					</div>
-					<div
-						className={`search-panel ${isLoggedIn ? "logged" : ""}`}
-					>
+					<div className={`search-panel ${userData ? "logged" : ""}`}>
+						<div className="search-bar">
+							<SearchInput handleSearch={this.handleKeySearch} />
+						</div>
 						<SearchForm handleSearch={this.handleClickSearch} />
 					</div>
 				</div>

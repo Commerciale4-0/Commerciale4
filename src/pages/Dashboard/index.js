@@ -5,392 +5,512 @@ import SearchForm from "../../components/SearchForm";
 import { requestAPI, geocodeByAddress } from "../../utils/api";
 import CompanyCell from "../../components/CompanyCell";
 import { Dropdown } from "react-bootstrap";
-import Sidebar from "../../components/Sidebar";
+// import Sidebar from "../../components/Sidebar";
 import Pagination from "react-js-pagination";
-import { distanceFromCoords } from "../../utils";
+import { distanceFromCoords, numberFromStringWithUnit } from "../../utils";
 
 const orders = [
-    { id: 0, title: "Relevance", icon: "sort-amount-desc" },
-    { id: 1, title: "Ascending", icon: "sort-alpha-asc" },
-    { id: 2, title: "Descending", icon: "sort-alpha-desc" },
-    { id: 3, title: "Nearest", icon: "sort-amount-desc" },
-    { id: 4, title: "Farthest", icon: "sort-amount-asc" }
+	{ id: 0, title: "Relevance", icon: "sort-amount-desc" },
+	{ id: 1, title: "↑ Revenues", icon: null },
+	{ id: 2, title: "↓ Revenues", icon: null },
+	{ id: 3, title: "↑ Employees", icon: null },
+	{ id: 4, title: "↓ Employees", icon: null },
+	{ id: 5, title: "↑ Nearest", icon: null },
+	{ id: 6, title: "↓ Farthest", icon: null }
 ];
 
-const itemsCountPerPage = 5;
-const pageRangeDisplayed = 5;
-
 export default class Dashboard extends Component {
-    state = {
-        totalCompanies: [],
-        filteredCompanies: [],
-        companiesToShow: [],
-        selectedOrder: orders[0],
-        isExpandedSidebar: false,
-        activePage: 1,
-        filter: null,
-        isLoading: false
-    };
+	constructor(props) {
+		super(props);
 
-    getCurrentLocation = () => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(this.showPosition);
-        }
-    };
+		this.state = {
+			totalCompanies: [],
+			filteredCompanies: [],
+			companiesToShow: [],
+			selectedOrder: orders[0],
+			isExpandedSidebar: false,
+			activePage: 1,
+			filter: null,
+			isLoading: false,
+			viewMode: 0,
+			itemsCountPerPage: 12
+		};
 
-    showPosition = position => {
-        this.setState({
-            myLocation: {
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude
-            }
-        });
-    };
+		this.fileterPanel = React.createRef(); // Create a ref object
+	}
 
-    componentDidMount = () => {
-        this.setState({ isLoading: true });
+	getCurrentLocation = () => {
+		let userData = JSON.parse(sessionStorage.getItem("userData"));
+		if (userData && userData.latitude && userData.longitude) {
+			this.setState({
+				myLocation: {
+					latitude: userData.latitude,
+					longitude: userData.longitude
+				}
+			});
+			return;
+		}
 
-        let filter = JSON.parse(sessionStorage.getItem("filter"));
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(this.showPosition);
+		}
+	};
 
-        this.getCurrentLocation();
-        requestAPI("/user/all-users", "GET").then(res => {
-            if (res.status === 1) {
-                let companies = this.companiesWithDistance(res.data);
-                this.setState({
-                    totalCompanies: companies
-                });
+	showPosition = position => {
+		this.setState({
+			myLocation: {
+				latitude: position.coords.latitude,
+				longitude: position.coords.longitude
+			}
+		});
+	};
 
-                if (filter) {
-                    this.setState({
-                        updateSearchForm: true
-                    });
+	componentDidMount = () => {
+		this.setState({ isLoading: true });
 
-                    this.applyFilter(filter, companies);
-                } else {
-                    this.setState({ filteredCompanies: companies });
-                    this.setCompaniesToShow(
-                        companies,
-                        this.state.selectedOrder,
-                        this.state.activePage
-                    );
-                }
+		let filter = JSON.parse(sessionStorage.getItem("filter"));
 
-                this.setState({ isLoading: false });
-            }
-        });
-    };
+		this.getCurrentLocation();
+		requestAPI("/user/all-users", "GET").then(res => {
+			if (res.status === 1) {
+				let companies = this.companiesWithDistance(res.data);
+				this.setState({
+					totalCompanies: companies
+				});
 
-    setCompaniesToShow = (companies, order, page) => {
-        let result = null;
-        if (order.id === 1) {
-            result = companies.sort(function(a, b) {
-                if (a.officialName < b.officialName) {
-                    return -1;
-                }
-                if (a.officialName > b.officialName) {
-                    return 1;
-                }
-                return 0;
-            });
-        } else if (order.id === 2) {
-            result = companies.sort(function(a, b) {
-                if (a.officialName > b.officialName) {
-                    return -1;
-                }
-                if (a.officialName < b.officialName) {
-                    return 1;
-                }
-                return 0;
-            });
-        } else if (order.id === 3) {
-            result = companies.sort(function(a, b) {
-                if (a.distance && b.distance) {
-                    return a.distance - b.distance;
-                } else {
-                    return 0;
-                }
-            });
-        } else if (order.id === 4) {
-            result = companies.sort(function(a, b) {
-                if (a.distance && b.distance) {
-                    return b.distance - a.distance;
-                } else {
-                    return 0;
-                }
-            });
-        } else {
-            result = companies;
-        }
+				if (filter) {
+					this.setState({
+						updateSearchForm: true
+					});
 
-        result = result.slice(
-            (page - 1) * itemsCountPerPage,
-            page * itemsCountPerPage
-        );
+					this.applyFilter(filter, companies);
+				} else {
+					this.setState({
+						filteredCompanies: companies
+					});
+					this.setCompaniesToShow(
+						companies,
+						this.state.selectedOrder,
+						this.state.activePage,
+						this.state.itemsCountPerPage
+					);
+				}
 
-        this.setState({
-            companiesToShow: result
-        });
-    };
+				this.setState({ isLoading: false });
+			}
+		});
+	};
 
-    handleClickOrder = item => {
-        this.setCompaniesToShow(this.state.filteredCompanies, item, 1);
-        this.setState({
-            selectedOrder: item,
-            activePage: 1
-        });
-    };
+	setCompaniesToShow = (companies, order, page, countPerPage) => {
+		let result = null;
+		if (order.id === 1) {
+			result = companies.sort(function(a, b) {
+				let numberA = numberFromStringWithUnit(a.revenues);
+				let numberB = numberFromStringWithUnit(b.revenues);
+				return numberA - numberB;
+			});
+		} else if (order.id === 2) {
+			result = companies.sort(function(a, b) {
+				let numberA = numberFromStringWithUnit(a.revenues);
+				let numberB = numberFromStringWithUnit(b.revenues);
+				return numberB - numberA;
+			});
+		} else if (order.id === 3) {
+			result = companies.sort(function(a, b) {
+				let numberA = numberFromStringWithUnit(a.employees);
+				let numberB = numberFromStringWithUnit(b.employees);
+				return numberA - numberB;
+			});
+		} else if (order.id === 4) {
+			result = companies.sort(function(a, b) {
+				let numberA = numberFromStringWithUnit(a.employees);
+				let numberB = numberFromStringWithUnit(b.employees);
+				return numberB - numberA;
+			});
+		} else if (order.id === 5) {
+			result = companies.sort(function(a, b) {
+				if (a.distance && b.distance) {
+					return a.distance - b.distance;
+				} else {
+					return 0;
+				}
+			});
+		} else if (order.id === 6) {
+			result = companies.sort(function(a, b) {
+				if (a.distance && b.distance) {
+					return b.distance - a.distance;
+				} else {
+					return 0;
+				}
+			});
+		} else {
+			result = companies;
+		}
 
-    handleClickFilter = () => {
-        this.setState({
-            isExpandedSidebar: !this.state.isExpandedSidebar
-        });
-    };
+		result = result.slice((page - 1) * countPerPage, page * countPerPage);
 
-    handleCollpaseFilter = () => {
-        this.setState({
-            isExpandedSidebar: false
-        });
-    };
+		this.setState({
+			companiesToShow: result
+		});
+	};
 
-    handleChangePage(pageNumber) {
-        this.setCompaniesToShow(
-            this.state.filteredCompanies,
-            this.state.selectedOrder,
-            pageNumber
-        );
-        this.setState({ activePage: pageNumber });
-    }
+	handleClickOrder = item => {
+		this.setCompaniesToShow(
+			this.state.filteredCompanies,
+			item,
+			1,
+			this.state.itemsCountPerPage
+		);
+		this.setState({
+			selectedOrder: item,
+			activePage: 1
+		});
+	};
 
-    handleClickSearch = async filter => {
-        sessionStorage.setItem("filter", JSON.stringify(filter));
-        this.setState({
-            updateSearchForm: false
-        });
-        this.applyFilter(filter);
-    };
+	handleClickFilter = () => {
+		window.scrollTo(0, 0);
+		this.setState({
+			isExpandedSidebar: !this.state.isExpandedSidebar
+		});
+	};
 
-    applyFilter = async (filter, companies = null) => {
-        this.setState({ isLoading: true });
-        this.setState({ filter: filter });
+	handleCollpaseFilter = () => {
+		this.setState({
+			isExpandedSidebar: false
+		});
+	};
 
-        this.setState({
-            isExpandedSidebar: !this.state.isExpandedSidebar
-        });
+	handleChangePage(pageNumber) {
+		this.setCompaniesToShow(
+			this.state.filteredCompanies,
+			this.state.selectedOrder,
+			pageNumber,
+			this.state.itemsCountPerPage
+		);
+		this.setState({ activePage: pageNumber });
+	}
 
-        let temp = companies ? companies : this.state.totalCompanies;
-        if (filter.ateco && filter.ateco.value) {
-            temp = temp.filter(elem => elem.atecoCode === filter.ateco);
-        }
+	handleClickSearch = async filter => {
+		sessionStorage.setItem("filter", JSON.stringify(filter));
+		this.setState({
+			updateSearchForm: false
+		});
+		this.applyFilter(filter);
+	};
 
-        temp = await this.getCompaniesInRadius(
-            temp,
-            filter.city,
-            filter.region,
-            filter.radius
-        );
+	handleClickList = () => {
+		this.setCompaniesToShow(
+			this.state.filteredCompanies,
+			this.state.selectedOrder,
+			1,
+			5
+		);
 
-        this.setState({
-            filteredCompanies: temp,
-            activePage: 1
-        });
+		this.setState({
+			viewMode: 1,
+			itemsCountPerPage: 5
+		});
+	};
 
-        this.setCompaniesToShow(temp, this.state.selectedOrder, 1);
-        this.setState({ isLoading: false });
-    };
+	handleClickGrid = () => {
+		this.setCompaniesToShow(
+			this.state.filteredCompanies,
+			this.state.selectedOrder,
+			1,
+			12
+		);
+		this.setState({
+			viewMode: 0,
+			itemsCountPerPage: 12
+		});
+	};
 
-    getCompaniesInRadius = async (companies, city, region, radius) => {
-        if (!radius || !city) {
-            return companies;
-        }
+	applyFilter = async (filter, companies = null) => {
+		this.setState({ isLoading: true });
+		this.setState({ filter: filter });
 
-        let latitude = 0.0;
-        let longitude = 0.0;
-        if (city && region) {
-            await geocodeByAddress(city.label, region.label)
-                .then(res => {
-                    latitude = res.lat;
-                    longitude = res.lng;
-                })
-                .catch(err => {
-                    console.log("Did not get coordiantes for the address");
-                    return companies;
-                });
-        }
+		this.setState({
+			isExpandedSidebar: false
+		});
 
-        let items = [];
-        for (let i in companies) {
-            if (!companies[i].latitude || !companies[i].longitude) {
-                items.push(companies[i]);
-                continue;
-            }
-            let distance = distanceFromCoords(
-                latitude,
-                longitude,
-                companies[i].latitude,
-                companies[i].longitude
-            );
-            if (distance <= radius) {
-                items.push(companies[i]);
-            }
-        }
-        return items;
-    };
+		let temp = companies ? companies : this.state.totalCompanies;
 
-    companiesWithDistance = companies => {
-        const { myLocation } = this.state;
-        console.log("Current locatin", this.state.myLocation);
-        if (!myLocation) {
-            return companies;
-        }
+		if (filter.key && filter.key.trim().length) {
+			temp = temp.filter(elem =>
+				elem.officialName
+					.toLowerCase()
+					.includes(filter.key.toLowerCase())
+			);
+		}
 
-        let modifiedCompanies = [];
-        for (let i in companies) {
-            let distance = distanceFromCoords(
-                myLocation.latitude,
-                myLocation.longitude,
-                companies[i].latitude,
-                companies[i].longitude
-            );
+		if (filter.ateco && filter.ateco.value) {
+			temp = temp.filter(elem => elem.atecoCode === filter.ateco.label);
+		}
 
-            modifiedCompanies.push({
-                ...companies[i],
-                distance: distance.toFixed(2)
-            });
-        }
-        return modifiedCompanies;
-    };
+		temp = await this.getCompaniesInRadius(
+			temp,
+			filter.city,
+			filter.region,
+			filter.radius
+		);
 
-    render() {
-        const {
-            filteredCompanies,
-            companiesToShow,
-            selectedOrder,
-            isExpandedSidebar,
-            activePage,
-            isLoading,
-            filter,
-            updateSearchForm
-        } = this.state;
+		this.setState({
+			filteredCompanies: temp,
+			activePage: 1
+		});
 
-        return (
-            <div className="dashboard">
-                <Row>
-                    <Col sm={4} xl={3} className="left-panel">
-                        <div>
-                            <SearchForm
-                                isInDashboard
-                                handleSearch={this.handleClickSearch}
-                                initialFilter={filter}
-                                update={updateSearchForm}
-                            />
-                        </div>
-                    </Col>
-                    <Col sm={8} xl={9} xs={12} className="right-panel">
-                        <div>
-                            <div className="d-flex justify-content-between">
-                                <button
-                                    className="secondary btn-filter"
-                                    onClick={this.handleClickFilter}
-                                >
-                                    <i className="fa fa-filter pr-2" />
-                                    Filter
-                                </button>
-                                <span className="result-md">
-                                    {`${companiesToShow.length} / ${filteredCompanies.length} results`}
-                                </span>
-                                <Dropdown>
-                                    <Dropdown.Toggle>
-                                        <i
-                                            className={`fa fa-${selectedOrder.icon} pr-2`}
-                                        />
-                                        {selectedOrder.title}
-                                    </Dropdown.Toggle>
-                                    <Dropdown.Menu>
-                                        {orders.map(item => (
-                                            <Dropdown.Item
-                                                key={item.id}
-                                                onClick={() =>
-                                                    this.handleClickOrder(item)
-                                                }
-                                            >
-                                                {item.title}
-                                            </Dropdown.Item>
-                                        ))}
-                                    </Dropdown.Menu>
-                                </Dropdown>
-                            </div>
-                            <div className="result-xs">
-                                {`${companiesToShow.length} / ${filteredCompanies.length} results`}
-                            </div>
-                            <hr className="my-2" />
-                            {isLoading ? (
-                                <div className="d-flex justify-content-center">
-                                    <Spinner animation="border" />
-                                </div>
-                            ) : filteredCompanies &&
-                              filteredCompanies.length ? (
-                                <div>
-                                    <div className="d-flex justify-content-center">
-                                        <Pagination
-                                            activePage={activePage}
-                                            itemsCountPerPage={
-                                                itemsCountPerPage
-                                            }
-                                            totalItemsCount={
-                                                filteredCompanies.length
-                                            }
-                                            pageRangeDisplayed={
-                                                pageRangeDisplayed
-                                            }
-                                            onChange={this.handleChangePage.bind(
-                                                this
-                                            )}
-                                        />
-                                    </div>
+		this.setCompaniesToShow(
+			temp,
+			this.state.selectedOrder,
+			1,
+			this.state.itemsCountPerPage
+		);
+		this.setState({ isLoading: false });
+	};
 
-                                    {companiesToShow.map((company, index) => (
-                                        <CompanyCell
-                                            key={index}
-                                            company={company}
-                                        />
-                                    ))}
-                                    <div className="d-flex justify-content-center">
-                                        <Pagination
-                                            activePage={activePage}
-                                            itemsCountPerPage={
-                                                itemsCountPerPage
-                                            }
-                                            totalItemsCount={
-                                                filteredCompanies.length
-                                            }
-                                            pageRangeDisplayed={
-                                                pageRangeDisplayed
-                                            }
-                                            onChange={this.handleChangePage.bind(
-                                                this
-                                            )}
-                                        />
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="text-center">No Results</div>
-                            )}
-                        </div>
-                    </Col>
-                </Row>
-                <Sidebar
-                    isExpanded={isExpandedSidebar}
-                    handleCollapse={this.handleCollpaseFilter}
-                    contentWidth={75}
-                    background="white"
-                    isCloseButton
-                >
-                    <SearchForm
-                        isInDashboard
-                        handleSearch={this.handleClickSearch}
-                    />
-                </Sidebar>
-            </div>
-        );
-    }
+	getCompaniesInRadius = async (companies, city, region, radius) => {
+		if (!region || !region.value) {
+			return companies;
+		}
+
+		let items = [];
+		if (!city || !city.value) {
+			for (let i in companies) {
+				if (companies[i].region === region.label) {
+					items.push(companies[i]);
+				}
+			}
+			return items;
+		}
+
+		let latitude = 0.0;
+		let longitude = 0.0;
+		await geocodeByAddress(city.label, region.label)
+			.then(res => {
+				latitude = res.lat;
+				longitude = res.lng;
+			})
+			.catch(err => {
+				console.log("Did not get coordiantes for the address");
+				return companies;
+			});
+
+		for (let i in companies) {
+			if (!companies[i].latitude || !companies[i].longitude) {
+				items.push(companies[i]);
+				continue;
+			}
+			let distance = distanceFromCoords(
+				latitude,
+				longitude,
+				companies[i].latitude,
+				companies[i].longitude
+			);
+			if (distance <= radius) {
+				items.push(companies[i]);
+			}
+		}
+		return items;
+	};
+
+	companiesWithDistance = companies => {
+		const { myLocation } = this.state;
+
+		if (!myLocation) {
+			return companies;
+		}
+
+		let modifiedCompanies = [];
+		for (let i in companies) {
+			let distance = distanceFromCoords(
+				myLocation.latitude,
+				myLocation.longitude,
+				companies[i].latitude,
+				companies[i].longitude
+			);
+
+			modifiedCompanies.push({
+				...companies[i],
+				distance: distance.toFixed(2)
+			});
+		}
+		return modifiedCompanies;
+	};
+
+	render() {
+		const {
+			filteredCompanies,
+			companiesToShow,
+			selectedOrder,
+			isExpandedSidebar,
+			activePage,
+			isLoading,
+			filter,
+			updateSearchForm,
+			viewMode,
+			itemsCountPerPage
+		} = this.state;
+
+		const dropdown = (
+			<Dropdown>
+				<Dropdown.Toggle>
+					{selectedOrder.icon ? (
+						<i className={`fa fa-${selectedOrder.icon} pr-2`} />
+					) : (
+						<div></div>
+					)}
+					{selectedOrder.title}
+				</Dropdown.Toggle>
+				<Dropdown.Menu>
+					{orders.map(item => (
+						<Dropdown.Item
+							key={item.id}
+							onClick={() => this.handleClickOrder(item)}
+						>
+							{item.title}
+						</Dropdown.Item>
+					))}
+				</Dropdown.Menu>
+			</Dropdown>
+		);
+
+		const filterBarXS = (
+			<div className="filter-bar-xs">
+				{dropdown}
+				<button className="btn-filter" onClick={this.handleClickFilter}>
+					<i className="fa fa-filter pr-2" />
+					Filter
+				</button>
+			</div>
+		);
+		const filterBarMD = (
+			<div className="filter-bar">
+				<span className="result-md">
+					{`${companiesToShow.length} / ${filteredCompanies.length} results`}
+				</span>
+				<div className="d-flex">
+					{dropdown}
+					<button
+						className={`btn-view ${!viewMode ? "active" : ""}`}
+						onClick={this.handleClickGrid}
+					>
+						<i className="fa fa-th-large" />
+					</button>
+					<button
+						className={`btn-view ${viewMode ? "active" : ""}`}
+						onClick={this.handleClickList}
+					>
+						<i className="fa fa-th-list" />
+					</button>
+				</div>
+			</div>
+		);
+
+		return (
+			<div className="dashboard" ref={this.fileterPanel}>
+				<Row>
+					<Col
+						sm={4}
+						xl={3}
+						xs={12}
+						className={`left-panel ${
+							isExpandedSidebar ? "xs" : ""
+						}`}
+					>
+						<button
+							onClick={() =>
+								this.setState({
+									isExpandedSidebar: false
+								})
+							}
+						>
+							<i className="fa fa-close" />
+						</button>
+						<div>
+							<SearchForm
+								isInDashboard
+								handleSearch={this.handleClickSearch}
+								initialFilter={filter}
+								update={updateSearchForm}
+							/>
+						</div>
+					</Col>
+					<Col
+						sm={8}
+						xl={9}
+						xs={12}
+						className={`right-panel ${
+							isExpandedSidebar ? "xs" : ""
+						}`}
+					>
+						<div>
+							{filterBarMD}
+							{filterBarXS}
+							<div className="result-xs">
+								{`${companiesToShow.length} / ${filteredCompanies.length} results`}
+							</div>
+							<hr className="my-2" />
+							{isLoading ? (
+								<div className="d-flex justify-content-center">
+									<Spinner animation="border" />
+								</div>
+							) : filteredCompanies &&
+							  filteredCompanies.length ? (
+								<div>
+									<div className="row company-list">
+										{companiesToShow.map(
+											(company, index) => (
+												<div
+													key={index}
+													className={`grid-cell ${
+														viewMode
+															? "col-12"
+															: "col-sm-6 col-12"
+													} `}
+												>
+													<CompanyCell
+														company={company}
+														viewMode={viewMode}
+													/>
+												</div>
+											)
+										)}
+									</div>
+									<div className="d-flex justify-content-center">
+										<Pagination
+											activePage={activePage}
+											itemsCountPerPage={
+												itemsCountPerPage
+											}
+											totalItemsCount={
+												filteredCompanies.length
+											}
+											onChange={this.handleChangePage.bind(
+												this
+											)}
+										/>
+									</div>
+								</div>
+							) : (
+								<div className="text-center">No Results</div>
+							)}
+						</div>
+					</Col>
+				</Row>
+				{/* <Sidebar
+					isExpanded={isExpandedSidebar}
+					handleCollapse={this.handleCollpaseFilter}
+					contentWidth={100}
+					background="white"
+				>
+					<SearchForm
+						isInDashboard
+						handleSearch={this.handleClickSearch}
+						initialFilter={filter}
+						update={updateSearchForm}
+					/>
+				</Sidebar> */}
+			</div>
+		);
+	}
 }

@@ -16,39 +16,72 @@ import {
     minsFromMax
 } from "../../utils";
 import MySelect from "../Custom/MySelect";
+import SearchInput from "../SearchInput";
 
 export default class SearchForm extends Component {
-    state = {
-        radius: 1,
-        tags: [],
-        suggestions: [],
-        cities: [],
-        minEmployees: N_EMPOYEES,
-        maxEmployees: N_EMPOYEES,
-        minRevenues: REVENUES,
-        maxRevenues: REVENUES,
+    constructor(props) {
+        super(props);
 
-        selectedRegion: null,
-        selectedCity: null,
-        selectedType: null,
-        selectedEmployeeMin: N_EMPOYEES[0],
-        selectedEmployeeMax: N_EMPOYEES[0],
-        selectedRevenueMin: REVENUES[0],
-        selectedRevenueMax: REVENUES[0],
-        selectedCode: null,
+        this.state = {
+            radius: 1,
+            tags: [],
+            suggestions: [],
+            cities: [],
+            regions: [{ value: 0, label: "-- Select --" }, ...REGIONS],
+            minEmployees: N_EMPOYEES,
+            maxEmployees: N_EMPOYEES,
+            minRevenues: REVENUES,
+            maxRevenues: REVENUES,
 
-        tagsPlaceholder: "Search with #TAGS"
-    };
+            selectedRegion: null,
+            selectedCity: null,
+            selectedType: null,
+            selectedEmployeeMin: N_EMPOYEES[0],
+            selectedEmployeeMax: N_EMPOYEES[0],
+            selectedRevenueMin: REVENUES[0],
+            selectedRevenueMax: REVENUES[0],
+            selectedCode: null,
+
+            tagsPlaceholder: "Search with #TAGS",
+            isEnableRadius: false
+        };
+
+        this.inputKey = React.createRef();
+    }
 
     componentWillReceiveProps = props => {
         if (props.initialFilter && props.update) {
+            this.inputKey.current.setInputValue(props.initialFilter.key);
             this.setState({
                 selectedCity: props.initialFilter.city,
                 selectedRegion: props.initialFilter.region,
                 selectedCode: props.initialFilter.ateco,
                 radius: props.initialFilter.radius
             });
+
+            if (props.initialFilter.region) {
+                let cities = this.getCitiesInRegion(props.initialFilter.region);
+                this.setState({ cities: cities });
+                if (
+                    props.initialFilter.city &&
+                    props.initialFilter.city.value
+                ) {
+                    this.setState({ isEnableRadius: true });
+                }
+            }
         }
+    };
+
+    getCitiesInRegion = region => {
+        let cities = [{ value: 0, label: "-- Select --" }];
+        if (region.value) {
+            cities = [
+                { value: 0, label: "-- Select --" },
+                ...citiesInRegion(region.value)
+            ];
+        }
+
+        return cities;
     };
 
     handleSliderChange = radius => {
@@ -61,19 +94,19 @@ export default class SearchForm extends Component {
 
     handleRegionChange = selectedRegion => {
         this.setState({ selectedRegion });
-        let cities = citiesInRegion(selectedRegion.value);
-        if (cities && cities.length) {
-            this.setState({
-                selectedCity: cities[0]
-            });
-        }
+        let cities = this.getCitiesInRegion(selectedRegion);
         this.setState({
-            cities: cities
+            selectedCity: cities[0],
+            cities: cities,
+            isEnableRadius: false
         });
     };
 
     handleCityChange = selectedCity => {
         this.setState({ selectedCity });
+        this.setState({
+            isEnableRadius: selectedCity.value !== 0
+        });
     };
 
     handleTagDelete = i => {
@@ -163,7 +196,10 @@ export default class SearchForm extends Component {
     };
 
     handleClickSearch = () => {
+        let key = this.inputKey.current.keyword;
+
         this.props.handleSearch({
+            key: key && key.trim().length ? key : null,
             city: this.state.selectedCity,
             region: this.state.selectedRegion,
             radius: this.state.radius,
@@ -176,6 +212,7 @@ export default class SearchForm extends Component {
             radius,
             tags,
             suggestions,
+            regions,
             cities,
             minEmployees,
             maxEmployees,
@@ -189,13 +226,21 @@ export default class SearchForm extends Component {
             selectedRevenueMin,
             selectedRevenueMax,
             selectedCode,
-            tagsPlaceholder
+            tagsPlaceholder,
+            isEnableRadius
         } = this.state;
 
         const { isInDashboard } = this.props;
 
         return (
             <Container className="my-form search-form">
+                <div
+                    className={`search-bar-field ${
+                        isInDashboard ? "-dashboard" : ""
+                    }`}
+                >
+                    <SearchInput ref={this.inputKey} />
+                </div>
                 <Row className="mb-2">
                     <Col className="group-title">
                         <i className="fa fa-map-marker pr-2" /> Area
@@ -206,7 +251,7 @@ export default class SearchForm extends Component {
                         <MySelect
                             value={selectedRegion}
                             onChange={this.handleRegionChange}
-                            options={REGIONS}
+                            options={regions}
                             placeholder="Region"
                         />
                     </Col>
@@ -219,7 +264,12 @@ export default class SearchForm extends Component {
                         />
                     </Col>
                 </Row>
-                <Row className="px-2">
+                <Row
+                    className="px-2"
+                    style={{
+                        opacity: isEnableRadius ? 1 : 0.5
+                    }}
+                >
                     <Col xs={6}>Radius</Col>
                     <Col xs={6}>{radius} km</Col>
                     <Col className="mt-1">
@@ -227,7 +277,11 @@ export default class SearchForm extends Component {
                             min={0}
                             max={200}
                             value={radius}
-                            onChange={this.handleSliderChange}
+                            onChange={
+                                isEnableRadius
+                                    ? this.handleSliderChange
+                                    : () => {}
+                            }
                         />
                     </Col>
                 </Row>
@@ -315,7 +369,7 @@ export default class SearchForm extends Component {
                             value={selectedCode}
                             onChange={this.handleCodeChange}
                             options={ATECO_CODES}
-                            placeholder="ATECO CODE"
+                            placeholder="NACE CODE"
                         />
                     </Col>
                 </Row>

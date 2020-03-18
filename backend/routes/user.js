@@ -54,18 +54,21 @@ router.post("/login", async (req, res) => {
 
 	try {
 		let result = await client.query(
-			q.Paginate(
-				q.Match(
-					q.Index("findUserByEmailAndPassAndActive"),
-					data.email,
-					data.password,
-					"1"
-				)
+			q.Map(
+				q.Paginate(
+					q.Match(
+						q.Index("findUserByEmailAndPassAndActive"),
+						data.email,
+						data.password,
+						"1"
+					)
+				),
+				q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))
 			)
 		);
 
 		if (result.data.length) {
-			res.send({ status: 1, data: { email: data.email } });
+			res.send({ status: 1, data: result.data[0] });
 		} else {
 			res.send({
 				status: 0,
@@ -76,7 +79,6 @@ router.post("/login", async (req, res) => {
 		res.send({ status: 0, message: "Connection failed!" });
 	}
 });
-
 // register route
 router.post("/register", async (req, res) => {
 	let data = req.body;

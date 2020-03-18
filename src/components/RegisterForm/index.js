@@ -287,7 +287,7 @@ export default class RegisterForm extends Component {
 							value={selectedCode}
 							onChange={this.handleCodeChange}
 							options={atecoCodes}
-							placeholder="ATECO CODE"
+							placeholder="NACE CODE"
 							checkValid={checkValidCode}
 						/>
 					</Col>

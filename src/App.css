@@ -89,12 +89,26 @@ button:hover {
 	max-width: 1300px;
 }
 
+.text-bold {
+	font-weight: 500;
+}
+.text-large {
+	font-size: 1.2rem;
+}
+
 /* custom dropdown */
 .dropdown-toggle.btn-primary {
 	border: none !important;
 	background-color: var(--colorBg) !important;
 	color: var(--colorText) !important;
 	text-align: left;
+	height: 36px;
+}
+
+@media screen and (max-width: 768px) {
+	.dropdown-toggle.btn-primary {
+		font-size: 13px;
+	}
 }
 .dropdown-toggle::after {
 	float: right;
