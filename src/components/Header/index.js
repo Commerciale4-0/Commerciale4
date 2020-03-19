@@ -129,6 +129,7 @@ export default class Header extends Component {
 
         let companies = totalCompanies;
         if (!companies || !companies.length) {
+            console.log("request all-users ---- header");
             await requestAPI("/user/all-users", "GET").then(res => {
                 if (res.status === 1) {
                     companies = res.data;
