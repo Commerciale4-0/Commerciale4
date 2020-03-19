@@ -33,7 +33,7 @@ export default class Dashboard extends Component {
             filter: null,
             isLoading: false,
             viewMode: 0,
-            itemsCountPerPage: 12
+            itemsCountPerPage: 30
         };
 
         this.fileterPanel = React.createRef(); // Create a ref object
@@ -203,12 +203,12 @@ export default class Dashboard extends Component {
             this.state.filteredCompanies,
             this.state.selectedOrder,
             1,
-            5
+            15
         );
 
         this.setState({
             viewMode: 1,
-            itemsCountPerPage: 5
+            itemsCountPerPage: 15
         });
     };
 
@@ -217,11 +217,11 @@ export default class Dashboard extends Component {
             this.state.filteredCompanies,
             this.state.selectedOrder,
             1,
-            12
+            30
         );
         this.setState({
             viewMode: 0,
-            itemsCountPerPage: 12
+            itemsCountPerPage: 30
         });
     };
 
