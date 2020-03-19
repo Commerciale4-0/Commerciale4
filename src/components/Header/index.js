@@ -4,7 +4,6 @@ import "./index.css";
 import Sidebar from "../Sidebar";
 import SearchInput from "../SearchInput";
 import { requestAPI } from "../../utils/api";
-import { ReactHtmlParser } from "react-html-parser";
 
 const menusInNotLoggedin = [
     { id: 1, title: "Log in", link: "/login" },
