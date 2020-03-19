@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import { Row, Col, DropdownButton, Dropdown } from "react-bootstrap";
 import "./index.css";
 import Sidebar from "../Sidebar";
+import SearchInput from "../SearchInput";
+import { requestAPI } from "../../utils/api";
+import { ReactHtmlParser } from "react-html-parser";
 
 const menusInNotLoggedin = [
     { id: 1, title: "Log in", link: "/login" },
@@ -18,9 +21,23 @@ export default class Header extends Component {
         super(props);
 
         this.inputKey = React.createRef();
+        this.searchBar = React.createRef();
+        this.popup = React.createRef();
+
+        this.state = {
+            totalCompanies: null,
+            cursor: 0
+        };
     }
     state = {
         isExpanded: false
+    };
+
+    updateDimensions = () => {
+        if (this.popup.current) {
+            this.popup.current.style.width =
+                this.searchBar.current.offsetWidth + "px";
+        }
     };
 
     componentDidMount = () => {
@@ -28,6 +45,7 @@ export default class Header extends Component {
         if (filter && filter.key) {
             this.inputKey.current.value = filter.key;
         }
+        window.addEventListener("resize", this.updateDimensions.bind(this));
     };
 
     handleClickExpand = () => {
@@ -64,18 +82,95 @@ export default class Header extends Component {
 
     handleClickProfile() {}
 
-    handleKeySearch = e => {
+    handleKeyPress = e => {
         if (e.key === "Enter") {
-            sessionStorage.setItem(
-                "filter",
-                JSON.stringify({ key: e.target.value })
-            );
-            window.location.href = "/dashboard";
+            const { searchedCompanies, cursor } = this.state;
+            if (searchedCompanies && searchedCompanies.length) {
+                e.target.value = searchedCompanies[cursor].officialName;
+            }
+            this.setState({ searchedCompanies: null, cursor: 0 });
         }
     };
 
+    handleKeyDown = e => {
+        // if (e.key === "Enter") {
+        //     sessionStorage.setItem(
+        //         "filter",
+        //         JSON.stringify({ key: e.target.value })
+        //     );
+        //     // window.location.href = "/dashboard";
+        // }
+        const { cursor, searchedCompanies } = this.state;
+        if (e.keyCode === 38) {
+            e.preventDefault();
+            if (searchedCompanies && cursor > 0) {
+                this.setState(prevState => ({
+                    cursor: prevState.cursor - 1
+                }));
+            }
+        } else if (e.keyCode === 40) {
+            e.preventDefault();
+            if (searchedCompanies && cursor < searchedCompanies.length - 1) {
+                this.setState(prevState => ({
+                    cursor: prevState.cursor + 1
+                }));
+            }
+        }
+    };
+
+    handleKeyChange = async e => {
+        const { totalCompanies } = this.state;
+        let keyword = e.target.value.toLowerCase();
+        if (keyword.length < 2) {
+            this.setState({
+                searchedCompanies: null
+            });
+            return;
+        }
+
+        let companies = totalCompanies;
+        if (!companies || !companies.length) {
+            await requestAPI("/user/all-users", "GET").then(res => {
+                if (res.status === 1) {
+                    companies = res.data;
+                }
+                this.setState({
+                    totalCompanies: companies
+                });
+            });
+        }
+
+        if (companies) {
+            companies = companies.filter(elem => {
+                return elem.officialName.toLowerCase().search(keyword) !== -1;
+            });
+            companies = companies.slice(0, 10);
+            this.setState({
+                searchedCompanies: companies
+            });
+            this.updateDimensions();
+        }
+    };
+
+    handleClickCompany = company => {
+        this.inputKey.current.value = company.officialName;
+        this.setState({ searchedCompanies: null, cursor: 0 });
+    };
+
+    highlightMatchedWords = text => {
+        let key = this.inputKey.current.value;
+        if (!key || !key.length || !text || !text.length) {
+            return text;
+        }
+        let index = text.toLowerCase().search(key.toLowerCase());
+        return `${text.substr(0, index)}<b>${text.substr(
+            index,
+            key.length
+        )}</b>${text.substr(index + key.length)}`;
+    };
+
     render() {
-        const { isExpanded } = this.state;
+        const { isExpanded, searchedCompanies, cursor } = this.state;
         let userData = JSON.parse(sessionStorage.getItem("userData"));
         let menus = userData ? menusInLoggedin : menusInNotLoggedin;
         const sideBar = (
@@ -102,16 +197,60 @@ export default class Header extends Component {
                         <Col className="item title" sm={4}>
                             <a href="/">Commerciale 4.0</a>
                         </Col>
-                        <Col className="item search" sm={userData ? 3 : 4}>
-                            <span>
-                                <i className="fa fa-search"></i>
-                            </span>
-                            <input
-                                type="text"
-                                placeholder="Company search"
-                                onKeyPress={this.handleKeySearch}
-                                ref={this.inputKey}
-                            />
+                        <Col className="item" sm={userData ? 3 : 4}>
+                            <div className="w-100">
+                                <div
+                                    className="search-bar"
+                                    ref={this.searchBar}
+                                >
+                                    <i className="fa fa-search"></i>
+                                    <input
+                                        placeholder="Company search"
+                                        onKeyDown={this.handleKeyDown}
+                                        onChange={this.handleKeyChange}
+                                        ref={this.inputKey}
+                                        onKeyPress={this.handleKeyPress}
+                                    />
+                                </div>
+                                <div
+                                    className="popup"
+                                    ref={this.popup}
+                                    style={{
+                                        display:
+                                            searchedCompanies &&
+                                            searchedCompanies.length
+                                                ? "block"
+                                                : "none"
+                                    }}
+                                >
+                                    {searchedCompanies ? (
+                                        searchedCompanies.map(
+                                            (company, index) => (
+                                                <div
+                                                    className={`company-item ${
+                                                        cursor === index
+                                                            ? "active"
+                                                            : ""
+                                                    }`}
+                                                    key={index}
+                                                    onClick={() =>
+                                                        this.handleClickCompany(
+                                                            company
+                                                        )
+                                                    }
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: this.highlightMatchedWords(
+                                                            company.officialName
+                                                        )
+                                                    }}
+                                                ></div>
+                                            )
+                                        )
+                                    ) : (
+                                        <div />
+                                    )}
+                                </div>
+                            </div>
                         </Col>
                         {userData ? (
                             <Col className="item user" sm={3}>

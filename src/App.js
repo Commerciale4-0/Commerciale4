@@ -17,38 +17,39 @@ import ForgotPasswordPage from "./pages/ForgotPassword";
 import ResetPasswordPage from "./pages/ResetPassword";
 
 function App() {
-	let footerNeeded = false;
-	if (
-		window.location.pathname === "/login" ||
-		window.location.pathname === "/register" ||
-		window.location.pathname === "/forgot-password"
-	) {
-		footerNeeded = true;
-	}
-	return (
-		<BrowserRouter>
-			<Header />
-			<div className="body">
-				<Switch>
-					<Route exact path="/" component={LandingPage} />
-					<Route exact path="/login" component={LoginPage} />
-					<Route exact path="/register" component={RegisterPage} />
-					<Route
-						path="/forgot-password"
-						component={ForgotPasswordPage}
-					/>
-					<Route
-						path="/reset-password"
-						component={ResetPasswordPage}
-					/>
-					<Route exact path="/terms" component={TermsAndConditions} />
-					<Route exact path="/policy" component={PrivacyPolicy} />
-					<Route exact path="/dashboard" component={Dashboard} />
-				</Switch>
-			</div>
-			{!footerNeeded ? <Footer /> : ""}
-		</BrowserRouter>
-	);
+    let footerNeeded = false;
+    if (
+        window.location.pathname === "/login" ||
+        window.location.pathname === "/register" ||
+        window.location.pathname === "/forgot-password"
+    ) {
+        footerNeeded = true;
+    }
+
+    return (
+        <BrowserRouter>
+            <Header />
+            <div className="body">
+                <Switch>
+                    <Route exact path="/" component={LandingPage} />
+                    <Route exact path="/login" component={LoginPage} />
+                    <Route exact path="/register" component={RegisterPage} />
+                    <Route
+                        path="/forgot-password"
+                        component={ForgotPasswordPage}
+                    />
+                    <Route
+                        path="/reset-password"
+                        component={ResetPasswordPage}
+                    />
+                    <Route exact path="/terms" component={TermsAndConditions} />
+                    <Route exact path="/policy" component={PrivacyPolicy} />
+                    <Route exact path="/dashboard" component={Dashboard} />
+                </Switch>
+            </div>
+            {!footerNeeded ? <Footer /> : ""}
+        </BrowserRouter>
+    );
 }
 
 export default App;

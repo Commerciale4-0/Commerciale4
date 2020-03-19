@@ -10,6 +10,8 @@
 .header {
     padding: 5px 0;
     justify-content: center;
+    height: 46px;
+    z-index: 1;
 }
 
 .header .item {
@@ -28,33 +30,44 @@
     -webkit-text-fill-color: transparent;
 }
 
-.header .item.search {
-    background-color: white;
-    display: flex;
-    border-radius: 5px;
-    padding: 0;
-    width: 100%;
-    align-items: center;
-    overflow: hidden;
-}
-
-.header .item.search span {
-    color: black;
-    margin-left: 10px;
-}
-
-.header .item.search input {
-    border: none;
-    margin-left: 5px;
-    padding: 6px 3px;
-    border-radius: 0;
-    width: 100%;
-    height: 100%;
-}
-
 .header .item.user {
     font-size: 15px;
     text-align: center;
+}
+
+.header .search-bar > input {
+    height: 36px;
+    border: 0;
+    width: 100%;
+    border-radius: 17px;
+    padding-left: 36px;
+    font-size: 15px;
+}
+.header .search-bar i {
+    position: absolute;
+    margin-left: 10px;
+    margin-top: 10px;
+    color: var(--colorText);
+}
+
+.header .popup {
+    margin-top: 5px;
+    color: var(--colorText);
+    background: white;
+    border-radius: 4px;
+    padding: 2px;
+    box-shadow: 0 0 0.2em gray;
+    position: absolute;
+}
+
+.header .popup .company-item {
+    padding: 6px 8px;
+    border-radius: 4px;
+    width: 100%;
+}
+.header .popup .company-item.active,
+.header .popup .company-item:active {
+    background: #ccc;
 }
 
 .header .item.user button {

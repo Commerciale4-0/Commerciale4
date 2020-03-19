@@ -234,11 +234,7 @@ export default class SearchForm extends Component {
 
         return (
             <Container className="my-form search-form">
-                <div
-                    className={`search-bar-field ${
-                        isInDashboard ? "-dashboard" : ""
-                    }`}
-                >
+                <div className="search-bar-field">
                     <SearchInput ref={this.inputKey} />
                 </div>
                 <Row className="mb-2">
