@@ -76,9 +76,9 @@ export default class LandingPage extends Component {
 						<div className="pl-4 pt-3">
 							<p className="title">Advanced search system</p>
 							<p>
-								Thanks to our #TAGS system. It's much easier to
-								be found from other companies of the mechanical
-								industry.
+								Make detail research with the advantage of our TAG system!
+								It's much easier to be found from other companies of the
+								mechanical industry.
 							</p>
 						</div>
 					</div>
