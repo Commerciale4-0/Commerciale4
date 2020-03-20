@@ -517,7 +517,7 @@ export default class Dashboard extends Component {
                                     >
                                         <i className="fa fa-angle-left" />
                                     </button>
-                                    1
+                                    {activePage}
                                     <button
                                         className="btn-next secondary round ml-2"
                                         onClick={this.handleClickNext}
