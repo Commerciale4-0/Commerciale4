@@ -39,7 +39,8 @@ export default class Dashboard extends Component {
             isLoading: false,
             viewMode: 0,
             itemsCountPerPage: 30,
-            pageLimit: NO_PREV
+            pageLimit: NO_PREV,
+            failCount: 0
         };
 
         this.fileterPanel = React.createRef(); // Create a ref object
@@ -79,39 +80,60 @@ export default class Dashboard extends Component {
         }
         this.setState({ isLoading: true });
 
-        let filter = JSON.parse(sessionStorage.getItem("filter"));
-
         this.getCurrentLocation();
-        requestAPI("/user/all-users", "GET").then(res => {
-            if (res.status === 1) {
-                let companies = this.companiesWithDistance(res.data);
-                this.setState({
-                    totalCompanies: companies
-                });
 
-                if (filter) {
+        this.pullAllCompanies();
+    };
+
+    pullAllCompanies = async () => {
+        const { failCount } = this.state;
+        try {
+            await requestAPI("/user/all-users", "GET").then(res => {
+                if (res.status === 1) {
+                    let companies = this.companiesWithDistance(res.data);
                     this.setState({
-                        updateSearchForm: true
+                        totalCompanies: companies
                     });
 
-                    this.applyFilter(filter, companies);
+                    let filter = JSON.parse(sessionStorage.getItem("filter"));
+                    if (filter) {
+                        this.setState({
+                            updateSearchForm: true
+                        });
+
+                        this.applyFilter(filter, companies);
+                    } else {
+                        this.setState({
+                            filteredCompanies: companies
+                        });
+                        this.setCompaniesToShow(
+                            companies,
+                            this.state.selectedOrder,
+                            this.state.activePage,
+                            this.state.itemsCountPerPage
+                        );
+                    }
+
+                    this.setState({ isLoading: false });
                 } else {
-                    this.setState({
-                        filteredCompanies: companies
-                    });
-                    this.setCompaniesToShow(
-                        companies,
-                        this.state.selectedOrder,
-                        this.state.activePage,
-                        this.state.itemsCountPerPage
-                    );
+                    this.setState({ failCount: failCount + 1 });
+                    console.log("failCount", failCount + 1);
+                    if (failCount < 3) {
+                        this.pullAllCompanies();
+                    } else {
+                        alert("Connection failed.");
+                    }
                 }
-
-                this.setState({ isLoading: false });
+            });
+        } catch (e) {
+            this.setState({ failCount: failCount + 1 });
+            console.log("catch failCount", failCount + 1);
+            if (failCount < 3) {
+                this.pullAllCompanies();
             } else {
                 alert("Connection failed.");
             }
-        });
+        }
     };
 
     setCompaniesToShow = (companies, order, page, countPerPage) => {
