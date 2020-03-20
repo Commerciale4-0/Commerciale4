@@ -64,7 +64,7 @@ export default class LandingPage extends Component {
 						<div className="pl-4 pt-3">
 							<p className="title">Company Profile</p>
 							<p>
-								You can make your company profile including
+								Create your company profile including
 								photos, description, info, contacts and much
 								more.
 							</p>
