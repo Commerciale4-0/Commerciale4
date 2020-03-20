@@ -167,6 +167,8 @@ export default class Header extends Component {
 
     render() {
         const { isExpanded, searchedCompanies, cursor, isMobile } = this.state;
+        const { needSearchBar } = this.props;
+
         let userData = JSON.parse(sessionStorage.getItem("userData"));
         let menus = userData ? menusInLoggedin : menusInNotLoggedin;
         const sideBar = (
@@ -307,7 +309,7 @@ export default class Header extends Component {
                             </button>
                         </div>
                     </div>
-                    {isMobile ? searchBar : <div />}
+                    {isMobile && needSearchBar === true ? searchBar : <div />}
                 </div>
                 {sideBar}
             </div>

@@ -549,7 +549,7 @@ export default class Dashboard extends Component {
                                 </div>
                             </div>
                             {isLoading ? (
-                                <div className="d-flex justify-content-center">
+                                <div className="spinner-panel">
                                     <Spinner animation="border" />
                                 </div>
                             ) : filteredCompanies &&

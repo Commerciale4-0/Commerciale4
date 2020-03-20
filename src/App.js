@@ -17,18 +17,18 @@ import ForgotPasswordPage from "./pages/ForgotPassword";
 import ResetPasswordPage from "./pages/ResetPassword";
 
 function App() {
-    let footerNeeded = false;
+    let special = false;
     if (
         window.location.pathname === "/login" ||
         window.location.pathname === "/register" ||
         window.location.pathname === "/forgot-password"
     ) {
-        footerNeeded = true;
+        special = true;
     }
 
     return (
         <BrowserRouter>
-            <Header />
+            <Header needSearchBar={special ? false : true} />
             <div className="body">
                 <Switch>
                     <Route exact path="/" component={LandingPage} />
@@ -47,7 +47,7 @@ function App() {
                     <Route exact path="/dashboard" component={Dashboard} />
                 </Switch>
             </div>
-            {!footerNeeded ? <Footer /> : ""}
+            {!special ? <Footer /> : <div />}
         </BrowserRouter>
     );
 }
