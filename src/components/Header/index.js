@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Row, Col, DropdownButton, Dropdown } from "react-bootstrap";
 import "./index.css";
 import Sidebar from "../Sidebar";
-import SearchInput from "../SearchInput";
+// import SearchInput from "../SearchInput";
 import { requestAPI } from "../../utils/api";
 
 const menusInNotLoggedin = [
@@ -25,7 +25,8 @@ export default class Header extends Component {
 
         this.state = {
             totalCompanies: null,
-            cursor: 0
+            cursor: 0,
+            isMobile: false
         };
     }
     state = {
@@ -33,6 +34,8 @@ export default class Header extends Component {
     };
 
     updateDimensions = () => {
+        this.setState({ isMobile: window.innerWidth <= 576 });
+
         if (this.popup.current) {
             this.popup.current.style.width =
                 this.searchBar.current.offsetWidth + "px";
@@ -44,6 +47,7 @@ export default class Header extends Component {
         if (filter && filter.key) {
             this.inputKey.current.value = filter.key;
         }
+        this.updateDimensions();
         window.addEventListener("resize", this.updateDimensions.bind(this));
     };
 
@@ -92,13 +96,6 @@ export default class Header extends Component {
     };
 
     handleKeyDown = e => {
-        // if (e.key === "Enter") {
-        //     sessionStorage.setItem(
-        //         "filter",
-        //         JSON.stringify({ key: e.target.value })
-        //     );
-        //     // window.location.href = "/dashboard";
-        // }
         const { cursor, searchedCompanies } = this.state;
         if (e.keyCode === 38) {
             e.preventDefault();
@@ -129,7 +126,6 @@ export default class Header extends Component {
 
         let companies = totalCompanies;
         if (!companies || !companies.length) {
-            console.log("request all-users ---- header");
             await requestAPI("/user/all-users", "GET").then(res => {
                 if (res.status === 1) {
                     companies = res.data;
@@ -170,7 +166,7 @@ export default class Header extends Component {
     };
 
     render() {
-        const { isExpanded, searchedCompanies, cursor } = this.state;
+        const { isExpanded, searchedCompanies, cursor, isMobile } = this.state;
         let userData = JSON.parse(sessionStorage.getItem("userData"));
         let menus = userData ? menusInLoggedin : menusInNotLoggedin;
         const sideBar = (
@@ -190,6 +186,50 @@ export default class Header extends Component {
             </Sidebar>
         );
 
+        const searchBar = (
+            <div>
+                <div className="search-bar" ref={this.searchBar}>
+                    <i className="fa fa-search"></i>
+                    <input
+                        placeholder="Company search"
+                        onKeyDown={this.handleKeyDown}
+                        onChange={this.handleKeyChange}
+                        ref={this.inputKey}
+                        onKeyPress={this.handleKeyPress}
+                    />
+                </div>
+                <div
+                    className="popup"
+                    ref={this.popup}
+                    style={{
+                        display:
+                            searchedCompanies && searchedCompanies.length
+                                ? "block"
+                                : "none"
+                    }}
+                >
+                    {searchedCompanies ? (
+                        searchedCompanies.map((company, index) => (
+                            <div
+                                className={`company-item ${
+                                    cursor === index ? "active" : ""
+                                }`}
+                                key={index}
+                                onClick={() => this.handleClickCompany(company)}
+                                dangerouslySetInnerHTML={{
+                                    __html: this.highlightMatchedWords(
+                                        company.officialName
+                                    )
+                                }}
+                            ></div>
+                        ))
+                    ) : (
+                        <div />
+                    )}
+                </div>
+            </div>
+        );
+
         return (
             <div>
                 <div className="header">
@@ -198,59 +238,7 @@ export default class Header extends Component {
                             <a href="/">Commerciale 4.0</a>
                         </Col>
                         <Col className="item" sm={userData ? 3 : 4}>
-                            <div className="w-100">
-                                <div
-                                    className="search-bar"
-                                    ref={this.searchBar}
-                                >
-                                    <i className="fa fa-search"></i>
-                                    <input
-                                        placeholder="Company search"
-                                        onKeyDown={this.handleKeyDown}
-                                        onChange={this.handleKeyChange}
-                                        ref={this.inputKey}
-                                        onKeyPress={this.handleKeyPress}
-                                    />
-                                </div>
-                                <div
-                                    className="popup"
-                                    ref={this.popup}
-                                    style={{
-                                        display:
-                                            searchedCompanies &&
-                                            searchedCompanies.length
-                                                ? "block"
-                                                : "none"
-                                    }}
-                                >
-                                    {searchedCompanies ? (
-                                        searchedCompanies.map(
-                                            (company, index) => (
-                                                <div
-                                                    className={`company-item ${
-                                                        cursor === index
-                                                            ? "active"
-                                                            : ""
-                                                    }`}
-                                                    key={index}
-                                                    onClick={() =>
-                                                        this.handleClickCompany(
-                                                            company
-                                                        )
-                                                    }
-                                                    dangerouslySetInnerHTML={{
-                                                        __html: this.highlightMatchedWords(
-                                                            company.officialName
-                                                        )
-                                                    }}
-                                                ></div>
-                                            )
-                                        )
-                                    ) : (
-                                        <div />
-                                    )}
-                                </div>
-                            </div>
+                            {!isMobile ? searchBar : <div />}
                         </Col>
                         {userData ? (
                             <Col className="item user" sm={3}>
@@ -294,29 +282,32 @@ export default class Header extends Component {
                     </Row>
                 </div>
                 <div className="header-mobile">
-                    <div className="lang">
-                        <a href="/">
-                            <img src="images/flag/italy.png" alt="" />
-                        </a>
-                        <a href="/">
-                            <img src="images/flag/uk.png" alt="" />
-                        </a>
+                    <div className="menu-bar">
+                        <div className="lang">
+                            <a href="/">
+                                <img src="images/flag/italy.png" alt="" />
+                            </a>
+                            <a href="/">
+                                <img src="images/flag/uk.png" alt="" />
+                            </a>
+                        </div>
+                        <div className="title">
+                            <a href="/">Commerciale 4.0</a>
+                        </div>
+                        <div>
+                            <button
+                                className="expand"
+                                onClick={this.handleClickExpand}
+                            >
+                                <i
+                                    className={`fa ${
+                                        isExpanded ? "fa-close" : "fa-bars"
+                                    }`}
+                                />
+                            </button>
+                        </div>
                     </div>
-                    <div className="title">
-                        <a href="/">Commerciale 4.0</a>
-                    </div>
-                    <div>
-                        <button
-                            className="expand"
-                            onClick={this.handleClickExpand}
-                        >
-                            <i
-                                className={`fa ${
-                                    isExpanded ? "fa-close" : "fa-bars"
-                                }`}
-                            />
-                        </button>
-                    </div>
+                    {isMobile ? searchBar : <div />}
                 </div>
                 {sideBar}
             </div>

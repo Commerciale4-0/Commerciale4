@@ -1,149 +1,165 @@
 .header,
 .header-mobile {
-    width: 100%;
-    position: absolute;
-    align-items: center;
-    background: rgba(180, 180, 180, 0.5);
-    color: var(--colorSecondary);
+	width: 100%;
+	position: fixed;
+	background: rgba(180, 180, 180, 0.5);
+	color: var(--colorSecondary);
+	z-index: 2;
 }
 
 .header {
-    padding: 5px 0;
-    justify-content: center;
-    height: 46px;
-    z-index: 2;
-    position: fixed;
+	padding: 5px 0;
+	justify-content: center;
+	height: 46px;
+	align-items: center;
 }
 
 .header .item {
-    padding-left: 5px;
-    padding-right: 5px;
+	padding-left: 5px;
+	padding-right: 5px;
 }
 
 .header .item.title,
 .header-mobile .title {
-    text-align: center;
-    font-size: 24px;
-    font-weight: 600;
-    background: linear-gradient(to right, #30cfd0 0%, #330867 80%);
-    background-clip: border-box;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+	text-align: center;
+	font-size: 24px;
+	font-weight: 600;
+	background: linear-gradient(to right, #30cfd0 0%, #330867 80%);
+	background-clip: border-box;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
 }
 
 .header .item.user {
-    font-size: 15px;
-    text-align: center;
+	font-size: 15px;
+	text-align: center;
 }
 
-.header .search-bar > input {
-    height: 36px;
-    border: 0;
-    width: 100%;
-    border-radius: 4px;
-    padding-left: 36px;
-    font-size: 15px;
+.search-bar > input {
+	height: 36px;
+	border: 0;
+	width: 100%;
+	border-radius: 4px;
+	padding-left: 36px;
+	font-size: 15px;
 }
-.header .search-bar i {
-    position: absolute;
-    margin-left: 10px;
-    margin-top: 10px;
-    color: var(--colorText);
-}
-
-.header .popup {
-    margin-top: 5px;
-    color: var(--colorText);
-    background: white;
-    border-radius: 4px;
-    padding: 2px;
-    box-shadow: 0 0 0.2em gray;
-    position: absolute;
+.search-bar i {
+	position: absolute;
+	margin-left: 10px;
+	margin-top: 10px;
+	color: var(--colorText);
 }
 
-.header .popup .company-item {
-    padding: 6px 8px;
-    border-radius: 4px;
-    width: 100%;
-    cursor: pointer;
+.popup {
+	margin-top: 5px;
+	color: var(--colorText);
+	background: white;
+	border-radius: 4px;
+	padding: 2px;
+	box-shadow: 0 0 0.2em gray;
+	position: absolute;
 }
 
-.header .popup .company-item:hover {
-    background: #eee;
+.popup .company-item {
+	padding: 6px 8px;
+	border-radius: 4px;
+	width: 100%;
+	cursor: pointer;
 }
 
-.header .popup .company-item.active,
-.header .popup .company-item:active {
-    background: #ccc;
+.popup .company-item:hover {
+	background: #eee;
+}
+
+.popup .company-item.active,
+.popup .company-item:active {
+	background: #ccc;
+}
+
+.header-mobile .search-bar {
+	padding: 4px 8px;
+	border-bottom: 1px solid #aaa;
+}
+.header-mobile .search-bar input {
+	height: 32px;
+	border-radius: 17px;
+}
+
+.header-mobile .search-bar i {
+	margin-top: 8px;
+}
+.header-mobile .popup {
+	margin-top: 0;
 }
 
 .header .item.user button {
-    background: var(--colorSecondary);
-    border-radius: 4px;
-    color: var(--colorText);
-    padding: 7px 10px;
+	background: var(--colorSecondary);
+	border-radius: 4px;
+	color: var(--colorText);
+	padding: 7px 10px;
 }
 .header .item.user button:hover {
-    background: #bbb;
+	background: #bbb;
 }
 
 .header .item.user i {
-    margin-left: 10px;
+	margin-left: 10px;
 }
 
 .lang img {
-    height: 30px;
-    padding-right: 10px;
-    cursor: pointer;
+	height: 30px;
+	padding-right: 10px;
+	cursor: pointer;
 }
 
 .header .item a:hover {
-    color: var(--colorHighlight);
+	color: var(--colorHighlight);
 }
 
 .header-mobile {
-    /* background-color: var(--colorPrimary); */
-    display: none;
-    position: fixed;
-    z-index: 5;
+	display: none;
+}
+.header-mobile .menu-bar {
+	/* background-color: var(--colorPrimary); */
+	display: flex;
+	padding: 6px 10px;
+	justify-content: space-between;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.3);
 }
 
-.header-mobile .title {
-    font-size: 22px;
+.header-mobile .menu-bar .title {
+	font-size: 22px;
 }
 
 .sidebar .item {
-    padding: 5px;
-    background: var(--colorSecondary);
-    border: 1px solid #aaa;
-    margin-bottom: 10px;
-    text-align: center;
-    color: black;
+	padding: 5px;
+	background: var(--colorSecondary);
+	border: 1px solid #aaa;
+	margin-bottom: 10px;
+	text-align: center;
+	color: black;
 }
 
 .sidebar .item:hover {
-    background: #cccccc;
+	background: #cccccc;
 }
 
 button.expand {
-    min-width: 0;
-    background: transparent;
-    width: 32px;
-    height: 32px;
-    font-size: 12px;
-    color: var(--colorText);
-    border: 1px solid var(--colorText);
+	min-width: 0;
+	background: transparent;
+	width: 32px;
+	height: 32px;
+	font-size: 12px;
+	color: var(--colorText);
+	border: 1px solid var(--colorText);
 }
 
 @media (max-width: 576px) {
-    .header-mobile {
-        display: flex;
-        padding: 6px 10px;
-        justify-content: space-between;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.3);
-    }
+	.header-mobile {
+		display: block;
+	}
 
-    .header {
-        display: none;
-    }
+	.header {
+		display: none;
+	}
 }
