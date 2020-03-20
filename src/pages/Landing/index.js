@@ -37,7 +37,7 @@ export default class LandingPage extends Component {
 					<div className={`login-panel ${userData ? "logged" : ""}`}>
 						<div>
 							<div className="my-form intro">
-								<span>COMMERCIALE4.0.COM</span> is community of
+								<span>COMMERCIALE4.0.COM</span> is the community of
 								companies of the mechanical industry. We
 								revolutionize the way companies connect with
 								each other, building the networking of the
