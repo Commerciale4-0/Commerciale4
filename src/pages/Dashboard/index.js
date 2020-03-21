@@ -447,8 +447,6 @@ export default class Dashboard extends Component {
             filterBarXSVisible
         } = this.state;
 
-        console.log(updateSearchForm);
-
         const dropdown = (
             <Dropdown>
                 <Dropdown.Toggle>
