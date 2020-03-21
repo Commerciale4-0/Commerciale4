@@ -37,8 +37,8 @@ export default class LandingPage extends Component {
 					<div className={`login-panel ${userData ? "logged" : ""}`}>
 						<div>
 							<div className="my-form intro">
-								<span>COMMERCIALE4.0.COM</span> is community of
-								companies of the mechanical industry. We
+								<span>COMMERCIALE4.0.COM</span> is THE community of
+								mechanical companies. We
 								revolutionize the way companies connect with
 								each other, building the networking of the
 								future!
@@ -64,7 +64,7 @@ export default class LandingPage extends Component {
 						<div className="pl-4 pt-3">
 							<p className="title">Company Profile</p>
 							<p>
-								You can make your company profile including
+								Create your company profile including
 								photos, description, info, contacts and much
 								more.
 							</p>
@@ -76,9 +76,9 @@ export default class LandingPage extends Component {
 						<div className="pl-4 pt-3">
 							<p className="title">Advanced search system</p>
 							<p>
-								Thanks to our #TAGS system. It's much easier to
-								be found from other companies of the mechanical
-								industry.
+								Make detail research with the advantage of our TAG system!
+								It's much easier to be found from other companies of the
+								mechanical industry.
 							</p>
 						</div>
 					</div>
