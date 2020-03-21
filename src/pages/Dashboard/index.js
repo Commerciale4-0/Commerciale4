@@ -40,11 +40,46 @@ export default class Dashboard extends Component {
             viewMode: 0,
             itemsCountPerPage: 30,
             pageLimit: NO_PREV,
-            failCount: 0
+            failCount: 0,
+            filterBarXSScrollPos: window.pageYOffset,
+            filterBarXSVisible: true
         };
 
         this.fileterPanel = React.createRef(); // Create a ref object
     }
+
+    componentDidMount = () => {
+        if (window.innerWidth <= 576) {
+            this.setState({
+                itemsCountPerPage: 15
+            });
+            window.addEventListener("scroll", this.handleWindowScroll);
+        }
+        this.setState({ isLoading: true });
+
+        this.getCurrentLocation();
+
+        this.pullAllCompanies();
+    };
+
+    componentWillUnmount() {
+        if (window.innerWidth <= 576) {
+            window.removeEventListener("scroll", this.handleWindowScroll);
+        }
+    }
+
+    handleWindowScroll = () => {
+        console.log(window.pageYOffset);
+        const { filterBarXSScrollPos } = this.state;
+
+        const currentScrollPos = window.pageYOffset;
+        const filterBarXSVisible = filterBarXSScrollPos > currentScrollPos;
+
+        this.setState({
+            filterBarXSScrollPos: currentScrollPos,
+            filterBarXSVisible
+        });
+    };
 
     getCurrentLocation = () => {
         let userData = JSON.parse(sessionStorage.getItem("userData"));
@@ -70,19 +105,6 @@ export default class Dashboard extends Component {
                 longitude: position.coords.longitude
             }
         });
-    };
-
-    componentDidMount = () => {
-        if (window.innerWidth <= 576) {
-            this.setState({
-                itemsCountPerPage: 15
-            });
-        }
-        this.setState({ isLoading: true });
-
-        this.getCurrentLocation();
-
-        this.pullAllCompanies();
     };
 
     pullAllCompanies = async () => {
@@ -421,7 +443,8 @@ export default class Dashboard extends Component {
             updateSearchForm,
             viewMode,
             itemsCountPerPage,
-            pageLimit
+            pageLimit,
+            filterBarXSVisible
         } = this.state;
 
         const dropdown = (
@@ -448,7 +471,9 @@ export default class Dashboard extends Component {
         );
 
         const filterBarXS = (
-            <div className="filter-bar-xs">
+            <div
+                className={`filter-bar-xs ${!filterBarXSVisible ? "move" : ""}`}
+            >
                 {dropdown}
                 <button className="btn-filter" onClick={this.handleClickFilter}>
                     <i className="fa fa-filter pr-2" />

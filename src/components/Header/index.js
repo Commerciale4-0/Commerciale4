@@ -26,14 +26,30 @@ export default class Header extends Component {
         this.state = {
             totalCompanies: null,
             cursor: 0,
-            isMobile: false
+            isMobile: false,
+            isExpanded: false,
+            prevScrollpos: window.pageYOffset,
+            visible: true
         };
     }
-    state = {
-        isExpanded: false
+
+    componentDidMount = () => {
+        let filter = JSON.parse(sessionStorage.getItem("filter"));
+        if (filter && filter.key) {
+            this.inputKey.current.value = filter.key;
+        }
+
+        this.handleWindowResize();
+        window.addEventListener("resize", this.handleWindowResize);
+        window.addEventListener("scroll", this.handleWindowScroll);
     };
 
-    updateDimensions = () => {
+    componentWillUnmount() {
+        window.removeEventListener("scroll", this.handleWindowScroll);
+        window.removeEventListener("resize", this.handleWindowResize);
+    }
+
+    handleWindowResize = () => {
         this.setState({ isMobile: window.innerWidth <= 576 });
 
         if (this.popup.current) {
@@ -42,13 +58,16 @@ export default class Header extends Component {
         }
     };
 
-    componentDidMount = () => {
-        let filter = JSON.parse(sessionStorage.getItem("filter"));
-        if (filter && filter.key) {
-            this.inputKey.current.value = filter.key;
-        }
-        this.updateDimensions();
-        window.addEventListener("resize", this.updateDimensions.bind(this));
+    handleWindowScroll = () => {
+        const { prevScrollpos } = this.state;
+
+        const currentScrollPos = window.pageYOffset;
+        const visible = prevScrollpos > currentScrollPos;
+
+        this.setState({
+            prevScrollpos: currentScrollPos,
+            visible
+        });
     };
 
     handleClickExpand = () => {
@@ -144,7 +163,7 @@ export default class Header extends Component {
             this.setState({
                 searchedCompanies: companies
             });
-            this.updateDimensions();
+            this.handleWindowResize();
         }
     };
 
@@ -166,7 +185,13 @@ export default class Header extends Component {
     };
 
     render() {
-        const { isExpanded, searchedCompanies, cursor, isMobile } = this.state;
+        const {
+            isExpanded,
+            searchedCompanies,
+            cursor,
+            isMobile,
+            visible
+        } = this.state;
         const { needSearchBar } = this.props;
 
         let userData = JSON.parse(sessionStorage.getItem("userData"));
@@ -283,7 +308,7 @@ export default class Header extends Component {
                         </Col>
                     </Row>
                 </div>
-                <div className="header-mobile">
+                <div className={`header-mobile ${!visible ? "hidden" : ""}`}>
                     <div className="menu-bar">
                         <div className="lang">
                             <a href="/">

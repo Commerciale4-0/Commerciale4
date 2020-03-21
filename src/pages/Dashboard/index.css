@@ -7,6 +7,7 @@
 .dashboard .left-panel,
 .dashboard .right-panel {
     padding-top: 20px;
+    position: relative;
 }
 .dashboard .left-panel {
     padding-left: 30px;
@@ -202,7 +203,13 @@
         margin-left: -14px;
         padding: 4px 8px;
         box-shadow: 0 0.05rem 0.2rem gray;
+        top: 87px;
+        transition: top 0.3s;
+
         /* border-top: 1px solid #eee; */
+    }
+    .dashboard .filter-bar-xs.move {
+        top: 41px;
     }
     .dashboard .filter-bar {
         display: none;
@@ -236,6 +243,9 @@
     }
     .dashboard .left-panel.xs {
         display: block;
+        position: absolute;
+        top: 0;
+        z-index: 999;
     }
     .dashboard .right-panel.xs {
         display: none;
