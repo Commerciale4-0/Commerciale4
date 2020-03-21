@@ -142,6 +142,10 @@
     justify-content: center;
 }
 
+.dashboard .no-result {
+    text-align: center;
+}
+
 @media (min-width: 1600px) {
     .dashboard .grid-cell.col-sm-6 {
         flex: 0 0 33.33333%;
@@ -277,5 +281,8 @@
     }
     .dashboard .spinner-panel {
         padding-top: 50px;
+    }
+    .dashboard .no-result {
+        margin-top: 48px;
     }
 }

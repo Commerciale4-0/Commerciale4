@@ -76,7 +76,8 @@ export default class Dashboard extends Component {
 
         this.setState({
             filterBarXSScrollPos: currentScrollPos,
-            filterBarXSVisible
+            filterBarXSVisible,
+            updateSearchForm: false
         });
     };
 
@@ -446,6 +447,8 @@ export default class Dashboard extends Component {
             filterBarXSVisible
         } = this.state;
 
+        console.log(updateSearchForm);
+
         const dropdown = (
             <Dropdown>
                 <Dropdown.Toggle>
@@ -614,7 +617,7 @@ export default class Dashboard extends Component {
                                     </div>
                                 </div>
                             ) : (
-                                <div className="text-center">No Results</div>
+                                <div className="no-result">No results</div>
                             )}
                         </div>
                     </Col>
