@@ -69,7 +69,6 @@ export default class Dashboard extends Component {
     }
 
     handleWindowScroll = () => {
-        console.log(window.pageYOffset);
         const { filterBarXSScrollPos } = this.state;
 
         const currentScrollPos = window.pageYOffset;
