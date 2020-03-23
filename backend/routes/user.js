@@ -201,4 +201,18 @@ router.get("/all-users", async (req, res) => {
 	}
 });
 
+router.post("/get-user", async (req, res) => {
+	try {
+		let result = await client.query(
+			q.Map(
+				q.Paginate(q.Match(q.Index("findUserById"), req.body.id)),
+				q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))
+			)
+		);
+		res.send({ status: 1, data: result.data });
+	} catch (e) {
+		res.send({ status: 0, data: "Database connection failed!" });
+	}
+});
+
 module.exports = router;

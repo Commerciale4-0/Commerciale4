@@ -19,6 +19,7 @@
         "react-dom": "^16.13.0",
         "react-js-pagination": "^3.0.3",
         "react-rangeslider": "^2.2.0",
+        "react-responsive-carousel": "^3.1.51",
         "react-router-dom": "^5.1.2",
         "react-scripts": "3.4.0",
         "react-select": "^3.0.8",

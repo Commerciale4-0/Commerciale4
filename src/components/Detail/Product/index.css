@@ -1,0 +1,24 @@
+.carousel {
+	height: 400px;
+}
+
+.carousel .control-arrow {
+	min-width: 30px;
+}
+
+.carousel .slider-wrapper,
+.carousel .slider-wrapper .slider,
+.carousel .slider-wrapper .slider .slide,
+.carousel img {
+	height: 100%;
+}
+
+@media (max-width: 576px) {
+	.carousel {
+		height: 300px;
+	}
+
+	.carousel .slider-wrapper .slider .slide {
+		min-height: 100px;
+	}
+}

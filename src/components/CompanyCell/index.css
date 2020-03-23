@@ -1,130 +1,130 @@
 .company-cell {
-    font-size: 13px;
-    box-shadow: 0 0.12em 0.3em gray;
-    padding: 10px 20px;
-    margin-bottom: 8px;
-    background-color: var(--colorBg);
-    border-radius: 2px;
+	font-size: 13px;
+	box-shadow: 0 0.1em 0.2em #aaa;
+	padding: 10px 20px;
+	margin-bottom: 8px;
+	background-color: var(--colorBg);
+	border-radius: 2px;
 }
 
 .company-cell.grid {
-    min-height: 264px;
+	min-height: 264px;
 }
 .company-cell .title {
-    margin: auto 0;
-    padding: 5px;
-    font-size: 18px;
-    font-weight: 500;
-    display: none;
+	margin: auto 0;
+	padding: 5px;
+	font-size: 18px;
+	font-weight: 500;
+	display: none;
 }
 .company-cell .title,
 .company-cell h5 {
-    text-transform: uppercase;
+	text-transform: uppercase;
 }
 
 .company-cell h5 {
-    text-align: center;
+	text-align: center;
 }
 
 .company-cell .content {
-    padding-left: 20px;
+	padding-left: 20px;
 }
 .company-cell hr {
-    margin-top: 4px;
-    margin-bottom: 4px;
+	margin-top: 4px;
+	margin-bottom: 4px;
 }
 
 .company-cell .logo {
-    margin: auto 0;
-    padding: 0;
+	margin: auto 0;
+	padding: 0;
 }
 
 .company-cell .logo img {
-    width: 100%;
-    padding: 10px 10px;
-    border: 1px solid var(--colorBorder);
-    max-height: 160px;
-    max-width: 160px;
+	width: 100%;
+	padding: 10px 10px;
+	border: 1px solid var(--colorBorder);
+	max-height: 160px;
+	max-width: 160px;
 }
 
 .company-cell .field {
-    padding: 0;
+	padding: 0;
 }
 
 .company-cell .distance {
-    font-weight: bold;
-    background: #ddd;
-    border-radius: 4px;
-    padding: 0 4px;
+	font-weight: bold;
+	background: #ddd;
+	border-radius: 4px;
+	padding: 0 4px;
 }
 
 .company-cell i {
-    color: #888;
-    font-size: 16px;
-    padding-right: 8px;
+	color: #888;
+	font-size: 16px;
+	padding-right: 8px;
 }
 .company-cell span {
-    font-weight: 600;
+	font-weight: 600;
 }
 .company-cell .fixed-span {
-    text-align: left;
+	text-align: left;
 }
 
 .company-cell.grid {
-    padding: 10px 14px;
+	padding: 10px 14px;
 }
 .company-cell.grid .title {
-    display: block;
+	display: block;
 }
 .company-cell.grid h5 {
-    display: none;
+	display: none;
 }
 .company-cell.grid hr {
-    border-top: 0;
-    margin: 6px 0;
+	border-top: 0;
+	margin: 6px 0;
 }
 .company-cell.grid .content {
-    padding: 10px 0 0 0;
+	padding: 10px 0 0 0;
 }
 
 @media (max-width: 768px) and (min-width: 576px) {
-    .company-cell.grid .title {
-        display: none;
-    }
-    .company-cell.grid h5 {
-        display: block;
-    }
-    .company-cell.grid hr {
-        margin-top: 4px;
-        margin-bottom: 4px;
-        border-top: 1px solid rgba(0, 0, 0, 0.1);
-    }
-    .company-cell.grid .content {
-        padding-left: 14px;
-        flex: 0 0 75%;
-        max-width: 75%;
-    }
-    .company-cell.grid .logo {
-        flex: 0 0 25%;
-        max-width: 25%;
-    }
+	.company-cell.grid .title {
+		display: none;
+	}
+	.company-cell.grid h5 {
+		display: block;
+	}
+	.company-cell.grid hr {
+		margin-top: 4px;
+		margin-bottom: 4px;
+		border-top: 1px solid rgba(0, 0, 0, 0.1);
+	}
+	.company-cell.grid .content {
+		padding-left: 14px;
+		flex: 0 0 75%;
+		max-width: 75%;
+	}
+	.company-cell.grid .logo {
+		flex: 0 0 25%;
+		max-width: 25%;
+	}
 }
 
 @media (max-width: 576px) {
-    .company-cell {
-        padding: 10px 14px;
-    }
-    .company-cell .title {
-        display: block;
-    }
-    .company-cell h5 {
-        display: none;
-    }
-    .company-cell hr {
-        border-top: 0;
-        margin: 6px 0;
-    }
-    .company-cell .content {
-        padding: 10px 0 0 0;
-    }
+	.company-cell {
+		padding: 10px 14px;
+	}
+	.company-cell .title {
+		display: block;
+	}
+	.company-cell h5 {
+		display: none;
+	}
+	.company-cell hr {
+		border-top: 0;
+		margin: 6px 0;
+	}
+	.company-cell .content {
+		padding: 10px 0 0 0;
+	}
 }

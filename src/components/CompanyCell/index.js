@@ -25,8 +25,9 @@ export default class CompanyCell extends Component {
 				this.spanISO.current.offsetWidth + "px";
 		}
 	};
+
 	render() {
-		const { company, viewMode } = this.props;
+		const { company, viewMode, handleClickProfile } = this.props;
 
 		return (
 			<div className={`company-cell row ${viewMode ? "list" : "grid"}`}>
@@ -80,7 +81,12 @@ export default class CompanyCell extends Component {
 						</span>
 					</div>
 					<div className="d-flex justify-content-end pt-1">
-						<button className="text-uppercase">profile</button>
+						<button
+							className="text-uppercase"
+							onClick={handleClickProfile}
+						>
+							profile
+						</button>
 					</div>
 				</div>
 			</div>

@@ -233,7 +233,7 @@ export default class SearchForm extends Component {
 		const { isInDashboard } = this.props;
 
 		return (
-			<Container className="my-form search-form">
+			<div className="my-form search-form">
 				{/* <div className="search-bar-field">
                     <SearchInput ref={this.inputKey} />
                 </div> */}
@@ -379,7 +379,7 @@ export default class SearchForm extends Component {
 						</button>
 					</Col>
 				</Row>
-			</Container>
+			</div>
 		);
 	}
 }
