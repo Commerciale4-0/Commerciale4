@@ -28,7 +28,7 @@ export default class ForgotPasswordPage extends Component {
             return false;
         }
 
-        requestAPI("/user/forgotpwd", "POST", {
+        requestAPI("/user/forgot-password", "POST", {
             email: this.inputEmail.current.value
         }).then(res => {
             if (res.status !== 1) {
