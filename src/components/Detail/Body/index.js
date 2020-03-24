@@ -114,7 +114,6 @@ export default class DetailBody extends Component {
                         <label>Welding</label>
                         <label>CNC</label>
                         <label>bend</label>
-                        <label>inox</label>
                     </div>
                 </div>
             </div>
