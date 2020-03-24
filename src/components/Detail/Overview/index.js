@@ -115,7 +115,7 @@ export default class DetailOverView extends Component {
                     </div>
                 )}
 
-                <p className="sub-title pt-2 my-2">Posts</p>
+                <p className="sub-title pt-2 my-2">Later news</p>
                 <div>
                     {isMobile ? postItemXS : postItem}
                     {isMobile ? postItemXS : postItem}

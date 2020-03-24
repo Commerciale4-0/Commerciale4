@@ -19,12 +19,12 @@ import CompanyDetail from "./pages/CompanyDetail";
 
 function App() {
     let special = false;
-    let headerTransparent = false;
+    let headerTransparent = true;
     let headerAutoHide = true;
 
-    if (window.location.pathname === "/") {
-        headerTransparent = true;
-    }
+    // if (window.location.pathname === "/") {
+    //     headerTransparent = true;
+    // }
     if (window.location.pathname.search("/company/") !== -1) {
         headerAutoHide = false;
     }
