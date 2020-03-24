@@ -1,76 +1,77 @@
 .detail-overview label {
-	font-weight: bold;
-	min-width: 200px;
+    font-weight: bold;
+    min-width: 200px;
 }
 
 .detail-overview a {
-	color: #212529;
+    color: #212529;
 }
 
 .detail-overview button.more-less {
-	min-width: 0;
-	background: none;
-	padding: 5px;
-	color: var(--colorText);
+    float: right;
+    min-width: 0;
+    background: none;
+    padding: 5px;
+    color: var(--colorText);
 }
 
 .detail-overview .post-item {
-	display: flex;
-	border-radius: 4px;
-	background: white;
-	padding: 14px 20px;
-	margin-bottom: 10px;
+    display: flex;
+    border-radius: 4px;
+    background: white;
+    padding: 14px 20px;
+    margin-bottom: 10px;
 }
 
 .detail-overview .post-item img {
-	background: #eee;
-	max-width: 140px;
-	max-height: 140px;
-	margin-top: auto;
-	margin-bottom: auto;
-	border-radius: 4px;
+    background: #eee;
+    max-width: 140px;
+    max-height: 140px;
+    margin-top: auto;
+    margin-bottom: auto;
+    border-radius: 4px;
 }
 
 .detail-overview p {
-	font-size: 16px;
+    font-size: 16px;
 }
 
 .detail-overview .publish-date {
-	font-size: 14px;
-	text-align: right;
-	margin-bottom: 0;
-	color: #888;
+    font-size: 14px;
+    text-align: right;
+    margin-bottom: 0;
+    color: #888;
 }
 
 @media (max-width: 576px) {
-	.detail-overview h3 {
-		display: none;
-	}
+    .detail-overview h3 {
+        display: none;
+    }
 
-	.detail-overview label {
-		min-width: 130px;
-	}
+    .detail-overview label {
+        min-width: 130px;
+    }
 
-	.detail-overview .post-item {
-		display: block;
-		padding: 8px;
-	}
+    .detail-overview .post-item {
+        display: block;
+        padding: 8px;
+    }
 
-	.detail-overview .post-item img {
-		max-width: 80px;
-		max-height: 80px;
-	}
-	.detail-overview .post-item p {
-		margin-bottom: 4px;
-	}
+    .detail-overview .post-item img {
+        max-width: 80px;
+        max-height: 80px;
+    }
+    .detail-overview .post-item p {
+        margin-bottom: 4px;
+    }
 
-	.detail-overview p {
-		font-size: 14px;
-	}
-	.detail-overview .publish-date {
-		font-size: 12px;
-	}
-	.detail-overview button.more-less {
-		font-size: 14px;
-	}
+    .detail-overview p {
+        font-size: 14px;
+    }
+    .detail-overview .publish-date {
+        font-size: 12px;
+    }
+    .detail-overview button.more-less {
+        font-size: 14px;
+    }
 }

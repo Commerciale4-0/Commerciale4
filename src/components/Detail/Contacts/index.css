@@ -1,14 +1,17 @@
 .detail-contacts label {
-	font-weight: bold;
-	min-width: 130px;
+    font-weight: bold;
+    min-width: 130px;
 }
 
 .detail-contacts a {
-	color: #212529;
+    color: #212529;
 }
 
 @media (max-width: 576px) {
-	.detail-contacts h4 {
-		display: none;
-	}
+    .detail-contacts {
+        min-height: calc(100vh - 152px);
+    }
+    .detail-contacts h4 {
+        display: none;
+    }
 }

@@ -1,144 +1,164 @@
 .detail-body {
-	display: flex;
+    display: flex;
 }
 
+.detail-body .left-panel,
+.detail-body .right-panel {
+    height: calc(100vh - 276px - 46px);
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    scrollbar-width: none;
+    overflow-y: scroll;
+}
 .detail-body .left-panel {
-	width: 260px;
+    width: 260px;
 }
 .detail-body .right-panel {
-	flex: 1;
-	margin-left: 20px;
-	padding: 20px;
+    flex: 1;
+    margin-left: 20px;
+    padding: 20px;
+}
+.detail-body .left-panel::-webkit-scrollbar,
+.detail-body .right-panel::-webkit-scrollbar {
+    display: none;
 }
 
 .detail-body .menu {
-	min-height: 48px;
-	background: white;
-	padding: 10px;
-	border-bottom: 1px solid var(--colorBorder);
-	cursor: pointer;
+    min-height: 48px;
+    background: white;
+    padding: 10px;
+    border-bottom: 1px solid var(--colorBorder);
+    cursor: pointer;
 }
 
 .detail-body .menu.active {
-	color: #495057;
-	font-weight: bold;
-	border-left: 3px solid var(--colorPrimary);
+    color: #495057;
+    font-weight: bold;
+    border-left: 3px solid var(--colorPrimary);
 }
 
 .detail-body .info-panel {
-	padding: 20px 10px;
-	margin-top: 10px;
+    padding: 20px 10px;
+    margin-top: 10px;
 }
 .detail-body .info-panel p {
-	margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 .detail-body .info-panel i {
-	font-size: 24px;
+    font-size: 24px;
 }
 .detail-body .info-panel span {
-	display: inline-block;
-	font-size: 16px;
-	font-weight: bold;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: bold;
 }
 .detail-body .info-panel i,
 .detail-body .info-panel span {
-	margin: auto 0;
-	width: 60px;
+    margin: auto 0;
+    width: 60px;
 }
 
 .detail-body .info-panel .-tags {
-	display: flex;
-	align-items: flex-start;
-	font-size: 14px;
+    display: flex;
+    align-items: flex-start;
+    font-size: 14px;
 }
 
 .detail-body .info-panel .-tags i {
-	margin-top: 6px;
+    margin-top: 6px;
 }
 
 .detail-body .info-panel .-tags > div {
-	flex: 1;
+    flex: 1;
 }
 .detail-body .info-panel .-tags label {
-	padding: 0 8px;
-	border-radius: 4px;
-	background: #ccc;
-	margin: 4px 4px 4px 0;
+    padding: 0 8px;
+    border-radius: 4px;
+    background: #ccc;
+    margin: 4px 4px 4px 0;
 }
 
 @media (max-width: 576px) {
-	.detail-body {
-		display: block;
-	}
-	.detail-body .left-panel {
-		width: 100%;
-	}
-	.detail-body .menu-panel {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		background: white;
-		box-shadow: 0 -0.04em 0.2em #ccc;
-	}
-	.detail-body .info-panel {
-		padding: 10px;
-		margin-top: 0;
-	}
-	.detail-body .info-panel p {
-		margin-bottom: 8px;
-		display: inline-flex;
-		font-size: 14px;
-	}
-	.detail-body .info-panel i {
-		font-size: 16px;
-	}
-	.detail-body .info-panel span {
-		display: inline-block;
-		font-size: 14px;
-		font-weight: bold;
-	}
-	.detail-body .info-panel i,
-	.detail-body .info-panel span {
-		width: 50px;
-	}
+    .detail-body {
+        display: block;
+    }
+    .detail-body .left-panel {
+        width: 100%;
+    }
+    .detail-body .right-panel {
+        display: block;
+        margin: 0;
+        padding: 12px;
+        box-shadow: none !important;
+        margin-top: 41px;
+    }
 
-	.detail-body .info-panel .-employees,
-	.detail-body .info-panel .-ateco {
-		width: 40%;
-	}
-	.detail-body .info-panel .-revenues {
-		width: 35%;
-	}
-	.detail-body .info-panel .-iso {
-		width: 25%;
-	}
-	.detail-body .info-panel .-type {
-		width: 60%;
-	}
+    .detail-body .left-panel,
+    .detail-body .right-panel {
+        height: auto;
+    }
+    .detail-body .menu-panel {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: white;
+        box-shadow: 0 -0.05em 0.2em #ddd;
+        position: fixed;
+        width: 100%;
+        z-index: 10;
+    }
+    .detail-body .info-panel {
+        padding: 10px;
+        margin-top: 0;
+        background: white;
+    }
+    .detail-body .info-panel p {
+        margin-bottom: 8px;
+        display: inline-flex;
+        font-size: 14px;
+    }
+    .detail-body .info-panel i {
+        font-size: 16px;
+    }
+    .detail-body .info-panel span {
+        display: inline-block;
+        font-size: 14px;
+        font-weight: bold;
+    }
+    .detail-body .info-panel i,
+    .detail-body .info-panel span {
+        width: 50px;
+    }
 
-	/* .detail-body .info-panel > div {
+    .detail-body .info-panel .-employees,
+    .detail-body .info-panel .-ateco {
+        width: 40%;
+    }
+    .detail-body .info-panel .-revenues {
+        width: 35%;
+    }
+    .detail-body .info-panel .-iso {
+        width: 25%;
+    }
+    .detail-body .info-panel .-type {
+        width: 60%;
+    }
+
+    /* .detail-body .info-panel > div {
 		display: flex;
 		justify-content: space-between;
 	} */
 
-	.detail-body .right-panel {
-		display: block;
-		margin: 0;
-		padding: 12px;
-		box-shadow: none !important;
-	}
+    .detail-body .menu {
+        padding: 8px 10px;
+        min-height: 0;
+        font-size: 15px;
+        text-align: center;
+        border: none;
+        flex: auto;
+    }
 
-	.detail-body .menu {
-		padding: 8px 10px;
-		min-height: 0;
-		font-size: 15px;
-		text-align: center;
-		border: none;
-		flex: auto;
-	}
-
-	.detail-body .menu.active {
-		border-left: none;
-		border-bottom: 3px solid var(--colorPrimary);
-	}
+    .detail-body .menu.active {
+        border-left: none;
+        border-bottom: 3px solid var(--colorPrimary);
+    }
 }
