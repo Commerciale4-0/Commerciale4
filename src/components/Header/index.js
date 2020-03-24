@@ -113,8 +113,9 @@ export default class Header extends Component {
             const { searchedCompanies, cursor } = this.state;
             if (searchedCompanies && searchedCompanies.length) {
                 e.target.value = searchedCompanies[cursor].officialName;
+                window.location.href = `/company/${searchedCompanies[cursor].id}`;
             }
-            this.setState({ searchedCompanies: null, cursor: 0 });
+            // this.setState({ searchedCompanies: null, cursor: 0 });
         }
     };
 
@@ -173,7 +174,8 @@ export default class Header extends Component {
 
     handleClickCompany = company => {
         this.inputKey.current.value = company.officialName;
-        this.setState({ searchedCompanies: null, cursor: 0 });
+        window.location.href = `/company/${company.id}`;
+        // this.setState({ searchedCompanies: null, cursor: 0 });
     };
 
     highlightMatchedWords = text => {
