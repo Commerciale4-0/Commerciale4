@@ -44,7 +44,6 @@ export default class DetailBody extends Component {
     };
 
     handleWindowScroll = () => {
-        console.log(window.pageYOffset);
         const { prevScrollpos } = this.state;
 
         const currentScrollPos = window.pageYOffset;

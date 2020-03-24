@@ -18,7 +18,7 @@
     background-color: #262c3a;
     padding: 10px 10px;
     border: 2px solid white;
-    border-radius: 5px;
+    border-radius: 50%;
     width: 140px;
     height: 140px;
 }
@@ -33,7 +33,7 @@
 
 .detail-header button {
     margin: auto 0 auto auto;
-    text-transform: uppercase;
+    /* text-transform: uppercase; */
 }
 
 @media (max-width: 576px) {
@@ -46,7 +46,6 @@
     }
 
     .detail-header .logo {
-        border-radius: 50%;
         margin-top: -50px;
         width: 90px;
         height: 90px;
@@ -68,7 +67,14 @@
         font-size: 13px;
     }
     .detail-header button {
+        min-width: 70px;
+        font-size: 13px;
+        /* max-width: 70px; */
+    }
+}
+@media (max-width: 320px) {
+    .detail-header button {
         min-width: 0;
-        font-size: 14px;
+        max-width: 60px;
     }
 }

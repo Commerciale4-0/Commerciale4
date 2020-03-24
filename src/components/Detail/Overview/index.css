@@ -13,6 +13,7 @@
     background: none;
     padding: 5px;
     color: var(--colorText);
+    display: none;
 }
 
 .detail-overview .post-item {
@@ -73,5 +74,6 @@
     }
     .detail-overview button.more-less {
         font-size: 14px;
+        display: block;
     }
 }
