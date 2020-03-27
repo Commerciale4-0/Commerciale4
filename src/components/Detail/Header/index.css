@@ -24,11 +24,15 @@
 }
 
 .detail-header .official-name {
-    padding: 10px 30px;
+    padding: 10px 10px 10px 30px;
+    display: flex;
+    align-items: center;
+    margin: 12px 0;
 }
 
 .detail-header .official-name span {
     color: #555;
+    padding-left: 100px;
 }
 
 .detail-header button {
@@ -36,6 +40,15 @@
     text-transform: uppercase;
 }
 
+@media (max-width: 768px) {
+    .detail-header .official-name {
+        display: block;
+        margin: 0;
+    }
+    .detail-header .official-name span {
+        padding-left: 0;
+    }
+}
 @media (max-width: 576px) {
     .detail-header {
         box-shadow: 0 0.05em 0.2em #ddd !important;

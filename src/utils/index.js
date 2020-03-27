@@ -4,6 +4,15 @@ export const COMPANY_TYPES = [
     { value: 3, label: "Product & Service provider" }
 ];
 
+export const ISO = [
+    { value: 1, label: "9001: 2015" },
+    { value: 2, label: "9001: 2015 – RT21" },
+    { value: 3, label: "15358: 2011" },
+    { value: 4, label: "45001: 2018" },
+    { value: 5, label: "18001: 2007" },
+    { value: 6, label: "3834: 2006" }
+];
+
 export const N_EMPOYEES = [
     { value: 0, label: "No limit" },
     { value: 1, label: "3" },
