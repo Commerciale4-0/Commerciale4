@@ -16,6 +16,7 @@ import Dashboard from "./pages/Dashboard";
 import ForgotPasswordPage from "./pages/ForgotPassword";
 import ResetPasswordPage from "./pages/ResetPassword";
 import CompanyDetail from "./pages/CompanyDetail";
+import Profile from "./pages/Profile";
 
 function App() {
     let special = false;
@@ -64,6 +65,7 @@ function App() {
                         path="/company/:id"
                         component={CompanyDetail}
                     />
+                    <Route exact path="/user-edit/:id" component={Profile} />
                 </Switch>
             </div>
             {!special ? <Footer /> : <div />}

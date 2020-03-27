@@ -103,7 +103,7 @@ export default class DetailBody extends Component {
                     </p>
                     <p className="-type">
                         <span>TYPE</span>
-                        Products & Service
+                        {company.typeOfCompany}
                     </p>
                 </div>
                 <div className="-tags">

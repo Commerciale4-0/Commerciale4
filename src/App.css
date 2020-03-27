@@ -20,6 +20,24 @@ body {
 
 .body {
 	min-height: calc(100vh - 94px);
+	background: #f9f9f9;
+}
+
+.padding-header {
+	padding-top: 46px;
+}
+
+@media (max-width: 576px) {
+	.body {
+		min-height: 100vh;
+	}
+}
+
+.no-header {
+	padding-top: 0;
+}
+.no-footer {
+	padding-bottom: 0;
 }
 
 .color-primary {
@@ -89,11 +107,6 @@ button:hover {
 	background: white;
 	font-size: 14px;
 	max-width: 480px;
-}
-
-.my-container {
-	margin: auto;
-	max-width: 1300px;
 }
 
 .text-bold {

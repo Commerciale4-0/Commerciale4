@@ -33,7 +33,7 @@
 
 .detail-header button {
     margin: auto 0 auto auto;
-    /* text-transform: uppercase; */
+    text-transform: uppercase;
 }
 
 @media (max-width: 576px) {
@@ -68,6 +68,7 @@
     }
     .detail-header button {
         min-width: 70px;
+        padding: 3px 4px;
         font-size: 13px;
         /* max-width: 70px; */
     }
@@ -75,6 +76,7 @@
 @media (max-width: 320px) {
     .detail-header button {
         min-width: 0;
+        padding: 0 4px;
         max-width: 60px;
     }
 }

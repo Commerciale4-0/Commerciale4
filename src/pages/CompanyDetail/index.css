@@ -1,7 +1,3 @@
-.company-detail-root {
-    min-height: calc(100vh - 94px);
-    background: #f9f9f9;
-}
 .company-detail {
     padding-top: 46px;
 }
@@ -17,9 +13,6 @@
 }
 
 @media (max-width: 576px) {
-    .company-detail-root {
-        min-height: 100vh;
-    }
     .company-detail {
         padding: 46px 0 0 0;
         margin-bottom: 0;
