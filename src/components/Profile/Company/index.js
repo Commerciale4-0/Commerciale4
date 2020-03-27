@@ -56,12 +56,12 @@ export default class ProfileCompany extends Component {
 
         const aboutUsPanel = (
             <div>
-                <div className="my-2">Instruction</div>
+                <div className="my-2">Introduction</div>
                 <div>
                     <textarea />
                 </div>
                 <div className="char-limit">Max 500 characters</div>
-                <div className="mt-4 mb-2">What to do</div>
+                <div className="mt-4 mb-2">What we do</div>
                 <div>
                     <textarea />
                 </div>

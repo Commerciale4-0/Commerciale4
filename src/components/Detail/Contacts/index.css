@@ -11,7 +11,7 @@
     .detail-contacts {
         min-height: calc(100vh - 152px);
     }
-    .detail-contacts h4 {
+    .detail-contacts h5 {
         display: none;
     }
 }
