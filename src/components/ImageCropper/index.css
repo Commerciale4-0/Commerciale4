@@ -28,6 +28,10 @@
         max-width: 900px;
     }
 }
+
+.cropper-modal .-content.circle .ReactCrop .ReactCrop__crop-selection {
+    border-radius: 50%;
+}
 /* .cropper-modal .-content .ReactCrop > div:first-child {
     width: 100%;
     height: 100%;

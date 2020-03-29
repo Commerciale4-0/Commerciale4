@@ -86,10 +86,10 @@ export default class ImageCropper extends Component {
     };
 
     render() {
-        const { src, onCancel } = this.props;
+        const { src, onCancel, aspect } = this.props;
         return (
             <div className="cropper-modal">
-                <div className="-content">
+                <div className={`-content ${aspect === 1 && "circle"}`}>
                     <h5 className="mb-3">Crop image</h5>
                     <ReactCrop
                         src={src}
