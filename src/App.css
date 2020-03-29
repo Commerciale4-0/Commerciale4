@@ -104,6 +104,7 @@ button {
     min-width: 100px;
     background: var(--colorPrimary);
     transition: all 0.2s;
+    font-weight: 500;
 }
 
 button:hover {
@@ -133,7 +134,7 @@ button:hover {
     font-size: 0.8rem;
 }
 
-@media (min-width: 1366px) {
+/* @media (min-width: 1366px) {
     .container {
         max-width: 1266px;
     }
@@ -144,7 +145,7 @@ button:hover {
         max-width: 1340px;
     }
 }
-
+ */
 /* custom dropdown */
 .dropdown-toggle.btn-primary {
     border: none !important;

@@ -44,9 +44,17 @@ export default class ImageCropper extends Component {
 
         const scaleX = image.naturalWidth / elem.offsetWidth;
         const scaleY = image.naturalHeight / elem.offsetHeight;
-        canvas.width = crop.width;
-        canvas.height = crop.height;
+        canvas.width = crop.width * scaleX;
+        canvas.height = crop.height * scaleY;
         const ctx = canvas.getContext("2d");
+        console.log(
+            image.naturalWidth,
+            image.naturalHeight,
+            canvas.width,
+            canvas.height,
+            scaleX,
+            scaleY
+        );
 
         ctx.drawImage(
             image,
@@ -56,8 +64,8 @@ export default class ImageCropper extends Component {
             crop.height * scaleY,
             0,
             0,
-            crop.width,
-            crop.height
+            crop.width * scaleX,
+            crop.height * scaleY
         );
 
         // As Base64 string
@@ -81,6 +89,7 @@ export default class ImageCropper extends Component {
         const { crop } = this.state;
         let image = new Image();
         image.src = src;
+
         let croppedImage = await this.getCroppedImg(image, crop, "temp.jpg");
         onSave(URL.createObjectURL(croppedImage));
     };

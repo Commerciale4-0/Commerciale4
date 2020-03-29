@@ -93,7 +93,7 @@
 
 .user-profile .info-panel .photos-panel .photo {
     flex: 1;
-    height: 160px;
+    height: 130px;
     display: flex;
     justify-content: center;
     align-items: center;

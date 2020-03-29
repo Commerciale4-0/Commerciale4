@@ -43,6 +43,7 @@ export default class PostItem extends Component {
                                 <img
                                     className="post-img mr-3"
                                     src={data.image}
+                                    alt=""
                                 />
                             ) : (
                                 <div />
@@ -58,7 +59,11 @@ export default class PostItem extends Component {
                 ) : (
                     <div className="post-item">
                         {data.image ? (
-                            <img className="post-img mr-3" src={data.image} />
+                            <img
+                                className="post-img mr-3"
+                                src={data.image}
+                                alt=""
+                            />
                         ) : (
                             <div />
                         )}

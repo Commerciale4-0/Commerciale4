@@ -3,13 +3,11 @@ import "./index.css";
 import MySelect from "../../Custom/MySelect";
 import { ISO, COMPANY_TYPES } from "../../../utils";
 import ReactTags from "react-tag-autocomplete";
-import ReactCrop from "react-image-crop";
-import "react-image-crop/dist/ReactCrop.css";
 import ImageCropper from "../../ImageCropper";
 
-const RATIO_COVER = 1028 / 198;
+const RATIO_COVER = 828 / 198;
 const RATIO_LOGO = 1;
-const RATIO_PRODUCT = 312 / 158;
+const RATIO_PRODUCT = 245 / 128;
 
 const SUB_MENUS = ["About us", "Product & service", "Contacts"];
 

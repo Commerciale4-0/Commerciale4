@@ -247,7 +247,7 @@ export default class Dashboard extends Component {
             this.state.itemsCountPerPage
         );
         this.setState({ activePage: pageNumber });
-        if (pageNumber == 1) {
+        if (pageNumber === 1) {
             this.setState({ pageLimit: NO_PREV });
         }
     };
