@@ -24,12 +24,12 @@ export default class RegisterForm extends Component {
 			policyChecked: false
 		};
 
-		this.inputName = React.createRef();
-		this.inputVAT = React.createRef();
-		this.inputPEC = React.createRef();
-		this.inputEmail = React.createRef();
-		this.inputPassword = React.createRef();
-		this.inputConfirm = React.createRef();
+		this.refName = React.createRef();
+		this.refVAT = React.createRef();
+		this.refPEC = React.createRef();
+		this.refEmail = React.createRef();
+		this.refPassword = React.createRef();
+		this.refConfirm = React.createRef();
 	}
 
 	setAlertData = (success, text) => {
@@ -42,8 +42,8 @@ export default class RegisterForm extends Component {
 	};
 
 	validateStepOne = () => {
-		let valid = Validate.checkEmpty(this.inputName.current.value);
-		Validate.applyToInput(this.inputName.current, valid.code);
+		let valid = Validate.checkEmpty(this.refName.current.value);
+		Validate.applyToInput(this.refName.current, valid.code);
 		if (valid.code !== Validate.VALID) {
 			this.setAlertData(0, "Offical name" + valid.msg);
 			return false;
@@ -57,8 +57,8 @@ export default class RegisterForm extends Component {
 			return false;
 		}
 
-		valid = Validate.checkVAT(this.inputVAT.current.value);
-		Validate.applyToInput(this.inputVAT.current, valid.code);
+		valid = Validate.checkVAT(this.refVAT.current.value);
+		Validate.applyToInput(this.refVAT.current, valid.code);
 		if (valid.code !== Validate.VALID) {
 			this.setAlertData(0, "VAT number" + valid.msg);
 			return false;
@@ -72,8 +72,8 @@ export default class RegisterForm extends Component {
 			return false;
 		}
 
-		valid = Validate.checkEmail(this.inputPEC.current.value);
-		Validate.applyToInput(this.inputPEC.current, valid.code);
+		valid = Validate.checkEmail(this.refPEC.current.value);
+		Validate.applyToInput(this.refPEC.current, valid.code);
 		if (valid.code !== Validate.VALID) {
 			this.setAlertData(0, "PEC" + valid.msg);
 			return false;
@@ -83,25 +83,25 @@ export default class RegisterForm extends Component {
 	};
 
 	validateStepTwo = () => {
-		let valid = Validate.checkEmail(this.inputEmail.current.value);
-		Validate.applyToInput(this.inputEmail.current, valid.code);
+		let valid = Validate.checkEmail(this.refEmail.current.value);
+		Validate.applyToInput(this.refEmail.current, valid.code);
 		if (valid.code !== Validate.VALID) {
 			this.setAlertData(0, "Email address" + valid.msg);
 			return false;
 		}
 
-		valid = Validate.checkPassword(this.inputPassword.current.value);
-		Validate.applyToInput(this.inputPassword.current, valid.code);
+		valid = Validate.checkPassword(this.refPassword.current.value);
+		Validate.applyToInput(this.refPassword.current, valid.code);
 		if (valid.code !== Validate.VALID) {
 			this.setAlertData(0, "Password" + valid.msg);
 			return false;
 		}
 
 		valid = Validate.checkConfirmPassword(
-			this.inputPassword.current.value,
-			this.inputConfirm.current.value
+			this.refPassword.current.value,
+			this.refConfirm.current.value
 		);
-		Validate.applyToInput(this.inputConfirm.current, valid.code);
+		Validate.applyToInput(this.refConfirm.current, valid.code);
 		if (valid.code !== Validate.VALID) {
 			this.setAlertData(0, valid.msg);
 			return false;
@@ -134,9 +134,9 @@ export default class RegisterForm extends Component {
 				step: 2
 			});
 
-			this.inputEmail.current.style.border = 0;
-			this.inputPassword.current.style.border = 0;
-			this.inputConfirm.current.style.border = 0;
+			this.refEmail.current.style.border = 0;
+			this.refPassword.current.style.border = 0;
+			this.refConfirm.current.style.border = 0;
 		}
 	};
 
@@ -172,16 +172,16 @@ export default class RegisterForm extends Component {
 			);
 
 			let data = {
-				email: this.inputEmail.current.value,
-				password: this.inputPassword.current.value,
-				officialName: this.inputName.current.value,
+				email: this.refEmail.current.value,
+				password: this.refPassword.current.value,
+				officialName: this.refName.current.value,
 				city: this.state.selectedCity.label,
 				region: region,
 				latitude: latitude,
 				longitude: longitude,
-				vatNumber: this.inputVAT.current.value,
+				vatNumber: this.refVAT.current.value,
 				atecoCode: this.state.selectedCode.label,
-				pec: this.inputPEC.current.value
+				pec: this.refPEC.current.value
 			};
 
 			// requestAPI("/user/register", "POST", data).then(res => {
@@ -256,7 +256,7 @@ export default class RegisterForm extends Component {
 							type="text"
 							name="officialName"
 							placeholder="Official Name"
-							ref={this.inputName}
+							ref={this.refName}
 						/>
 					</Col>
 				</Row>
@@ -277,7 +277,7 @@ export default class RegisterForm extends Component {
 							type="text"
 							name="vatNumber"
 							placeholder="VAT number"
-							ref={this.inputVAT}
+							ref={this.refVAT}
 						/>
 					</Col>
 				</Row>
@@ -298,7 +298,7 @@ export default class RegisterForm extends Component {
 							type="text"
 							name="vatNumber"
 							placeholder="PEC"
-							ref={this.inputPEC}
+							ref={this.refPEC}
 						/>
 					</Col>
 					<Col md={3} className="info-hint">
@@ -336,7 +336,7 @@ export default class RegisterForm extends Component {
 							type="text"
 							name="email"
 							placeholder="Email address"
-							ref={this.inputEmail}
+							ref={this.refEmail}
 						/>
 					</Col>
 					<Col md={3} className="info-hint">
@@ -351,7 +351,7 @@ export default class RegisterForm extends Component {
 							type="password"
 							name="password"
 							placeholder="Password"
-							ref={this.inputPassword}
+							ref={this.refPassword}
 						/>
 					</Col>
 				</Row>
@@ -360,7 +360,7 @@ export default class RegisterForm extends Component {
 						<input
 							type="password"
 							placeholder="Confirm password"
-							ref={this.inputConfirm}
+							ref={this.refConfirm}
 						/>
 					</Col>
 				</Row>

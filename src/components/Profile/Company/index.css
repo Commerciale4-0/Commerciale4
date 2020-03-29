@@ -1,102 +1,125 @@
 .user-profile .cover-image {
-    height: 200px;
-    width: 100%;
-    border: 1px solid #ddd;
-    background: white;
+	height: 200px;
+	width: 100%;
+	border: 1px solid #ddd;
+	background: white;
+}
+
+.user-profile .cover-image > img,
+.user-profile .logo-image > img,
+.user-profile .photos-panel .photo > img {
+	width: 100%;
+	height: 100%;
 }
 
 .user-profile .logo-image {
-    position: absolute;
-    height: 150px;
-    width: 150px;
-    border: 1px solid #888;
-    background: white;
-    border-radius: 50%;
-    margin-top: -75px;
-    margin-left: 20px;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	position: absolute;
+	height: 150px;
+	width: 150px;
+	border: 1px solid #888;
+	background: white;
+	border-radius: 50%;
+	margin-top: -75px;
+	margin-left: 20px;
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	overflow: hidden;
+}
+.user-profile .logo-image > div {
+	padding: 4px 8px;
+	background: rgba(0, 0, 0, 0.2);
+	position: absolute;
+	color: white;
+	/* opacity: 0; */
+	font-size: 14px;
+	border-radius: 4px;
+	/* bottom: 0; */
+	/* width: 100%; */
+	text-align: center;
+}
+.user-profile .logo-image > div:hover {
+	/* opacity: 1; */
 }
 
 .user-profile .btn-change-cover {
-    margin-top: 10px;
-    float: right;
-    border-radius: 4px;
+	margin-top: 10px;
+	float: right;
+	border-radius: 4px;
 }
 
 .user-profile .info-panel {
-    margin-top: 100px;
+	margin-top: 100px;
 }
 
 .user-profile .char-limit {
-    display: flex;
-    justify-content: flex-end;
-    color: #888;
-    font-size: 14px;
-    margin-top: -4px;
+	display: flex;
+	justify-content: flex-end;
+	color: #888;
+	font-size: 14px;
+	margin-top: -4px;
 }
 
 .user-profile .info-panel .info-row {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 14px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-bottom: 14px;
 }
 .user-profile .info-panel .info-row.-tags {
-    align-items: flex-start;
+	align-items: flex-start;
 }
 .user-profile .info-panel .info-row span {
-    min-width: 120px;
+	min-width: 120px;
 }
 
 .user-profile .info-panel .info-row > input {
-    min-width: 300px;
-    padding: 6px 8px;
+	min-width: 300px;
+	padding: 6px 8px;
 }
 
 .user-profile .info-panel .photos-panel {
-    width: 100%;
-    display: flex;
+	width: 100%;
+	display: flex;
 }
 
 .user-profile .info-panel .photos-panel .photo {
-    flex: 1;
-    height: 160px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #f9f9f9;
-    cursor: pointer;
-    margin: 8px;
-    border: 1px solid var(--colorBorder);
+	flex: 1;
+	height: 160px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: #f9f9f9;
+	cursor: pointer;
+	margin: 8px;
+	border: 1px solid var(--colorBorder);
 }
 
 .user-profile .company-view .tag-hint {
-    width: 420px;
+	width: 420px;
 }
 .user-profile .company-view .tag-hint label {
-    background: #e8e8e8;
-    border-radius: 4px;
-    margin-right: 6px;
-    padding: 2px 6px;
-    font-size: 14px;
+	background: #e8e8e8;
+	border-radius: 4px;
+	margin-right: 6px;
+	padding: 2px 6px;
+	font-size: 14px;
 }
 
 .user-profile .company-view .react-tags {
-    width: 420px;
-    background: #f9f9f9;
-    min-height: 36px;
-    border: 1px solid var(--colorBorder);
+	width: 420px;
+	background: #f9f9f9;
+	min-height: 36px;
+	border: 1px solid var(--colorBorder);
 }
 .user-profile .company-view .react-tags__selected-tag {
-    background: #ddd;
+	background: #ddd;
 }
 
 .user-profile .company-view .react-tags__selected-tag:hover {
-    background: #ccc;
+	background: #ccc;
 }
 .user-profile .company-view .react-tags__search {
-    padding: 4px 2px;
+	padding: 4px 2px;
 }

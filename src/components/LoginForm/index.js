@@ -10,8 +10,8 @@ export default class LoginForm extends Component {
 			remember: false
 		};
 
-		this.inputEmail = React.createRef();
-		this.inputPassword = React.createRef();
+		this.refEmail = React.createRef();
+		this.refPassword = React.createRef();
 	}
 
 	handleClickSignup = e => {
@@ -26,14 +26,13 @@ export default class LoginForm extends Component {
 
 	handleClickLogin = e => {
 		requestAPI("/user/login", "POST", {
-			email: this.inputEmail.current.value,
-			password: this.inputPassword.current.value
+			email: this.refEmail.current.value,
+			password: this.refPassword.current.value
 		}).then(res => {
 			if (res.status !== 1) {
 				alert(res.message);
 			} else {
-				console.log(res.data);
-				sessionStorage.setItem("userData", JSON.stringify(res.data));
+				sessionStorage.setItem("loggedUser", JSON.stringify(res.data));
 				window.location.href = "/";
 			}
 		});
@@ -105,7 +104,7 @@ export default class LoginForm extends Component {
 							type="text"
 							name="email"
 							placeholder="Email"
-							ref={this.inputEmail}
+							ref={this.refEmail}
 						/>
 					</div>
 				</div>
@@ -116,7 +115,7 @@ export default class LoginForm extends Component {
 							type="password"
 							name="password"
 							placeholder="Password"
-							ref={this.inputPassword}
+							ref={this.refPassword}
 						/>
 					</div>
 				</div>

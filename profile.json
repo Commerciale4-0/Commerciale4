@@ -1,0 +1,22 @@
+{
+  "id": "3",
+  "stringData": {
+    "introduction": "Let me introduce my company",
+    "overview": "It sells and produces a kind of product like helmets since 2018 years",
+    "employees": "15",
+    "revenues": "1M",
+    "websiteUrl": "http://commerciale.com",
+    "typeOfCompany": "Product provider",
+    "tags": ["helmet", "shoes", "Phone"],
+    "productOrServiceDescription": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr",
+    "iso": "9001",
+    "address": "Italy Rome",
+    "phoneNumber": "+1123456789",
+    "secondEmail": "secondEnail@test.com"
+  },
+  "imageData": {
+    "logo": "String",
+    "background": "String",
+    "productOrServicePhoto": ["String"]
+  }
+}

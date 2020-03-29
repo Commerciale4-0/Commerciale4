@@ -1,11 +1,8 @@
 const router = require("express").Router();
 const nodemailer = require("nodemailer");
 const { Utils } = require("../utils");
-const faunadb = require("faunadb"),
-    q = faunadb.query;
-const client = new faunadb.Client({
-    secret: Utils.FAUNADB_SECRET
-});
+const { client, query } = require("../db");
+const q = query;
 
 function sendMailer(emailData) {
     const transporter = nodemailer.createTransport({
@@ -187,31 +184,191 @@ router.post("/reset-password", async (req, res) => {
     }
 });
 
-router.get("/all-users", async (req, res) => {
+//get users 3.28
+router.get("/:id", async (req, res) => {
+    let result = null;
     try {
-        let result = await client.query(
-            q.Map(
-                q.Paginate(q.Match(q.Index("findUserByActive"), "1")),
-                q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))
-            )
-        );
+        if (req.params.id !== "all") {
+            result = await client.query(
+                q.Map(
+                    q.Paginate(q.Match(q.Index("findUserById"), req.params.id)),
+                    q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))
+                )
+            );
+        } else {
+            result = await client.query(
+                q.Map(
+                    q.Paginate(q.Match(q.Index("findUserByActive"), "1")),
+                    q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))
+                )
+            );
+        }
         res.send({ status: 1, data: result.data });
     } catch (e) {
         res.send({ status: 0, data: "Database connection failed!" });
     }
 });
-
-router.post("/get-user", async (req, res) => {
+///get profile
+router.get("/profile/:id", async (req, res) => {
+    let userId = req.params.id;
     try {
-        let result = await client.query(
+        let profile = await client.query(
             q.Map(
-                q.Paginate(q.Match(q.Index("findUserById"), req.body.id)),
+                q.Paginate(q.Match(q.Index("findUserById"), userId)),
                 q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))
             )
         );
-        res.send({ status: 1, data: result.data });
+        let posts = await client.query(
+            q.Map(
+                q.Paginate(q.Match(q.Index("findPostsByUserId"), userId)),
+                q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))
+            )
+        );
+        res.send({ status: 1, profile: profile.data[0], posts: posts.data });
     } catch (e) {
         res.send({ status: 0, data: "Database connection failed!" });
+    }
+});
+
+const s3Setting = () => {
+    AWS.config.setPromisesDependency(require("bluebird"));
+    AWS.config.update({
+        accessKeyId: process.env.ACCESS_KEY_ID,
+        secretAccessKey: process.env.SECRET_ACCESS_KEY,
+        region: process.env.REGION
+    });
+};
+
+async function singleImageUpload(imageData, userID) {
+    s3Setting();
+    const s3 = new AWS.S3();
+    let matches = imageData.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+    if (matches.length !== 3) {
+        return new Error("Invalid input string");
+    }
+    let imageType = matches[1];
+    let imageBuffer = Buffer.from(matches[2], "base64");
+    let extension = mime.extension(imageType);
+    let fileName = "image-" + Date.now() + "." + extension;
+
+    const params = {
+        Bucket: "commerciale",
+        Key: "user-" + userID + "/" + fileName, // type is not required
+        Body: imageBuffer,
+        // ACL: "public-read",
+        ContentEncoding: "base64", // required
+        ContentType: `${imageType}` // required. Notice the back ticks
+    };
+
+    let key = "";
+    try {
+        const { Location, Key } = await s3.upload(params).promise();
+        key = Key;
+        return key;
+    } catch (error) {
+        return error;
+    }
+}
+
+async function multipleImageUpload(imageData, userID) {
+    s3Setting();
+    const s3 = new AWS.S3();
+    let location = [];
+    let key = [];
+
+    for (let values in imageData) {
+        let matches = imageData[values].match(
+            /^data:([A-Za-z-+\/]+);base64,(.+)$/
+        );
+        if (matches.length !== 3) {
+            return new Error("Invalid input string");
+        }
+        let imageType = matches[1];
+        let imageBuffer = Buffer.from(matches[2], "base64");
+        let extension = mime.extension(imageType);
+        let fileName = "image-" + Date.now() + "." + extension;
+        let params = {
+            Bucket: "commerciale",
+            Key: "user-" + userID + "/" + fileName, // type is not required
+            Body: imageBuffer,
+            // ACL: "public-read",
+            ContentEncoding: "base64", // required
+            ContentType: `${imageType}` // required. Notice the back ticks
+        };
+        try {
+            const { Location, Key } = await s3.upload(params).promise();
+            key.push(Key);
+        } catch (error) {
+            return error;
+        }
+    }
+    return key;
+}
+
+///Edit User Profile Api
+router.post("/profile/edit", async (req, res) => {
+    let editedData = req.body;
+    let logo = "";
+    let background = "";
+    let productPhoto = "";
+    try {
+        logo = await singleImageUpload(
+            editedData.imageData.logo,
+            editedData.id
+        );
+        background = await singleImageUpload(
+            editedData.imageData.background,
+            editedData.id
+        );
+        productPhoto = await multipleImageUpload(
+            editedData.imageData.productOrServicePhoto,
+            editedData.id
+        );
+    } catch (error) {
+        res.send({ status: 0, message: "Image uploading failed!" });
+    }
+    try {
+        await client.query(
+            q.Update(
+                q.Select(
+                    "ref",
+                    q.Get(q.Match(q.Index("findUserById"), editedData.id))
+                ),
+                {
+                    data: {
+                        ...editedData.stringData,
+                        logo: logo,
+                        background: background,
+                        productOrServicePhoto: productPhoto
+                    }
+                }
+            )
+        );
+        res.send({ status: 1, message: "success" });
+    } catch (error) {
+        res.send({ status: 0, message: "Database connection failed!" });
+    }
+});
+
+//// create news api
+router.post("/news/create", async (req, res) => {
+    let newsData = req.body;
+    let postedPhoto;
+    try {
+        postedPhoto = await singleImageUpload(newsData.postImage);
+    } catch (error) {
+        res.send({ status: 0, message: "Image uploading failed!" });
+    }
+
+    try {
+        await client.query(
+            q.Create(q.Collection("Posts"), {
+                data: { ...newsData, postImage: postedPhoto }
+            })
+        );
+        res.send({ status: 1, message: "success" });
+    } catch (error) {
+        res.send({ status: 0, message: "Database connection failed!" });
     }
 });
 

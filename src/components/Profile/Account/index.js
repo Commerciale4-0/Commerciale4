@@ -17,7 +17,7 @@ export default class ProfileAccount extends Component {
         const { selectedTab } = this.state;
 
         const actionsPanel = (
-            <div>
+            <div className={selectedTab === 0 ? "d-block" : "d-none"}>
                 <div>
                     <h6 className="text-uppercase p-3">Change password</h6>
                     <div className="info-row">
@@ -88,7 +88,7 @@ export default class ProfileAccount extends Component {
         );
 
         const infoPanel = (
-            <div className="my-4">
+            <div className={`my-4 ${selectedTab === 1 ? "d-block" : "d-none"}`}>
                 <h6 className="text-center mb-4">
                     The displayed info are not editable
                 </h6>
@@ -143,7 +143,8 @@ export default class ProfileAccount extends Component {
                     </button>
                 </div>
                 <div className="tab-body">
-                    {selectedTab === 0 ? actionsPanel : infoPanel}
+                    {actionsPanel}
+                    {infoPanel}
                 </div>
             </div>
         );

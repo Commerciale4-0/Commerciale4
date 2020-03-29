@@ -54,7 +54,7 @@ function App() {
                         component={ForgotPasswordPage}
                     />
                     <Route
-                        path="/reset-password"
+                        path="/reset-password/:id"
                         component={ResetPasswordPage}
                     />
                     <Route exact path="/terms" component={TermsAndConditions} />

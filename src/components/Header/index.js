@@ -19,7 +19,7 @@ export default class Header extends Component {
 	constructor(props) {
 		super(props);
 
-		this.inputKey = React.createRef();
+		this.refKey = React.createRef();
 		this.searchBar = React.createRef();
 		this.popup = React.createRef();
 
@@ -36,7 +36,7 @@ export default class Header extends Component {
 	componentDidMount = () => {
 		let filter = JSON.parse(sessionStorage.getItem("filter"));
 		if (filter && filter.key) {
-			this.inputKey.current.value = filter.key;
+			this.refKey.current.value = filter.key;
 		}
 
 		this.handleWindowResize();
@@ -88,13 +88,13 @@ export default class Header extends Component {
 
 	handleClickMenu = menu => {
 		if (menu.link === "/") {
-			sessionStorage.removeItem("userData");
+			sessionStorage.removeItem("loggedUser");
 		} else if (menu.link === "/user-edit") {
-			let userData = JSON.parse(sessionStorage.getItem("userData"));
-			console.log(userData);
-			if (userData && userData.id) {
-				console.log(userData.id);
-				window.location.href = `${menu.link}/${userData.id}`;
+			let loggedUser = JSON.parse(sessionStorage.getItem("loggedUser"));
+			if (loggedUser && loggedUser.id) {
+				window.location.href = `${menu.link}/${loggedUser.id}`;
+			} else {
+				window.location.href = "/";
 			}
 			return;
 		}
@@ -102,7 +102,7 @@ export default class Header extends Component {
 	};
 
 	handleClickLogout = () => {
-		sessionStorage.removeItem("userData");
+		sessionStorage.removeItem("loggedUser");
 		window.location.href = "/";
 	};
 
@@ -115,11 +115,13 @@ export default class Header extends Component {
 	};
 
 	handleClickProfile = () => {
-		let userData = JSON.parse(sessionStorage.getItem("userData"));
-		console.log(userData);
-		if (userData && userData.id) {
-			console.log(userData.id);
-			window.location.href = `/user-edit/${userData.id}`;
+		let loggedUser = JSON.parse(sessionStorage.getItem("loggedUser"));
+
+		if (loggedUser && loggedUser.id) {
+			console.log(loggedUser.id);
+			window.location.href = `/user-edit/${loggedUser.id}`;
+		} else {
+			window.location.href = "/";
 		}
 	};
 
@@ -165,7 +167,7 @@ export default class Header extends Component {
 
 		let companies = totalCompanies;
 		if (!companies || !companies.length) {
-			await requestAPI("/user/all-users", "GET").then(res => {
+			await requestAPI("/user/all", "GET").then(res => {
 				if (res.status === 1) {
 					companies = res.data;
 				}
@@ -188,13 +190,13 @@ export default class Header extends Component {
 	};
 
 	handleClickCompany = company => {
-		this.inputKey.current.value = company.officialName;
+		this.refKey.current.value = company.officialName;
 		window.location.href = `/company/${company.id}`;
 		// this.setState({ searchedCompanies: null, cursor: 0 });
 	};
 
 	highlightMatchedWords = text => {
-		let key = this.inputKey.current.value;
+		let key = this.refKey.current.value;
 		if (!key || !key.length || !text || !text.length) {
 			return text;
 		}
@@ -215,8 +217,8 @@ export default class Header extends Component {
 		} = this.state;
 		const { needSearchBar, isTransparent } = this.props;
 
-		let userData = JSON.parse(sessionStorage.getItem("userData"));
-		let menus = userData ? menusInLoggedin : menusInNotLoggedin;
+		let loggedUser = JSON.parse(sessionStorage.getItem("loggedUser"));
+		let menus = loggedUser ? menusInLoggedin : menusInNotLoggedin;
 		const sideBar = (
 			<Sidebar
 				isExpanded={isExpanded}
@@ -242,7 +244,7 @@ export default class Header extends Component {
 						placeholder="Company search"
 						onKeyDown={this.handleKeyDown}
 						onChange={this.handleKeyChange}
-						ref={this.inputKey}
+						ref={this.refKey}
 						onKeyPress={this.handleKeyPress}
 					/>
 				</div>
@@ -287,16 +289,16 @@ export default class Header extends Component {
 								<img src="/images/logo.svg" />
 							</a>
 						</Col>
-						<Col className="item" sm={userData ? 3 : 4}>
+						<Col className="item" sm={loggedUser ? 3 : 4}>
 							{!isMobile ? searchBar : <div />}
 						</Col>
-						{userData ? (
+						{loggedUser ? (
 							<Col className="item user" sm={3}>
 								<DropdownButton
 									id="dropdown-basic-button"
 									title={
-										userData
-											? userData.email
+										loggedUser
+											? loggedUser.email
 											: "User email address "
 									}
 								>
@@ -320,7 +322,7 @@ export default class Header extends Component {
 
 						<Col
 							className="item lang"
-							sm={{ span: "2", offset: userData ? "0" : "2" }}
+							sm={{ span: "2", offset: loggedUser ? "0" : "2" }}
 						>
 							<a href="/">
 								<img src="images/flag/italy.png" alt="" />

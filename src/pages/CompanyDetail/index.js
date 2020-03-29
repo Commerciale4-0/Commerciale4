@@ -19,9 +19,7 @@ export default class CompanyDetail extends Component {
             return;
         }
 
-        await requestAPI("/user/get-user", "POST", {
-            id: id
-        })
+        await requestAPI(`/user/${id}`, "GET")
             .then(res => res.data)
             .then(data => {
                 if (data && data.length) {

@@ -5,12 +5,43 @@ import PostItem from "../../PostItem";
 export default class ProfileNews extends Component {
 	constructor(props) {
 		super(props);
+
+		this.state = {
+			photoFileName: "No image choosed"
+		};
+
+		this.refBrowse = React.createRef();
 	}
 
-	handleClickPhoto = e => {};
+	handleClickPhoto = e => {
+		this.refBrowse.current.click();
+	};
 	handleClickPublish = e => {};
 	handleDeleteNews = e => {
 		console.log(e);
+	};
+
+	handleChangeImage = e => {
+		if (!e.target.files || !e.target.files.length) {
+			return;
+		}
+
+		this.setState({ photoFileName: e.target.files[0].name });
+
+		// const reader = new FileReader();
+		// reader.addEventListener(
+		// 	"load",
+		// 	() => {
+		// 		this.setState({
+		// 			targetToCrop: {
+		// 				...this.state.targetToCrop,
+		// 				image: reader.result
+		// 			}
+		// 		});
+		// 	},
+		// 	false
+		// );
+		// reader.readAsDataURL(e.target.files[0]);
 	};
 
 	render() {
@@ -24,6 +55,7 @@ export default class ProfileNews extends Component {
 			date: "03/23/2020"
 		};
 
+		const { photoFileName } = this.state;
 		return (
 			<div className="news-view">
 				<div className="mb-2 text-bold text-uppercase text-large">
@@ -42,9 +74,17 @@ export default class ProfileNews extends Component {
 						className="secondary btn-photo"
 						onClick={this.handleClickPhoto}
 					>
+						<input
+							type="file"
+							onChange={this.handleChangeImage}
+							style={{ display: "none" }}
+							ref={this.refBrowse}
+							accept="image/*"
+						/>
 						<i className="fa fa-upload pr-2" />
 						Upload a photo
 					</button>
+					<span className="pl-2">{photoFileName}</span>
 					<button
 						className="float-right"
 						style={{ minWidth: 160 }}

@@ -1,0 +1,89 @@
+type User {
+  id: ID!
+  email: String
+  password: String
+  active: String
+  verify: String
+  officialName: String
+  region: String
+  city: String
+  vatNumber: String
+  atecoCode: String
+  pec: String
+  typeOfCompany: String
+  tags: [String]
+  employees: String
+  revenues: String
+  description: String
+  logo: String
+  background: String
+  websiteUrl: String
+  headquarters: String
+  iso: String
+  productOrServicePhoto: [String]
+  productOrServiceDescription: String
+  address: String
+  phoneNumber: String
+  secondEmail: String
+  latitude: Float
+  longitude: Float
+  introduction: String
+  overview: String
+}
+type Posts {
+  userId: ID!
+  title: String!
+  content: String
+  postImage: String
+  published: String
+  modified: String
+}
+
+type Query {
+  allUsers: [User!]
+  findUserByEmail(email: String): [User!]
+  findUserByActive(active: String): [User!]
+  findUserByEmailAndActive(email: String, active: String): [User!]
+  findUserByEmailAndPassAndActive(
+    email: String
+    password: String
+    active: String
+  ): [User!]
+  findUserById(id: ID!): [User!]
+
+  findPostsByUserId(userId: ID!): [Posts!]
+}
+
+# mutation CreateUser {
+#   createUser(
+#     data: {
+#       email: ""
+#       password: ""
+#       active: ""
+#       verify: ""
+#       officialName: ""
+#       region: ""
+#       city: ""
+#       vatNumber: ""
+#       atecoCode: ""
+#       pec: ""
+#       typeOfCompany: ""
+#       tags: ""
+#       employeesCount: ""
+#       revenues: ""
+#       description: ""
+#       logo: ""
+#       background: ""
+#       websiteUrl: ""
+#       headquarters: ""
+#       iso: ""
+#       productOrServicePhoto: ""
+#       productOrServiceDescription: ""
+#       address: ""
+#       phoneNumber: ""
+#       secondEmail: ""
+#     }
+#   ) {
+#     _id
+#   }
+# }

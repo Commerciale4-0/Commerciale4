@@ -46,12 +46,12 @@ export default class SearchForm extends Component {
 			isEnableRadius: false
 		};
 
-		// this.inputKey = React.createRef();
+		// this.refKey = React.createRef();
 	}
 
 	componentWillReceiveProps = props => {
 		if (props.initialFilter && props.update) {
-			// this.inputKey.current.setInputValue(props.initialFilter.key);
+			// this.refKey.current.setInputValue(props.initialFilter.key);
 			this.setState({
 				selectedCity: props.initialFilter.city,
 				selectedRegion: props.initialFilter.region,
@@ -196,7 +196,7 @@ export default class SearchForm extends Component {
 	};
 
 	handleClickSearch = () => {
-		// let key = this.inputKey.current.keyword;
+		// let key = this.refKey.current.keyword;
 
 		this.props.handleSearch({
 			// key: key && key.trim().length ? key : null,
@@ -235,7 +235,7 @@ export default class SearchForm extends Component {
 		return (
 			<div className="my-form search-form">
 				{/* <div className="search-bar-field">
-                    <SearchInput ref={this.inputKey} />
+                    <SearchInput ref={this.refKey} />
                 </div> */}
 				<Row className="mb-2">
 					<Col className="group-title">
