@@ -45,7 +45,7 @@ export default class DetailOverView extends Component {
                     <p className="text-uppercase text-bold text-dark-light mb-1">
                         Introduction
                     </p>
-                    <p className="font-15">
+                    <p className="font-15 text-gray">
                         Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
                         sed diam nonumy eirmod tempor invidunt ut labore et
                         dolore magna aliquyam erat, sed diam voluptua. At vero
@@ -61,7 +61,7 @@ export default class DetailOverView extends Component {
                     <p className="text-uppercase text-bold text-dark-light mb-1 pt-2">
                         What we do!
                     </p>
-                    <p className="font-15">
+                    <p className="font-15 text-gray">
                         Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
                         sed diam nonumy eirmod tempor invidunt ut labore et
                         dolore magna aliquyam erat, sed diam voluptua. At vero

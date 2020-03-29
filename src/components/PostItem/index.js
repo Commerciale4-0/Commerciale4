@@ -52,7 +52,7 @@ export default class PostItem extends Component {
                                 {data.title}
                             </p>
                         </div>
-                        <p className="mt-2">{data.description}</p>
+                        <p className="mt-2 text-gray">{data.description}</p>
                         <p className="publish-date">Published on {data.date}</p>
                     </div>
                 ) : (
@@ -74,7 +74,7 @@ export default class PostItem extends Component {
                             <p className="text-uppercase text-bold text-dark-light">
                                 {data.title}
                             </p>
-                            <p>{data.description}</p>
+                            <p className="text-gray">{data.description}</p>
                             <p className="publish-date">
                                 Published on {data.date}
                             </p>
