@@ -292,9 +292,9 @@ router.get("/profile/:id", async (req, res) => {
 const s3Setting = () => {
     AWS.config.setPromisesDependency(require("bluebird"));
     AWS.config.update({
-        accessKeyId: process.env.AWS_ACCESS_KEY,
-        secretAccessKey: process.env.AWS_SECRET_KEY,
-        region: process.env.AWS_BUCKET_REGION
+        accessKeyId: process.env.BUCKET_ACCESS_KEY,
+        secretAccessKey: process.env.BUCKET_SECRET_KEY,
+        region: process.env.BUCKET_REGION
     });
 };
 
@@ -305,7 +305,7 @@ async function deleteImage(keyArray) {
     for (let i in keyArray) {
         if (keyArray[i]) {
             const params = {
-                Bucket: process.env.AWS_BUCKET_NAME,
+                Bucket: process.env.BUCKET_NAME,
                 Key: keyArray[i] //if any sub folder-> path/of/the/folder.ext
             };
             try {
@@ -343,7 +343,7 @@ async function singleImageUpload(imageData, userID) {
     let fileName = "image-" + Date.now() + "." + extension;
 
     const params = {
-        Bucket: process.env.AWS_BUCKET_NAME,
+        Bucket: process.env.BUCKET_NAME,
         Key: "user-" + userID + "/" + fileName, // type is not required
         Body: imageBuffer,
         ACL: "public-read",
@@ -380,7 +380,7 @@ async function multipleImageUpload(imageData, userID) {
             let extension = imageType.substr(6, imageType.length);
             let fileName = "image-" + Date.now() + "." + extension;
             let params = {
-                Bucket: process.env.AWS_BUCKET_NAME,
+                Bucket: process.env.BUCKET_NAME,
                 Key: "user-" + userID + "/" + fileName, // type is not required
                 Body: imageBuffer,
                 ACL: "public-read",
