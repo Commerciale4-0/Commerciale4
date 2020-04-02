@@ -3,49 +3,51 @@ import DetailHeader from "../../components/Detail/Header";
 import DetailBody from "../../components/Detail/Body";
 import "./index.css";
 import { requestAPI } from "../../utils/api";
+import SpinnerView from "../../components/SpinnerView";
 
 export default class CompanyDetail extends Component {
-    constructor(props) {
-        super(props);
+	constructor(props) {
+		super(props);
 
-        this.state = {
-            company: null
-        };
-    }
+		this.state = {
+			profile: null,
+			isProcessing: false
+		};
+	}
 
-    componentDidMount = async () => {
-        let id = this.props.match.params.id;
-        if (!id) {
-            return;
-        }
+	componentDidMount = async () => {
+		let id = this.props.match.params.id;
+		if (!id) {
+			return;
+		}
 
-        await requestAPI(`/user/${id}`, "GET")
-            .then(res => res.data)
-            .then(data => {
-                if (data && data.length) {
-                    this.setState({ company: data[0] });
-                } else {
-                    console.log("Connection failed!");
-                }
-            })
-            .catch(e => {
-                console.log("Connection failed!");
-            });
-    };
+		this.setState({ isProcessing: true });
+		await requestAPI(`/user/${id}`, "GET")
+			.then(res => res.data)
+			.then(data => {
+				if (data) {
+					this.setState({ profile: data });
+				} else {
+					console.log("Connection failed!");
+				}
+				this.setState({ isProcessing: false });
+			})
+			.catch(e => {
+				console.log("Connection failed!!");
+				this.setState({ isProcessing: false });
+			});
+	};
 
-    render() {
-        const { company } = this.state;
-        return (
-            <div>
-                {company ? (
-                    <div className="company-detail container">
-                        <DetailHeader company={company} />
-                        <DetailBody company={company} />
-                    </div>
-                ) : (
-                    <div />
-                )}
-            </div>
-        );
-    }
+	render() {
+		const { profile, isProcessing } = this.state;
+		return (
+			<div>
+				<div className="company-detail container">
+					<DetailHeader profile={profile && profile.user} />
+					<DetailBody profile={profile} />
+				</div>
+				{isProcessing && <SpinnerView />}
+			</div>
+		);
+	}
 }

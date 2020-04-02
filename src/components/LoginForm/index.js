@@ -1,13 +1,19 @@
 import React, { Component } from "react";
 import "./index.css";
 import { requestAPI } from "../../utils/api";
+import { LOGGED_USER } from "../../utils";
+import * as Validate from "../../utils/Validate";
+import { Alert } from "react-bootstrap";
+import SpinnerView from "../SpinnerView";
 
 export default class LoginForm extends Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
-			remember: false
+			remember: false,
+			alertData: null,
+			isProcessing: false
 		};
 
 		this.refEmail = React.createRef();
@@ -24,7 +30,22 @@ export default class LoginForm extends Component {
 		});
 	};
 
+	validate = () => {
+		let valid = Validate.checkEmail(this.refEmail.current.value);
+		if (valid.code !== Validate.VALID) {
+			alert("Email address" + valid.msg);
+			return false;
+		}
+
+		return true;
+	};
+
 	handleClickLogin = e => {
+		if (!this.validate()) {
+			return;
+		}
+
+		this.setState({ isProcessing: true });
 		requestAPI("/user/login", "POST", {
 			email: this.refEmail.current.value,
 			password: this.refPassword.current.value
@@ -32,13 +53,16 @@ export default class LoginForm extends Component {
 			if (res.status !== 1) {
 				alert(res.message);
 			} else {
-				sessionStorage.setItem("loggedUser", JSON.stringify(res.data));
+				sessionStorage.setItem(LOGGED_USER, JSON.stringify(res.data));
 				window.location.href = "/";
 			}
+			this.setState({ isProcessing: false });
 		});
 	};
 
 	render() {
+		let { alertData, isProcessing } = this.state;
+
 		const bottomPanelSM = (
 			<div className="bottom-panel-sm">
 				<div className="mx-auto w-25 mt-4">
@@ -96,6 +120,11 @@ export default class LoginForm extends Component {
 
 		return (
 			<div className="my-form login-form">
+				{alertData ? (
+					<Alert variant={alertData.variant}>{alertData.text}</Alert>
+				) : (
+					<div></div>
+				)}
 				<span className="title text-center mt-4">log in</span>
 				<div className="input-row">
 					<div className="mx-auto">
@@ -121,6 +150,7 @@ export default class LoginForm extends Component {
 				</div>
 				{bottomPanelSM}
 				{bottomPanelXS}
+				{isProcessing && <SpinnerView />}
 			</div>
 		);
 	}

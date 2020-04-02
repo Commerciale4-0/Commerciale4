@@ -3,6 +3,7 @@ import "./index.css";
 import DetailOverview from "../Overview";
 import DetailProduct from "../Product";
 import DetailContacts from "../Contacts";
+import { stringWithUnitFromNumber } from "../../../utils";
 
 const MENUS = [
     { id: 1, title: "About us" },
@@ -61,7 +62,7 @@ export default class DetailBody extends Component {
     };
 
     render() {
-        const { company } = this.props;
+        const { profile } = this.props;
         const { selectedMenu, isMobile } = this.state;
 
         const menuPanel = (
@@ -85,34 +86,35 @@ export default class DetailBody extends Component {
                 <div>
                     <p className="-employees">
                         <i className="fa fa-users" />
-                        {company.employees}
+                        {profile &&
+                            stringWithUnitFromNumber(profile.user.employees)}
                     </p>
                     <p className="-revenues">
                         <i className="fa fa-line-chart" />
-                        {company.revenues}
+                        {profile &&
+                            stringWithUnitFromNumber(profile.user.revenues)}
                     </p>
                     <p className="-iso">
                         <span>ISO</span>
-                        9001
+                        {profile && profile.user.iso}
                     </p>
-                </div>
-                <div>
                     <p className="-ateco">
                         <span>NACE</span>
-                        {company.atecoCode}
+                        {profile && profile.user.ateco}
                     </p>
-                    <p className="-type">
-                        <span>TYPE</span>
-                        {company.typeOfCompany}
-                    </p>
+                </div>
+                <div className="-tags">
+                    <span>TYPE</span>
+                    {profile && profile.user.typeOfCompany}
                 </div>
                 <div className="-tags">
                     <i className="fa fa-tags" />
                     <div>
-                        <label>Lasercut</label>
-                        <label>Welding</label>
-                        <label>CNC</label>
-                        <label>bend</label>
+                        {profile &&
+                            profile.user.tags &&
+                            profile.user.tags.map((tag, index) => (
+                                <label key={index}>{tag}</label>
+                            ))}
                     </div>
                 </div>
             </div>
@@ -126,13 +128,13 @@ export default class DetailBody extends Component {
                 </div>
                 <div className="right-panel" ref={this.rightPanel}>
                     {selectedMenu === 1 ? (
-                        <DetailOverview company={company} />
+                        <DetailOverview profile={profile} />
                     ) : selectedMenu === 2 ? (
-                        <DetailProduct company={company} />
-                    ) : selectedMenu === 3 ? (
-                        <DetailContacts company={company} />
+                        <DetailProduct profile={profile} />
                     ) : (
-                        <div />
+                        selectedMenu === 3 && (
+                            <DetailContacts profile={profile} />
+                        )
                     )}
                 </div>
             </div>

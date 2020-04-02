@@ -4,6 +4,9 @@ const { Utils } = require("../utils");
 const { client, query } = require("../db");
 const q = query;
 
+const crypto = require("crypto");
+const AWS = require("aws-sdk");
+
 function sendMailer(emailData) {
     const transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
@@ -24,7 +27,17 @@ function sendMailer(emailData) {
 
     return transporter.sendMail(mailOption);
 }
-
+const encrypt = password => {
+    let mykey = crypto.createCipher("aes-128-cbc", password);
+    let encodePassword = mykey.update("abc", "utf8", "hex");
+    encodePassword += mykey.final("hex");
+    return encodePassword;
+};
+const getID = () => {
+    const hrTime = process.hrtime();
+    const nanoSecond = hrTime[0] * 1000000000 + hrTime[1];
+    return nanoSecond;
+};
 router.post("/verify-pec", async (req, res) => {
     let data = req.body;
     // let html = `${Utils.VERIFY_EMAIL_MESSAGE}
@@ -48,7 +61,6 @@ router.get("/hello", (req, res) => {
 // login route
 router.post("/login", async (req, res) => {
     let data = req.body;
-
     try {
         let result = await client.query(
             q.Map(
@@ -56,20 +68,30 @@ router.post("/login", async (req, res) => {
                     q.Match(
                         q.Index("findUserByEmailAndPassAndActive"),
                         data.email,
-                        data.password,
+                        encrypt(data.password),
                         "1"
                     )
                 ),
                 q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))
             )
         );
-
-        if (result.data.length) {
-            res.send({ status: 1, data: result.data[0] });
-        } else {
+        if (!result.data.length) {
             res.send({
                 status: 0,
                 message: "Email or password is incorrect"
+            });
+        } else {
+            let posts = await client.query(
+                q.Map(
+                    q.Paginate(
+                        q.Match(q.Index("findPostsByUserId"), result.data[0].id)
+                    ),
+                    q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))
+                )
+            );
+            res.send({
+                status: 1,
+                data: { user: result.data[0], posts: posts.data }
             });
         }
     } catch (error) {
@@ -92,7 +114,12 @@ router.post("/register", async (req, res) => {
         try {
             result = await client.query(
                 q.Create(q.Collection("User"), {
-                    data: { ...data, active: "0" }
+                    data: {
+                        ...data,
+                        active: "0",
+                        id: getID(),
+                        password: encrypt(data.password)
+                    }
                 })
             );
 
@@ -172,13 +199,19 @@ router.post("/forgot-password", async (req, res) => {
 //reset password
 router.post("/reset-password", async (req, res) => {
     let data = req.body;
+
     try {
-        await client.query(
+        let result = await client.query(
             q.Update(q.Ref(q.Collection("User"), data.userId), {
-                data: { password: data.password }
+                data: { password: encrypt(data.password) }
             })
         );
-        res.send({ status: 1, message: "Password has been changed" });
+
+        if (!result.length) {
+            res.send({ status: 0, message: "The user doesn't exist" });
+        } else {
+            res.send({ status: 1, message: "Password has been changed" });
+        }
     } catch (e) {
         res.send(e);
     }
@@ -186,26 +219,52 @@ router.post("/reset-password", async (req, res) => {
 
 //get users 3.28
 router.get("/:id", async (req, res) => {
-    let result = null;
-    try {
-        if (req.params.id !== "all") {
-            result = await client.query(
+    console.log(req.params.id);
+    if (req.params.id !== "all") {
+        try {
+            let result = await client.query(
                 q.Map(
-                    q.Paginate(q.Match(q.Index("findUserById"), req.params.id)),
+                    q.Paginate(
+                        q.Match(
+                            q.Index("findUserById"),
+                            parseInt(req.params.id)
+                        )
+                    ),
                     q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))
                 )
             );
-        } else {
-            result = await client.query(
+            let posts = await client.query(
+                q.Map(
+                    q.Paginate(
+                        q.Match(
+                            q.Index("findPostsByUserId"),
+                            parseInt(req.params.id)
+                        )
+                    ),
+                    q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))
+                )
+            );
+            res.send({
+                status: 1,
+                data: { user: result.data[0], posts: posts.data }
+            });
+        } catch (error) {
+            console.log(error);
+            res.send({ status: 0, data: "Database connection failed!" });
+        }
+    } else {
+        try {
+            let result = await client.query(
                 q.Map(
                     q.Paginate(q.Match(q.Index("findUserByActive"), "1")),
                     q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))
                 )
             );
+            res.send({ status: 1, data: result.data });
+        } catch (error) {
+            console.log(error);
+            res.send({ status: 0, data: "Database connection failed!" });
         }
-        res.send({ status: 1, data: result.data });
-    } catch (e) {
-        res.send({ status: 0, data: "Database connection failed!" });
     }
 });
 ///get profile
@@ -233,29 +292,61 @@ router.get("/profile/:id", async (req, res) => {
 const s3Setting = () => {
     AWS.config.setPromisesDependency(require("bluebird"));
     AWS.config.update({
-        accessKeyId: process.env.ACCESS_KEY_ID,
-        secretAccessKey: process.env.SECRET_ACCESS_KEY,
-        region: process.env.REGION
+        accessKeyId: process.env.AWS_ACCESS_KEY,
+        secretAccessKey: process.env.AWS_SECRET_KEY,
+        region: process.env.AWS_BUCKET_REGION
     });
 };
 
-async function singleImageUpload(imageData, userID) {
+async function deleteImage(keyArray) {
     s3Setting();
     const s3 = new AWS.S3();
+
+    for (let i in keyArray) {
+        if (keyArray[i]) {
+            const params = {
+                Bucket: process.env.AWS_BUCKET_NAME,
+                Key: keyArray[i] //if any sub folder-> path/of/the/folder.ext
+            };
+            try {
+                await s3.headObject(params).promise();
+                console.log("File Found in S3");
+                try {
+                    await s3.deleteObject(params).promise();
+                } catch (err) {
+                    console.log(
+                        "ERROR in file Deleting : " + JSON.stringify(err)
+                    );
+                    return "ERROR in file Deleting!";
+                }
+            } catch (err) {
+                console.log("File not Found ERROR : " + err.code);
+                return "File not Found ERROR";
+            }
+        }
+    }
+}
+
+async function singleImageUpload(imageData, userID) {
+    s3Setting();
+
+    const s3 = new AWS.S3();
+
     let matches = imageData.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
     if (matches.length !== 3) {
         return new Error("Invalid input string");
     }
+
     let imageType = matches[1];
     let imageBuffer = Buffer.from(matches[2], "base64");
-    let extension = mime.extension(imageType);
+    let extension = imageType.substr(6, imageType.length);
     let fileName = "image-" + Date.now() + "." + extension;
 
     const params = {
-        Bucket: "commerciale",
+        Bucket: process.env.AWS_BUCKET_NAME,
         Key: "user-" + userID + "/" + fileName, // type is not required
         Body: imageBuffer,
-        // ACL: "public-read",
+        ACL: "public-read",
         ContentEncoding: "base64", // required
         ContentType: `${imageType}` // required. Notice the back ticks
     };
@@ -276,30 +367,34 @@ async function multipleImageUpload(imageData, userID) {
     let location = [];
     let key = [];
 
-    for (let values in imageData) {
-        let matches = imageData[values].match(
+    for (let index in imageData) {
+        let matches = imageData[index].match(
             /^data:([A-Za-z-+\/]+);base64,(.+)$/
         );
-        if (matches.length !== 3) {
-            return new Error("Invalid input string");
-        }
-        let imageType = matches[1];
-        let imageBuffer = Buffer.from(matches[2], "base64");
-        let extension = mime.extension(imageType);
-        let fileName = "image-" + Date.now() + "." + extension;
-        let params = {
-            Bucket: "commerciale",
-            Key: "user-" + userID + "/" + fileName, // type is not required
-            Body: imageBuffer,
-            // ACL: "public-read",
-            ContentEncoding: "base64", // required
-            ContentType: `${imageType}` // required. Notice the back ticks
-        };
-        try {
-            const { Location, Key } = await s3.upload(params).promise();
-            key.push(Key);
-        } catch (error) {
-            return error;
+        if (matches) {
+            if (matches.length !== 3) {
+                return new Error("Invalid input string");
+            }
+            let imageType = matches[1];
+            let imageBuffer = Buffer.from(matches[2], "base64");
+            let extension = imageType.substr(6, imageType.length);
+            let fileName = "image-" + Date.now() + "." + extension;
+            let params = {
+                Bucket: process.env.AWS_BUCKET_NAME,
+                Key: "user-" + userID + "/" + fileName, // type is not required
+                Body: imageBuffer,
+                ACL: "public-read",
+                ContentEncoding: "base64", // required
+                ContentType: `${imageType}` // required. Notice the back ticks
+            };
+            try {
+                const { Location, Key } = await s3.upload(params).promise();
+                key.push(Key);
+            } catch (error) {
+                return error;
+            }
+        } else {
+            key.push(imageData[index]);
         }
     }
     return key;
@@ -307,44 +402,64 @@ async function multipleImageUpload(imageData, userID) {
 
 ///Edit User Profile Api
 router.post("/profile/edit", async (req, res) => {
-    let editedData = req.body;
-    let logo = "";
-    let background = "";
-    let productPhoto = "";
-    try {
-        logo = await singleImageUpload(
-            editedData.imageData.logo,
-            editedData.id
-        );
-        background = await singleImageUpload(
-            editedData.imageData.background,
-            editedData.id
-        );
-        productPhoto = await multipleImageUpload(
-            editedData.imageData.productOrServicePhoto,
-            editedData.id
-        );
-    } catch (error) {
-        res.send({ status: 0, message: "Image uploading failed!" });
+    let data = req.body;
+    let logoUrl = null;
+    let backgroundUrl = null;
+    let productPhotos = null;
+    let saveToData = { data: data.stringData };
+
+    if (data.imageData.background) {
+        try {
+            backgroundUrl = await singleImageUpload(
+                data.imageData.background,
+                data.id
+            );
+        } catch (error) {
+            console.log(error);
+        }
+        saveToData.data.background = backgroundUrl;
     }
+
+    if (data.imageData.logo) {
+        try {
+            logoUrl = await singleImageUpload(data.imageData.logo, data.id);
+        } catch (error) {
+            console.log(error);
+        }
+        saveToData.data.logo = logoUrl;
+    }
+
+    if (data.imageData.removedPhotos) {
+        await deleteImage(data.imageData.removedPhotos);
+    }
+
+    if (data.imageData.productPhotos) {
+        try {
+            productPhotos = await multipleImageUpload(
+                data.imageData.productPhotos,
+                data.id
+            );
+        } catch (error) {
+            console.log(error);
+        }
+        saveToData.data.productPhotos = productPhotos;
+    }
+
     try {
-        await client.query(
+        let result = await client.query(
             q.Update(
                 q.Select(
                     "ref",
-                    q.Get(q.Match(q.Index("findUserById"), editedData.id))
+                    q.Get(q.Match(q.Index("findUserById"), data.id))
                 ),
-                {
-                    data: {
-                        ...editedData.stringData,
-                        logo: logo,
-                        background: background,
-                        productOrServicePhoto: productPhoto
-                    }
-                }
+                saveToData
             )
         );
-        res.send({ status: 1, message: "success" });
+
+        res.send({
+            status: 1,
+            data: result.data
+        });
     } catch (error) {
         res.send({ status: 0, message: "Database connection failed!" });
     }
@@ -353,23 +468,148 @@ router.post("/profile/edit", async (req, res) => {
 //// create news api
 router.post("/news/create", async (req, res) => {
     let newsData = req.body;
-    let postedPhoto;
-    try {
-        postedPhoto = await singleImageUpload(newsData.postImage);
-    } catch (error) {
-        res.send({ status: 0, message: "Image uploading failed!" });
+    let photo = null;
+    if (newsData.photo) {
+        try {
+            photo = await singleImageUpload(newsData.photo, newsData.userId);
+        } catch (error) {
+            res.send({ status: 0, message: "Image uploading failed!" });
+        }
     }
 
     try {
-        await client.query(
+        let result = await client.query(
             q.Create(q.Collection("Posts"), {
-                data: { ...newsData, postImage: postedPhoto }
+                data: {
+                    ...newsData,
+                    id: getID(),
+                    photo: photo,
+                    published: Date.now()
+                }
             })
         );
-        res.send({ status: 1, message: "success" });
+        res.send({ status: 1, data: result.data });
     } catch (error) {
         res.send({ status: 0, message: "Database connection failed!" });
     }
 });
 
+//// delete news api
+router.post("/news/delete", async (req, res) => {
+    let data = req.body;
+    let photo = data.photo;
+    if (photo) {
+        try {
+            photo = await deleteImage([photo]);
+        } catch (error) {
+            res.send({ status: 0, message: "Image deleting failed!" });
+        }
+    }
+
+    try {
+        await client.query(
+            q.Delete(
+                q.Select(
+                    "ref",
+                    q.Get(q.Match(q.Index("findPostsById"), data.id))
+                )
+            )
+        );
+        res.send({ status: 1, message: "Deleted successfully!" });
+    } catch (error) {
+        res.send({ status: 0, message: "Database connection failed!" });
+    }
+});
+////delete user api
+router.post("/delete", async (req, res) => {
+    let data = req.body;
+    try {
+        await deleteImage(data.removePhotos);
+    } catch (error) {
+        res.send({ status: 0, message: "Image deleting failed!" });
+    }
+    try {
+        await client.query(
+            q.Delete(
+                q.Select(
+                    "ref",
+                    q.Get(q.Match(q.Index("findUserById"), data.id))
+                )
+            )
+        );
+    } catch (error) {
+        res.send({ status: 0, message: "Database connection failed!" });
+    }
+    try {
+        let isPosts = await client.query(
+            q.Map(
+                q.Paginate(q.Match(q.Index("findPostsByUserId"), data.id)),
+                q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))
+            )
+        );
+        if (isPosts.data.length) {
+            await client.query(
+                q.Delete(
+                    q.Select(
+                        "ref",
+                        q.Get(q.Match(q.Index("findPostsByUserId"), data.id))
+                    )
+                )
+            );
+        }
+    } catch (error) {
+        res.send({ status: 0, message: "Database connection failed!" });
+        console.log(error);
+    }
+    res.send({ status: 1, message: "Deleted successfully!" });
+});
+////update user email
+router.post("/update-email", async (req, res) => {
+    let data = req.body;
+    console.log(data);
+    let saveToData = {
+        data: {
+            email: data.newEmail
+        }
+    };
+    try {
+        let result = await client.query(
+            q.Update(
+                q.Select(
+                    "ref",
+                    q.Get(q.Match(q.Index("findUserById"), data.id))
+                ),
+                saveToData
+            )
+        );
+        res.send({ status: 1, data: result.data.email });
+    } catch (error) {
+        console.log({ status: 0, message: "Database connection failed!" });
+    }
+});
+//////////////////////////////////////////////////////////////////////sgs change password in profile page
+router.post("/change-password", async (req, res) => {
+    let data = req.body;
+
+    try {
+        let result = await client.query(
+            q.Update(
+                q.Select(
+                    "ref",
+                    q.Get(q.Match(q.Index("findUserById"), data.id))
+                ),
+                {
+                    data: { password: encrypt(data.password) }
+                }
+            )
+        );
+        res.send({
+            status: 1,
+            data: result.data.password,
+            message: "Password has been changed"
+        });
+    } catch (e) {
+        res.send({ status: 0, message: "Database connection failed!" });
+    }
+});
 module.exports = router;

@@ -1,13 +1,18 @@
 import React, { Component } from "react";
 import "./index.css";
-import { Row, Col, Spinner } from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 import SearchForm from "../../components/SearchForm";
 import { requestAPI, geocodeByAddress } from "../../utils/api";
 import CompanyCell from "../../components/CompanyCell";
 import { Dropdown } from "react-bootstrap";
 // import Sidebar from "../../components/Sidebar";
 import Pagination from "react-js-pagination";
-import { distanceFromCoords, numberFromStringWithUnit } from "../../utils";
+import {
+	distanceFromCoords,
+	numberFromStringWithUnit,
+	LOGGED_USER
+} from "../../utils";
+import SpinnerView from "../../components/SpinnerView";
 
 const orders = [
 	{ id: 0, title: "Relevance", icon: "sort-amount-desc" },
@@ -19,10 +24,8 @@ const orders = [
 	{ id: 6, title: "↓ Farthest", icon: null }
 ];
 
-const NO_LIMIT = 0;
 const NO_PREV = 1;
 const NO_NEXT = 2;
-const NO_BOTH = 3;
 
 export default class Dashboard extends Component {
 	constructor(props) {
@@ -36,7 +39,7 @@ export default class Dashboard extends Component {
 			isExpandedSidebar: false,
 			activePage: 1,
 			filter: null,
-			isLoading: false,
+			isProcessing: false,
 			viewMode: 0,
 			itemsCountPerPage: 30,
 			pageLimit: NO_PREV,
@@ -55,7 +58,7 @@ export default class Dashboard extends Component {
 			});
 			window.addEventListener("scroll", this.handleWindowScroll);
 		}
-		this.setState({ isLoading: true });
+		this.setState({ isProcessing: true });
 
 		this.getCurrentLocation();
 
@@ -82,7 +85,7 @@ export default class Dashboard extends Component {
 	};
 
 	getCurrentLocation = () => {
-		let loggedUser = JSON.parse(sessionStorage.getItem("loggedUser"));
+		let loggedUser = JSON.parse(sessionStorage.getItem(LOGGED_USER));
 		if (loggedUser && loggedUser.latitude && loggedUser.longitude) {
 			this.setState({
 				myLocation: {
@@ -136,7 +139,7 @@ export default class Dashboard extends Component {
 						);
 					}
 
-					this.setState({ isLoading: false });
+					this.setState({ isProcessing: false });
 				} else {
 					this.setState({ failCount: failCount + 1 });
 					console.log("failCount", failCount + 1);
@@ -325,7 +328,7 @@ export default class Dashboard extends Component {
 	};
 
 	applyFilter = async (filter, companies = null) => {
-		this.setState({ isLoading: true });
+		this.setState({ isProcessing: true });
 		this.setState({ filter: filter });
 
 		this.setState({
@@ -364,7 +367,7 @@ export default class Dashboard extends Component {
 			1,
 			this.state.itemsCountPerPage
 		);
-		this.setState({ isLoading: false });
+		this.setState({ isProcessing: false });
 	};
 
 	getCompaniesInRadius = async (companies, city, region, radius) => {
@@ -443,7 +446,7 @@ export default class Dashboard extends Component {
 			selectedOrder,
 			isExpandedSidebar,
 			activePage,
-			isLoading,
+			isProcessing,
 			filter,
 			updateSearchForm,
 			viewMode,
@@ -545,11 +548,11 @@ export default class Dashboard extends Component {
 			</div>
 		);
 
-		const spinnerPanel = (
-			<div className="spinner-panel">
-				<Spinner animation="border" />
-			</div>
-		);
+		// const spinnerPanel = (
+		// 	<div className="spinner-panel">
+		// 		<Spinner animation="border" />
+		// 	</div>
+		// );
 
 		const listPanel = (
 			<div className="list-panel">
@@ -603,8 +606,8 @@ export default class Dashboard extends Component {
 				<div className={`right-panel ${isExpandedSidebar ? "xs" : ""}`}>
 					{filterBarMD}
 					{filterBarXS}
-					{isLoading ? (
-						spinnerPanel
+					{isProcessing ? (
+						<SpinnerView />
 					) : filteredCompanies && filteredCompanies.length ? (
 						listPanel
 					) : (

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./index.css";
+import { stringWithUnitFromNumber } from "../../utils";
 
 export default class CompanyCell extends Component {
     constructor(props) {
@@ -28,13 +29,20 @@ export default class CompanyCell extends Component {
 
     render() {
         const { company, viewMode, handleClickProfile } = this.props;
-
         return (
             <div className={`company-cell row ${viewMode ? "list" : "grid"}`}>
                 <div className={`logo col-xl-2 col-3`}>
-                    <img src="images/logo.png" alt="" />
+                    <img
+                        src={
+                            company.logo
+                                ? process.env.REACT_APP_AWS_PREFIX +
+                                  company.logo
+                                : "images/no-logo.jpg"
+                        }
+                        alt=""
+                    />
                 </div>
-                <div className="col-9 title">{company.officialName}</div>
+                <div className="col-9 title pl-2">{company.officialName}</div>
                 <div
                     className={`${
                         viewMode ? "col-xl-10 col-md-9" : "col-md-12"
@@ -59,11 +67,11 @@ export default class CompanyCell extends Component {
 							<div className="row px-0"> */}
                         <span>
                             <i className="fa fa-line-chart" />
-                            {company.revenues}
+                            {stringWithUnitFromNumber(company.revenues)}
                         </span>
                         <span>
                             <i className="fa fa-users" />
-                            {company.employees}
+                            {stringWithUnitFromNumber(company.employees)}
                         </span>
                         <span ref={this.spanISO}>ISO: 9001</span>
                         {/* </div>
@@ -72,15 +80,24 @@ export default class CompanyCell extends Component {
                     <hr />
                     <div className="d-flex">
                         <i className="fa fa-id-card-o pt-1" />
-                        <div className="pl-1">{company.description}</div>
+                        <div className="pl-1">
+                            {company.introduction &&
+                                company.introduction.substr(0, 90) + "..."}
+                        </div>
                     </div>
                     <hr />
-                    <div>
+                    <div className="d-flex">
                         <span>
                             <i className="fa fa-tags" />
                         </span>
+                        <div className="tags">
+                            {company.tags &&
+                                company.tags.map((tag, index) => (
+                                    <span key={index}>{tag}</span>
+                                ))}
+                        </div>
                     </div>
-                    <div className="d-flex justify-content-end pt-1">
+                    <div className="d-flex justify-content-end pt-2">
                         <button
                             className="text-uppercase text-bold"
                             onClick={handleClickProfile}

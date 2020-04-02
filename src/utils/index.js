@@ -1,3 +1,5 @@
+export const LOGGED_USER = "loggedUser";
+
 export const COMPANY_TYPES = [
     { value: 1, label: "Product provider" },
     { value: 2, label: "Service provider" },
@@ -308,4 +310,14 @@ export const numberFromStringWithUnit = str => {
         return parseInt(str.substr(0, index)) * 1000000;
     }
     return parseInt(str);
+};
+
+export const stringWithUnitFromNumber = number => {
+    if (number >= 1000000) {
+        return `${number / 1000000}M`;
+    }
+    if (number >= 1000) {
+        return `${number / 1000}K`;
+    }
+    return number;
 };

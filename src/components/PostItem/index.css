@@ -4,15 +4,19 @@
 	background: white;
 	padding: 14px 20px;
 	margin-bottom: 10px;
+	cursor: pointer;
 }
 
-.post-item img {
+.post-item .post-img {
 	background: #eee;
 	max-width: 140px;
-	max-height: 140px;
+	min-width: 140px;
+	max-height: 100px;
+	min-height: 100px;
 	margin-top: auto;
 	margin-bottom: auto;
 	border-radius: 4px;
+	cursor: pointer;
 }
 
 .post-item .publish-date {
@@ -40,9 +44,11 @@
 		max-width: 80px;
 		max-height: 80px;
 	}
+
 	.post-item p {
 		margin-bottom: 4px;
 	}
+
 	.post-item .publish-date {
 		font-size: 12px;
 	}

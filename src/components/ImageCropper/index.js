@@ -4,115 +4,131 @@ import "react-image-crop/dist/ReactCrop.css";
 import "./index.css";
 
 export default class ImageCropper extends Component {
-    constructor(props) {
-        super(props);
+	constructor(props) {
+		super(props);
 
-        this.state = {
-            crop: {
-                unit: "%",
-                x: 0,
-                y: 0,
-                width: 100,
-                height: 100,
-                aspect: props.aspect
-            }
-        };
-    }
+		this.state = {
+			crop: {
+				unit: "%",
+				x: 0,
+				y: 0,
+				width: 100,
+				height: 100,
+				aspect: props.options.ratio
+			},
+			image: null
+		};
+	}
 
-    componentDidMount = () => {
-        // const { src } = this.props;
-        // let image = new Image();
-        // image.src = src;
-        // image.onload = () => {
-        //     let elem = document.querySelector(".-content");
-        //     const scaleX = image.width / (elem.offsetWidth - 60);
-        //     const imageHeight = image.height / scaleX;
-        //     if (imageHeight > elem.offsetHeight) {
-        //         console.log(imageHeight, elem.offsetHeight);
-        //     }
-        //     elem.style.maxWidth = image.width / 2 + "px";
-        // };
-    };
+	handleCropChange = crop => {
+		this.setState({ crop });
+	};
 
-    handleCropChange = crop => {
-        this.setState({ crop });
-    };
+	handleSaveImage = async () => {
+		const { options, onSave } = this.props;
+		const { crop, image } = this.state;
 
-    getCroppedImg = (image, crop, fileName) => {
-        const canvas = document.createElement("canvas");
-        let elem = document.querySelector(".ReactCrop");
+		const canvas = document.createElement("canvas");
+		let elem = document.querySelector(".ReactCrop");
 
-        const scaleX = image.naturalWidth / elem.offsetWidth;
-        const scaleY = image.naturalHeight / elem.offsetHeight;
-        canvas.width = crop.width * scaleX;
-        canvas.height = crop.height * scaleY;
-        const ctx = canvas.getContext("2d");
-        console.log(
-            image.naturalWidth,
-            image.naturalHeight,
-            canvas.width,
-            canvas.height,
-            scaleX,
-            scaleY
-        );
+		const scaleX = image.width / elem.offsetWidth;
+		const scaleY = image.height / elem.offsetHeight;
+		canvas.width =
+			crop.width * scaleX < options.maxWidth
+				? crop.width * scaleX
+				: options.maxWidth;
+		canvas.height =
+			crop.height * scaleY < options.maxWidth / options.ratio
+				? crop.height * scaleY
+				: options.maxWidth / options.ratio;
+		const ctx = canvas.getContext("2d");
 
-        ctx.drawImage(
-            image,
-            crop.x * scaleX,
-            crop.y * scaleY,
-            crop.width * scaleX,
-            crop.height * scaleY,
-            0,
-            0,
-            crop.width * scaleX,
-            crop.height * scaleY
-        );
+		ctx.drawImage(
+			image,
+			crop.x * scaleX,
+			crop.y * scaleY,
+			crop.width * scaleX,
+			crop.height * scaleY,
+			0,
+			0,
+			canvas.width,
+			canvas.height
+		);
 
-        // As Base64 string
-        // const base64Image = canvas.toDataURL('image/jpeg');
+		let croppedImage = canvas.toDataURL("image/jpeg");
+		onSave(croppedImage);
+	};
 
-        // As a blob
-        return new Promise((resolve, reject) => {
-            canvas.toBlob(
-                blob => {
-                    blob.name = fileName;
-                    resolve(blob);
-                },
-                "image/jpeg",
-                1
-            );
-        });
-    };
+	componentDidMount = () => {
+		const { options } = this.props;
 
-    handleSaveImage = async () => {
-        const { src, onSave } = this.props;
-        const { crop } = this.state;
-        let image = new Image();
-        image.src = src;
+		let elem = document.querySelector(".ReactCrop__image");
+		elem.style.display = "none";
 
-        let croppedImage = await this.getCroppedImg(image, crop, "temp.jpg");
-        onSave(URL.createObjectURL(croppedImage));
-    };
+		let image = new Image();
+		image.onload = () => {
+			if (image.width > image.height) {
+				if (image.width > 800) {
+					elem.style.width = 800 + "px";
+					elem.style.height =
+						(image.height / image.width) * 800 + "px";
+				} else {
+					elem.style.width = image.width;
+					elem.style.height = image.height;
+				}
+			} else {
+				if (image.height > 600) {
+					elem.style.height = 600 + "px";
+					elem.style.width =
+						(image.width / image.height) * 600 + "px";
+				} else {
+					elem.style.width = image.width;
+					elem.style.height = image.height;
+				}
+			}
+			elem.style.display = "block";
+			let crop = {
+				unit: "%",
+				x: 0,
+				y: 0,
+				width: 100,
+				height: 100,
+				aspect: options.ratio
+			};
 
-    render() {
-        const { src, onCancel, aspect } = this.props;
-        return (
-            <div className="cropper-modal">
-                <div className={`-content ${aspect === 1 && "circle"}`}>
-                    <h5 className="mb-3">Crop image</h5>
-                    <ReactCrop
-                        src={src}
-                        crop={this.state.crop}
-                        onChange={this.handleCropChange}
-                    />
-                    <div className="mt-2 d-flex justify-content-end">
-                        <button className="mr-2" onClick={this.handleSaveImage}>
-                            Save
-                        </button>
-                        <button onClick={onCancel}>Cancel</button>
-                    </div>
-                </div>
-            </div>
-        );
-    }
+			if (image.width / image.height === 1 && options.ratio === 1) {
+				crop.unit = "px";
+				crop.width = elem.offsetWidth;
+				crop.height = elem.offsetHeight;
+			}
+
+			this.setState({
+				crop
+			});
+		};
+		image.src = options.image;
+		this.setState({ image });
+	};
+
+	render() {
+		const { options, onCancel } = this.props;
+		return (
+			<div className="cropper-modal">
+				<div className={`-content ${options.ratio === 1 && "circle"}`}>
+					<h5 className="mb-3">Crop image</h5>
+					<ReactCrop
+						src={options.image}
+						crop={this.state.crop}
+						onChange={this.handleCropChange}
+					/>
+					<div className="mt-2 d-flex justify-content-end">
+						<button className="mr-2" onClick={this.handleSaveImage}>
+							Save
+						</button>
+						<button onClick={onCancel}>Cancel</button>
+					</div>
+				</div>
+			</div>
+		);
+	}
 }

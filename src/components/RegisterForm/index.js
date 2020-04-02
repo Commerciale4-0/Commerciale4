@@ -8,6 +8,7 @@ import * as Validate from "../../utils/Validate";
 
 import MySelect from "../Custom/MySelect";
 import { requestAPI, geocodeByAddress } from "../../utils/api";
+import SpinnerView from "../SpinnerView";
 
 export default class RegisterForm extends Component {
 	constructor(props) {
@@ -21,7 +22,8 @@ export default class RegisterForm extends Component {
 			checkValidCity: false,
 			checkValidCode: false,
 			alertData: null,
-			policyChecked: false
+			policyChecked: false,
+			isProcessing: false
 		};
 
 		this.refName = React.createRef();
@@ -155,74 +157,89 @@ export default class RegisterForm extends Component {
 
 	handleClickDone = async e => {
 		e.preventDefault();
-		if (this.validateStepTwo()) {
-			let region = REGIONS.find(
-				elem => elem.value === this.state.selectedCity.region
-			);
-			region = region ? region.label : "";
-			let latitude = 0.0;
-			let longitude = 0.0;
-			await geocodeByAddress(this.state.selectedCity.label, region).then(
-				res => {
-					if (res) {
-						latitude = res.lat;
-						longitude = res.lng;
-					}
+		if (!this.validateStepTwo()) {
+			return;
+		}
+
+		let region = REGIONS.find(
+			elem => elem.value === this.state.selectedCity.region
+		);
+		region = region ? region.label : "";
+		let latitude = 0.0;
+		let longitude = 0.0;
+		await geocodeByAddress(this.state.selectedCity.label, region).then(
+			res => {
+				if (res) {
+					latitude = res.lat;
+					longitude = res.lng;
 				}
+			}
+		);
+
+		let data = {
+			email: this.refEmail.current.value,
+			password: this.refPassword.current.value,
+			officialName: this.refName.current.value,
+			city: this.state.selectedCity.label,
+			region: region,
+			latitude: latitude,
+			longitude: longitude,
+			vat: this.refVAT.current.value,
+			ateco: this.state.selectedCode.label,
+			pec: this.refPEC.current.value
+		};
+
+		this.setState({ isProcessing: true });
+
+		// requestAPI("/user/register", "POST", data).then(res => {
+		//     console.log("response", res);
+		//     if (res.status !== 1) {
+		//         this.setAlertData(0, res.message);
+		//     } else {
+		//         this.setState({ step: 3 });
+		//         this.setAlertData(
+		//             1,
+		//             `We've sent an email to ${data.email} to verify your account. Please check your email inbox to coutinue.`
+		//         );
+		//     }
+		// });
+		try {
+			let res = await requestAPI("/user/register", "POST", data);
+			this.setState({ isProcessing: false });
+
+			if (res.status !== 1) {
+				this.setAlertData(0, res.message);
+				return;
+			}
+
+			/* it's for just test */
+			this.setState({ step: 3 });
+			this.setAlertData(
+				1,
+				`We've sent an email to ${data.pec} to verify your account. Please check your email inbox to coutinue.`
 			);
+			/**********************/
 
-			let data = {
-				email: this.refEmail.current.value,
-				password: this.refPassword.current.value,
-				officialName: this.refName.current.value,
-				city: this.state.selectedCity.label,
-				region: region,
-				latitude: latitude,
-				longitude: longitude,
-				vatNumber: this.refVAT.current.value,
-				atecoCode: this.state.selectedCode.label,
-				pec: this.refPEC.current.value
-			};
+			// try {
+			//     let res = await requestAPI("/user/verify-pec", "POST", {
+			//         pec: data.pec
+			//     });
 
-			// requestAPI("/user/register", "POST", data).then(res => {
-			//     console.log("response", res);
-			//     if (res.status !== 1) {
+			//     if (res.status === 0) {
 			//         this.setAlertData(0, res.message);
 			//     } else {
 			//         this.setState({ step: 3 });
 			//         this.setAlertData(
 			//             1,
-			//             `We've sent an email to ${data.email} to verify your account. Please check your email inbox to coutinue.`
+			//             `We've sent an email to ${data.pec} to verify your account. Please check your email inbox to coutinue.`
 			//         );
 			//     }
-			// });
-			try {
-				let res = await requestAPI("/user/register", "POST", data);
-				if (res.status !== 1) {
-					this.setAlertData(0, res.message);
-					return;
-				}
-
-				try {
-					let res = await requestAPI("/user/verify-pec", "POST", {
-						pec: data.pec
-					});
-
-					if (res.status === 0) {
-						this.setAlertData(0, res.message);
-					} else {
-						this.setState({ step: 3 });
-						this.setAlertData(
-							1,
-							`We've sent an email to ${data.pec} to verify your account. Please check your email inbox to coutinue.`
-						);
-					}
-				} catch (e) {
-					this.setAlertData(0, "Connection failed!");
-				}
-			} catch (e) {
-				this.setAlertData(0, "Connection failed!");
-			}
+			// } catch (e) {
+			//     this.setAlertData(0, "Connection failed!");
+			// }
+		} catch (e) {
+			this.setAlertData(0, "Connection failed!");
+			this.setState({ isProcessing: false });
 		}
 	};
 
@@ -230,6 +247,10 @@ export default class RegisterForm extends Component {
 		this.setState({
 			policyChecked: e.target.checked
 		});
+	}
+
+	handleClickGoHome() {
+		window.location.href = "/";
 	}
 
 	render() {
@@ -240,7 +261,8 @@ export default class RegisterForm extends Component {
 			selectedCode,
 			checkValidCity,
 			checkValidCode,
-			alertData
+			alertData,
+			isProcessing
 		} = this.state;
 
 		const stepOne = (
@@ -396,12 +418,18 @@ export default class RegisterForm extends Component {
 			</div>
 		);
 
+		const stepThree = (
+			<div className="d-flex justify-content-center">
+				<button onClick={() => this.handleClickGoHome()}>
+					Go to Home
+				</button>
+			</div>
+		);
+
 		return (
-			<form className="my-form register-form">
-				{alertData ? (
+			<div className="my-form register-form">
+				{alertData && (
 					<Alert variant={alertData.variant}>{alertData.text}</Alert>
-				) : (
-					<div></div>
 				)}
 
 				{step < 3 ? (
@@ -410,9 +438,10 @@ export default class RegisterForm extends Component {
 						{stepTwo}
 					</div>
 				) : (
-					<div></div>
+					{ stepThree }
 				)}
-			</form>
+				{isProcessing && <SpinnerView />}
+			</div>
 		);
 	}
 }

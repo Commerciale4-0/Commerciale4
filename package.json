@@ -3,10 +3,10 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
+        "aws-sdk": "^2.648.0",
         "body-parser": "^1.19.0",
         "bootstrap": "^4.4.1",
         "cookie-parser": "^1.4.4",
-        "cropperjs": "^1.5.6",
         "crypto": "^1.0.1",
         "dotenv": "^8.2.0",
         "ejs": "^3.0.1",
@@ -30,7 +30,7 @@
     },
     "scripts": {
         "start": "run-p start:**",
-        "start:lambda": "netlify-lambda serve backend -t 20",
+        "start:lambda": "netlify-lambda serve backend -t 30",
         "start:app": "react-scripts start",
         "build": "run-p build:**",
         "build:lambda": "netlify-lambda build backend",
