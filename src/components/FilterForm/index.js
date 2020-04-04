@@ -189,7 +189,8 @@ export default class FilterForm extends Component {
 			region: this.state.selectedRegion && this.state.selectedRegion.value ? this.state.selectedRegion.label : null,
 			radius: this.state.radius,
 			ateco: this.state.selectedCode && this.state.selectedCode.value ? this.state.selectedCode.label : null,
-			type: this.state.selectedType && this.state.selectedType.value ? this.state.selectedType.label : null,
+			type:
+				this.state.selectedType && this.state.selectedType.value ? (this.state.selectedType.value === 3 ? "all" : this.state.selectedType.label) : null,
 			employeeMin: this.state.selectedEmployeeMin && this.state.selectedEmployeeMin.value ? this.state.selectedEmployeeMin.label : null,
 			employeeMax: this.state.selectedEmployeeMax && this.state.selectedEmployeeMax.value ? this.state.selectedEmployeeMax.label : null,
 			revenueMin: this.state.selectedRevenueMin && this.state.selectedRevenueMin.value ? this.state.selectedRevenueMin.label : null,
