@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./index.css";
 import { stringWithUnitFromNumber } from "../../utils";
+import { LangConsumer } from "../../utils/LanguageContext";
 
 export default class CompanyCell extends Component {
     constructor(props) {
@@ -11,20 +12,24 @@ export default class CompanyCell extends Component {
     }
 
     componentDidMount = () => {
-        if (
-            this.spanDistance.current.offsetWidth >
-            this.spanISO.current.offsetWidth
-        ) {
-            this.spanISO.current.style.width =
-                this.spanDistance.current.offsetWidth + "px";
+        if (this.spanDistance.current.offsetWidth > this.spanISO.current.offsetWidth) {
+            this.spanISO.current.style.width = this.spanDistance.current.offsetWidth + "px";
         }
-        if (
-            this.spanISO.current.offsetWidth >
-            this.spanDistance.current.offsetWidth
-        ) {
-            this.spanDistance.current.style.width =
-                this.spanISO.current.offsetWidth + "px";
+        if (this.spanISO.current.offsetWidth > this.spanDistance.current.offsetWidth) {
+            this.spanDistance.current.style.width = this.spanISO.current.offsetWidth + "px";
         }
+    };
+
+    getInstructonText = (intro) => {
+        if (!intro) {
+            return "";
+        }
+
+        let limit = this.props.viewMode ? 180 : 90;
+        if (intro.length < limit) {
+            return intro;
+        }
+        return intro.substr(0, limit) + "...";
     };
 
     render() {
@@ -32,22 +37,10 @@ export default class CompanyCell extends Component {
         return (
             <div className={`company-cell row ${viewMode ? "list" : "grid"}`}>
                 <div className={`logo col-xl-2 col-3`}>
-                    <img
-                        src={
-                            company.logo
-                                ? process.env.REACT_APP_AWS_PREFIX +
-                                  company.logo
-                                : "images/no-logo.jpg"
-                        }
-                        alt=""
-                    />
+                    <img src={company.logo ? process.env.REACT_APP_AWS_PREFIX + company.logo : "images/no-logo.jpg"} alt="" />
                 </div>
                 <div className="col-9 title pl-2">{company.officialName}</div>
-                <div
-                    className={`${
-                        viewMode ? "col-xl-10 col-md-9" : "col-md-12"
-                    } col-12 content`}
-                >
+                <div className={`${viewMode ? "col-xl-10 col-md-9" : "col-md-12"} col-12 content`}>
                     <h5>{company.officialName}</h5>
                     <div className="d-flex justify-content-between">
                         <span>
@@ -56,9 +49,7 @@ export default class CompanyCell extends Component {
                         </span>
                         <span ref={this.spanDistance}>
                             <i className="fa fa-map-signs" />
-                            {company.distance
-                                ? `${company.distance} km`
-                                : "---"}
+                            {company.distance ? `${company.distance} km` : "---"}
                         </span>
                     </div>
                     <hr />
@@ -73,16 +64,17 @@ export default class CompanyCell extends Component {
                             <i className="fa fa-users" />
                             {stringWithUnitFromNumber(company.employees)}
                         </span>
-                        <span ref={this.spanISO}>ISO: 9001</span>
+                        <span ref={this.spanISO}>ISO: {company.iso}</span>
                         {/* </div>
 						</div> */}
                     </div>
                     <hr />
                     <div className="d-flex">
                         <i className="fa fa-id-card-o pt-1" />
-                        <div className="pl-1">
-                            {company.introduction &&
-                                company.introduction.substr(0, 90) + "..."}
+                        <div className="pl-1" style={{ height: "38px" }}>
+                            <LangConsumer>
+                                {(value) => (value.lang === 2 ? this.getInstructonText(company.introduction) : this.getInstructonText(company.introductionIt))}
+                            </LangConsumer>
                         </div>
                     </div>
                     <hr />
@@ -90,18 +82,10 @@ export default class CompanyCell extends Component {
                         <span>
                             <i className="fa fa-tags" />
                         </span>
-                        <div className="tags">
-                            {company.tags &&
-                                company.tags.map((tag, index) => (
-                                    <span key={index}>{tag}</span>
-                                ))}
-                        </div>
+                        <div className="tags">{company.tags && company.tags.map((tag, index) => <span key={index}>{tag}</span>)}</div>
                     </div>
                     <div className="d-flex justify-content-end pt-2">
-                        <button
-                            className="text-uppercase text-bold"
-                            onClick={handleClickProfile}
-                        >
+                        <button className="text-uppercase text-bold" onClick={handleClickProfile}>
                             profile
                         </button>
                     </div>

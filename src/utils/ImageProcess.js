@@ -20,17 +20,7 @@ export const scaleImage = (image, max) => {
 
 	const ctx = canvas.getContext("2d");
 
-	ctx.drawImage(
-		image,
-		0,
-		0,
-		image.width,
-		image.height,
-		0,
-		0,
-		canvas.width,
-		canvas.height
-	);
+	ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, canvas.width, canvas.height);
 
 	return canvas.toDataURL("image/jpeg");
 };

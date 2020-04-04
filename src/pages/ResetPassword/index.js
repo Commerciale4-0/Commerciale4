@@ -10,7 +10,7 @@ export default class ResetPasswordPage extends Component {
 
 		this.state = {
 			isSuccess: false,
-			alertText: null
+			alertText: null,
 		};
 
 		this.refPassword = React.createRef();
@@ -22,34 +22,31 @@ export default class ResetPasswordPage extends Component {
 		Validate.applyToInput(this.refPassword.current, valid.code);
 		if (valid.code !== Validate.VALID) {
 			this.setState({
-				alertText: "Password" + valid.msg
+				alertText: "Password" + valid.msg,
 			});
 			return;
 		}
 
-		valid = Validate.checkConfirmPassword(
-			this.refPassword.current.value,
-			this.refConfirm.current.value
-		);
+		valid = Validate.checkConfirmPassword(this.refPassword.current.value, this.refConfirm.current.value);
 
 		Validate.applyToInput(this.refConfirm.current, valid.code);
 		if (valid.code !== Validate.VALID) {
 			this.setState({
-				alertText: valid.msg
+				alertText: valid.msg,
 			});
 			return;
 		}
 
 		requestAPI("/user/reset-password", "POST", {
 			password: this.refPassword.current.value,
-			userId: this.props.match.params.id
-		}).then(res => {
+			userId: this.props.match.params.id,
+		}).then((res) => {
 			console.log(res);
 			this.setState({
 				isSuccess: true,
-				alertText: "Password has just been reseted "
+				alertText: "Password has just been reseted ",
 			});
-			setTimeout(function() {
+			setTimeout(function () {
 				window.location.href = "/";
 			}, 1000);
 		});
@@ -64,46 +61,26 @@ export default class ResetPasswordPage extends Component {
 		);
 		const failDiv = (
 			<div>
-				{alertText ? (
-					<Alert variant="danger">{alertText}</Alert>
-				) : (
-					<div></div>
-				)}
+				{alertText ? <Alert variant="danger">{alertText}</Alert> : <div></div>}
 				<div>
 					<div className="text-center">
 						<i className="fa fa-lock" />
 					</div>
 					<div className="title text-center">Reset your password</div>
-					<div className="text">
-						You can create your password here.
+					<div className="text">You can create your password here.</div>
+					<div className="my-3 d-flex justify-content-center">
+						<input type="password" placeholder="New password" ref={this.refPassword} />
 					</div>
 					<div className="my-3 d-flex justify-content-center">
-						<input
-							type="password"
-							placeholder="New password"
-							ref={this.refPassword}
-						/>
-					</div>
-					<div className="my-3 d-flex justify-content-center">
-						<input
-							type="password"
-							placeholder="Confirm password"
-							ref={this.refConfirm}
-						/>
+						<input type="password" placeholder="Confirm password" ref={this.refConfirm} />
 					</div>
 					<div className="d-flex justify-content-center">
-						<button onClick={this.handleClickSave.bind(this)}>
-							Save
-						</button>
+						<button onClick={this.handleClickSave.bind(this)}>Save</button>
 					</div>
 				</div>
 			</div>
 		);
 		console.log(alertText);
-		return (
-			<div className="reset-password">
-				{isSuccess ? successDiv : failDiv}
-			</div>
-		);
+		return <div className="reset-password">{isSuccess ? successDiv : failDiv}</div>;
 	}
 }

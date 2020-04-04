@@ -16,7 +16,7 @@ export default class ProfileAccount extends Component {
 			userData: props.userData,
 			passwordAlertData: null,
 			emailAlertData: null,
-			isProcessing: false
+			isProcessing: false,
 		};
 
 		this.refOldPassword = React.createRef();
@@ -36,8 +36,8 @@ export default class ProfileAccount extends Component {
 		this.setState({
 			passwordAlertData: {
 				variant: success ? "success" : "danger",
-				text: text
-			}
+				text: text,
+			},
 		});
 	};
 
@@ -45,8 +45,8 @@ export default class ProfileAccount extends Component {
 		this.setState({
 			emailAlertData: {
 				variant: success ? "success" : "danger",
-				text: text
-			}
+				text: text,
+			},
 		});
 	};
 
@@ -70,21 +70,18 @@ export default class ProfileAccount extends Component {
 		let valid = Validate.checkPassword(this.refNewPassword.current.value);
 		Validate.applyToInput(this.refNewPassword.current, valid.code);
 		if (valid.code !== Validate.VALID) {
-			this.setPasswordAlertData(0, "Password" + valid.msg);
+			this.setPasswordAlertData(0, "New Password" + valid.msg);
 			return false;
 		}
 
 		valid = Validate.checkPassword(this.refConfirmPassword.current.value);
 		Validate.applyToInput(this.refConfirmPassword.current, valid.code);
 		if (valid.code !== Validate.VALID) {
-			this.setPasswordAlertData(0, "Password" + valid.msg);
+			this.setPasswordAlertData(0, "Confirm Password" + valid.msg);
 			return false;
 		}
 
-		if (
-			this.refNewPassword.current.value !==
-			this.refConfirmPassword.current.value
-		) {
+		if (this.refNewPassword.current.value !== this.refConfirmPassword.current.value) {
 			this.setPasswordAlertData(0, "Password doesn't match!");
 			return false;
 		}
@@ -96,21 +93,18 @@ export default class ProfileAccount extends Component {
 		let valid = Validate.checkEmail(this.refNewEmail.current.value);
 		Validate.applyToInput(this.refNewEmail.current, valid.code);
 		if (valid.code !== Validate.VALID) {
-			this.setEmailAlertData(0, "Email" + valid.msg);
+			this.setEmailAlertData(0, "New Email" + valid.msg);
 			return false;
 		}
 
 		valid = Validate.checkEmail(this.refConfirmEmail.current.value);
 		Validate.applyToInput(this.refConfirmEmail.current, valid.code);
 		if (valid.code !== Validate.VALID) {
-			this.setEmailAlertData(0, "Email" + valid.msg);
+			this.setEmailAlertData(0, "Confirm Email" + valid.msg);
 			return false;
 		}
 
-		if (
-			this.refNewEmail.current.value !==
-			this.refConfirmEmail.current.value
-		) {
+		if (this.refNewEmail.current.value !== this.refConfirmEmail.current.value) {
 			this.setEmailAlertData(0, "Email doesn't match");
 			return;
 		}
@@ -118,19 +112,16 @@ export default class ProfileAccount extends Component {
 		let password = this.encrypt(this.refInsertPassword.current.value);
 		if (this.state.userData.user.password !== password) {
 			Validate.applyToInput(this.refInsertPassword.current, -1);
-			this.setEmailAlertData(0, "Password is not correct");
+			this.setEmailAlertData(0, "Current Password is not correct");
 			return;
 		} else {
-			Validate.applyToInput(
-				this.refInsertPassword.current,
-				Validate.VALID
-			);
+			Validate.applyToInput(this.refInsertPassword.current, Validate.VALID);
 		}
 
 		return true;
 	};
 
-	handleClickChangePassword = async e => {
+	handleClickChangePassword = async (e) => {
 		let { userData } = this.state;
 
 		if (!this.validatePassword()) {
@@ -141,8 +132,8 @@ export default class ProfileAccount extends Component {
 
 		await requestAPI("/user/change-password", "POST", {
 			id: userData.user.id,
-			password: this.refNewPassword.current.value
-		}).then(res => {
+			password: this.refNewPassword.current.value,
+		}).then((res) => {
 			if (res.status !== 1) {
 				this.setPasswordAlertData(0, res.data);
 			} else {
@@ -154,7 +145,7 @@ export default class ProfileAccount extends Component {
 		});
 	};
 
-	handleClickChangeEmail = async e => {
+	handleClickChangeEmail = async (e) => {
 		let { userData } = this.state;
 		if (!this.validateEmail()) {
 			return;
@@ -162,52 +153,45 @@ export default class ProfileAccount extends Component {
 
 		let emailData = {
 			id: userData.user.id,
-			newEmail: this.refNewEmail.current.value
+			newEmail: this.refNewEmail.current.value,
 		};
 
 		this.setState({ isProcessing: true });
 
 		await requestAPI("/user/update-email", "POST", emailData)
-			.then(res => {
+			.then((res) => {
 				if (res.status === 1) {
 					userData.user.email = res.data;
-					sessionStorage.setItem(
-						LOGGED_USER,
-						JSON.stringify(userData)
-					);
+					sessionStorage.setItem(LOGGED_USER, JSON.stringify(userData));
 					this.setEmailAlertData(1, "Email changed successfully!");
 				} else {
 					this.setEmailAlertData(0, res.message);
 				}
 			})
-			.catch(err => {
+			.catch((err) => {
 				console.log(err);
 			});
 		this.setState({ isProcessing: false });
 	};
 
-	handleClickDelete = async e => {
+	handleClickDelete = async (e) => {
 		const { userData } = this.state;
 		let removePhotos = userData.user.productPhotos.slice(0);
-		removePhotos = [
-			...removePhotos,
-			userData.user.background,
-			userData.user.logo
-		];
+		removePhotos = [...removePhotos, userData.user.background, userData.user.logo];
 
-		userData.posts.map(post => {
+		userData.posts.forEach((post) => {
 			removePhotos.push(post.photo);
 		});
 
 		let deleteData = {
 			id: userData.user.id,
-			removePhotos: removePhotos
+			removePhotos: removePhotos,
 		};
 
 		this.setState({ isProcessing: true });
 		if (window.confirm("Are you sure delete?")) {
 			await requestAPI("/user/delete", "POST", deleteData)
-				.then(res => {
+				.then((res) => {
 					if (res.status === 1) {
 						sessionStorage.clear();
 						window.location.href = "/";
@@ -216,55 +200,45 @@ export default class ProfileAccount extends Component {
 					}
 					this.setState({ isProcessing: false });
 				})
-				.catch(err => {
+				.catch((err) => {
 					console.log(err);
 				});
 		}
 	};
 
+	handleFocusPasswordInput = () => {
+		this.refOldPassword.current.style.border = this.refNewPassword.current.style.border = this.refConfirmPassword.current.style.border =
+			"1px solid var(--colorBorder)";
+		this.setState({ passwordAlertData: null });
+	};
+
+	handleFocusEmailInput = () => {
+		this.refNewEmail.current.style.border = this.refConfirmEmail.current.style.border = this.refInsertPassword.current.style.border =
+			"1px solid var(--colorBorder)";
+		this.setState({ emailAlertData: null });
+	};
+
 	render() {
-		const {
-			selectedTab,
-			userData,
-			passwordAlertData,
-			emailAlertData,
-			isProcessing
-		} = this.state;
+		const { selectedTab, userData, passwordAlertData, emailAlertData, isProcessing } = this.state;
 
 		const actionsPanel = (
 			<div className={selectedTab === 0 ? "d-block" : "d-none"}>
 				<div>
-					{passwordAlertData && (
-						<Alert variant={passwordAlertData.variant}>
-							{passwordAlertData.text}
-						</Alert>
-					)}
+					{passwordAlertData && <Alert variant={passwordAlertData.variant}>{passwordAlertData.text}</Alert>}
 					<h6 className="text-uppercase p-3">Change password</h6>
 					<div className="info-row">
-						<input
-							type="password"
-							placeholder="Old password"
-							ref={this.refOldPassword}
-						/>
+						<input type="password" placeholder="Old password" ref={this.refOldPassword} onFocus={this.handleFocusPasswordInput} />
 					</div>
 					<div className="info-row">
-						<input
-							type="password"
-							placeholder="New password"
-							ref={this.refNewPassword}
-						/>
+						<input type="password" placeholder="New password" ref={this.refNewPassword} onFocus={this.handleFocusPasswordInput} />
 					</div>
 					<div className="info-row">
-						<input
-							type="password"
-							placeholder="Confirm password"
-							ref={this.refConfirmPassword}
-						/>
+						<input type="password" placeholder="Confirm password" ref={this.refConfirmPassword} onFocus={this.handleFocusPasswordInput} />
 					</div>
 					<div className="info-row my-4">
 						<button
 							style={{
-								minWidth: 180
+								minWidth: 180,
 							}}
 							onClick={this.handleClickChangePassword}
 						>
@@ -274,32 +248,21 @@ export default class ProfileAccount extends Component {
 				</div>
 				<hr />
 				<div>
-					{emailAlertData && (
-						<Alert variant={emailAlertData.variant}>
-							{emailAlertData.text}
-						</Alert>
-					)}
+					{emailAlertData && <Alert variant={emailAlertData.variant}>{emailAlertData.text}</Alert>}
 					<h6 className="text-uppercase p-3">Change Account email</h6>
 					<div className="info-row">
-						<input placeholder="New email" ref={this.refNewEmail} />
+						<input placeholder="New email" ref={this.refNewEmail} onFocus={this.handleFocusEmailInput} />
 					</div>
 					<div className="info-row">
-						<input
-							placeholder="Confirm email"
-							ref={this.refConfirmEmail}
-						/>
+						<input placeholder="Confirm email" ref={this.refConfirmEmail} onFocus={this.handleFocusEmailInput} />
 					</div>
 					<div className="info-row">
-						<input
-							type="password"
-							placeholder="Insert password"
-							ref={this.refInsertPassword}
-						/>
+						<input type="password" placeholder="Insert password" ref={this.refInsertPassword} onFocus={this.handleFocusEmailInput} />
 					</div>
 					<div className="info-row my-4">
 						<button
 							style={{
-								minWidth: 180
+								minWidth: 180,
 							}}
 							onClick={this.handleClickChangeEmail}
 						>
@@ -311,16 +274,14 @@ export default class ProfileAccount extends Component {
 				<div>
 					<h6 className="text-uppercase p-3">Delete Profile</h6>
 					<div className="info-row px-5 text-secondary pb-3">
-						Clicking the DELETE button, your profile won't be
-						displayed anymore. Commerciale4.0, as interms and
-						condition, will be saving the informations for internal
-						use.
+						Clicking the DELETE button, your profile won't be displayed anymore. Commerciale4.0, as interms and condition, will be saving the
+						informations for internal use.
 					</div>
 					<div className="info-row">
 						<button
 							style={{
 								minWidth: 180,
-								background: "#d33"
+								background: "#d33",
 							}}
 							onClick={this.handleClickDelete}
 						>
@@ -333,48 +294,26 @@ export default class ProfileAccount extends Component {
 
 		const infoPanel = (
 			<div className={`my-4 ${selectedTab === 1 ? "d-block" : "d-none"}`}>
-				<h6 className="text-center mb-4">
-					The displayed info are not editable
-				</h6>
+				<h6 className="text-center mb-4">The displayed info are not editable</h6>
 				<div className="info-row">
 					<span>Official name:</span>
-					<input
-						disabled
-						ref={this.refOfficialName}
-						defaultValue={userData.user.officialName}
-					/>
+					<input disabled ref={this.refOfficialName} defaultValue={userData.user.officialName} />
 				</div>
 				<div className="info-row">
 					<span>City:</span>
-					<input
-						disabled
-						ref={this.refCity}
-						defaultValue={userData.user.city}
-					/>
+					<input disabled ref={this.refCity} defaultValue={userData.user.city} />
 				</div>
 				<div className="info-row">
 					<span>VAT number:</span>
-					<input
-						disabled
-						ref={this.refVat}
-						defaultValue={userData.user.vat}
-					/>
+					<input disabled ref={this.refVat} defaultValue={userData.user.vat} />
 				</div>
 				<div className="info-row">
 					<span>NACE code:</span>
-					<input
-						disabled
-						ref={this.refAteco}
-						defaultValue={userData.user.ateco}
-					/>
+					<input disabled ref={this.refAteco} defaultValue={userData.user.ateco} />
 				</div>
 				<div className="info-row">
 					<span>PEC:</span>
-					<input
-						disabled
-						ref={this.refPec}
-						defaultValue={userData.user.pec}
-					/>
+					<input disabled ref={this.refPec} defaultValue={userData.user.pec} />
 				</div>
 			</div>
 		);
@@ -382,24 +321,20 @@ export default class ProfileAccount extends Component {
 			<div className="account-view">
 				<div className="tab-header">
 					<button
-						className={`tab-item ${
-							selectedTab === 0 ? "active" : ""
-						}`}
+						className={`tab-item ${selectedTab === 0 ? "active" : ""}`}
 						onClick={() =>
 							this.setState({
-								selectedTab: 0
+								selectedTab: 0,
 							})
 						}
 					>
 						Actions
 					</button>
 					<button
-						className={`tab-item ${
-							selectedTab === 1 ? "active" : ""
-						}`}
+						className={`tab-item ${selectedTab === 1 ? "active" : ""}`}
 						onClick={() =>
 							this.setState({
-								selectedTab: 1
+								selectedTab: 1,
 							})
 						}
 					>

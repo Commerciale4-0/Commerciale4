@@ -8,13 +8,7 @@ export default class ImagePreview extends Component {
 			<div className="image-preview" onClick={onClose}>
 				<div className="-content">
 					<div>
-						{images && images.length ? (
-							images.map((image, index) => (
-								<img key={index} src={image} />
-							))
-						) : (
-							<div />
-						)}
+						{images && images.length ? images.map((image, index) => <img key={index} src={image} />) : <div />}
 						{/* <div className="btn-prev">
 							<i className="fa fa-arrow-left" />
 						</div>

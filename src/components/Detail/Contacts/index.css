@@ -1,21 +1,38 @@
+.detail-contacts .content {
+	max-width: 600px;
+}
+
 .detail-contacts label {
-    font-weight: bold;
-    min-width: 130px;
+	font-weight: bold;
+	min-width: 120px;
+	margin: 0;
 }
 
 .detail-contacts a {
-    color: #212529;
+	color: #212529;
 }
 
-.detail-contacts p {
-    min-width: 200px;
+.detail-contacts span {
+	min-width: 200px;
+	word-break: break-all;
+}
+
+@media (max-width: 768px) {
+	.detail-contacts .content {
+		max-width: 500px;
+	}
 }
 
 @media (max-width: 576px) {
-    .detail-contacts {
-        min-height: calc(100vh - 152px);
-    }
-    .detail-contacts h5 {
-        display: none;
-    }
+	.detail-contacts .content {
+		max-width: 400px;
+	}
+
+	.detail-contacts {
+		min-height: calc(100vh - 152px);
+	}
+
+	.detail-contacts h5 {
+		display: none;
+	}
 }

@@ -14,13 +14,13 @@ export default class ImageCropper extends Component {
 				y: 0,
 				width: 100,
 				height: 100,
-				aspect: props.options.ratio
+				aspect: props.options.ratio,
 			},
-			image: null
+			image: null,
 		};
 	}
 
-	handleCropChange = crop => {
+	handleCropChange = (crop) => {
 		this.setState({ crop });
 	};
 
@@ -33,27 +33,11 @@ export default class ImageCropper extends Component {
 
 		const scaleX = image.width / elem.offsetWidth;
 		const scaleY = image.height / elem.offsetHeight;
-		canvas.width =
-			crop.width * scaleX < options.maxWidth
-				? crop.width * scaleX
-				: options.maxWidth;
-		canvas.height =
-			crop.height * scaleY < options.maxWidth / options.ratio
-				? crop.height * scaleY
-				: options.maxWidth / options.ratio;
+		canvas.width = crop.width * scaleX < options.maxWidth ? crop.width * scaleX : options.maxWidth;
+		canvas.height = crop.height * scaleY < options.maxWidth / options.ratio ? crop.height * scaleY : options.maxWidth / options.ratio;
 		const ctx = canvas.getContext("2d");
 
-		ctx.drawImage(
-			image,
-			crop.x * scaleX,
-			crop.y * scaleY,
-			crop.width * scaleX,
-			crop.height * scaleY,
-			0,
-			0,
-			canvas.width,
-			canvas.height
-		);
+		ctx.drawImage(image, crop.x * scaleX, crop.y * scaleY, crop.width * scaleX, crop.height * scaleY, 0, 0, canvas.width, canvas.height);
 
 		let croppedImage = canvas.toDataURL("image/jpeg");
 		onSave(croppedImage);
@@ -70,8 +54,7 @@ export default class ImageCropper extends Component {
 			if (image.width > image.height) {
 				if (image.width > 800) {
 					elem.style.width = 800 + "px";
-					elem.style.height =
-						(image.height / image.width) * 800 + "px";
+					elem.style.height = (image.height / image.width) * 800 + "px";
 				} else {
 					elem.style.width = image.width;
 					elem.style.height = image.height;
@@ -79,8 +62,7 @@ export default class ImageCropper extends Component {
 			} else {
 				if (image.height > 600) {
 					elem.style.height = 600 + "px";
-					elem.style.width =
-						(image.width / image.height) * 600 + "px";
+					elem.style.width = (image.width / image.height) * 600 + "px";
 				} else {
 					elem.style.width = image.width;
 					elem.style.height = image.height;
@@ -93,7 +75,7 @@ export default class ImageCropper extends Component {
 				y: 0,
 				width: 100,
 				height: 100,
-				aspect: options.ratio
+				aspect: options.ratio,
 			};
 
 			if (image.width / image.height === 1 && options.ratio === 1) {
@@ -103,7 +85,7 @@ export default class ImageCropper extends Component {
 			}
 
 			this.setState({
-				crop
+				crop,
 			});
 		};
 		image.src = options.image;
@@ -116,11 +98,7 @@ export default class ImageCropper extends Component {
 			<div className="cropper-modal">
 				<div className={`-content ${options.ratio === 1 && "circle"}`}>
 					<h5 className="mb-3">Crop image</h5>
-					<ReactCrop
-						src={options.image}
-						crop={this.state.crop}
-						onChange={this.handleCropChange}
-					/>
+					<ReactCrop src={options.image} crop={this.state.crop} onChange={this.handleCropChange} />
 					<div className="mt-2 d-flex justify-content-end">
 						<button className="mr-2" onClick={this.handleSaveImage}>
 							Save

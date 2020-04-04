@@ -8,7 +8,7 @@ export default class SearchInput extends Component {
 		this.input = React.createRef();
 	}
 
-	handleKeyPress = e => {
+	handleKeyPress = (e) => {
 		if (e.key === "Enter") {
 			if (this.props.handleSearch) {
 				this.props.handleSearch(e.target.value);
@@ -16,11 +16,11 @@ export default class SearchInput extends Component {
 		}
 	};
 
-	setInputValue = value => {
+	setInputValue = (value) => {
 		this.input.current.value = value;
 	};
 
-	handleChange = e => {
+	handleChange = (e) => {
 		this.keyword = e.target.value;
 	};
 
@@ -28,13 +28,7 @@ export default class SearchInput extends Component {
 		return (
 			<div className="search-input">
 				<i className="fa fa-search"></i>
-				<input
-					type="text"
-					placeholder="Company search"
-					onKeyPress={this.handleKeyPress}
-					onChange={this.handleChange}
-					ref={this.input}
-				/>
+				<input type="text" placeholder="Company search" onKeyPress={this.handleKeyPress} onChange={this.handleChange} ref={this.input} />
 			</div>
 		);
 	}

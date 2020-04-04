@@ -1,6 +1,7 @@
 .user-profile {
 	padding-top: 46px;
 	display: flex;
+	min-height: 100vh;
 }
 
 .user-profile .left-panel {
@@ -71,11 +72,6 @@
 
 .user-profile textarea:focus {
 	border-color: var(--colorPrimary);
-}
-
-.user-profile .tab-header {
-	/* position: relative;
-    z-index: 2; */
 }
 
 .user-profile .tab-item {

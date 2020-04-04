@@ -3,16 +3,7 @@ import Select from "react-select";
 
 export default class MySelect extends Component {
 	render() {
-		const {
-			value,
-			onChange,
-			options,
-			placeholder,
-			checkValid,
-			width,
-			borderColor,
-			menuHeight
-		} = this.props;
+		const { value, onChange, options, placeholder, checkValid, width, borderColor, menuHeight } = this.props;
 
 		const styles = {
 			control: (provided, state) => ({
@@ -20,35 +11,23 @@ export default class MySelect extends Component {
 				borderRadius: 4,
 				background: borderColor ? "#f9f9f9" : "#eee",
 				width: width ? width : "auto",
-				borderColor: state.isFocused
-					? "var(--colorPrimary)"
-					: checkValid !== true || value
-					? borderColor
-						? borderColor
-						: "transparent"
-					: "red",
+				borderColor: state.isFocused ? "var(--colorPrimary)" : checkValid !== true || value ? (borderColor ? borderColor : "transparent") : "red",
 				"&:hover": {
-					borderColor: state.isFocused
-						? "var(--colorPrimary)"
-						: checkValid !== true || value
-						? borderColor
-							? borderColor
-							: "transparent"
-						: "red"
-				}
+					borderColor: state.isFocused ? "var(--colorPrimary)" : checkValid !== true || value ? (borderColor ? borderColor : "transparent") : "red",
+				},
 			}),
 			indicatorSeparator: () => ({
-				display: "none"
+				display: "none",
 			}),
 			// menu: provided => ({
 			// 	...provided,
 			// 	position: extendMenu ? "relative" : "absolute"
 			// }),
-			menuList: provided => ({
+			menuList: (provided) => ({
 				...provided,
 				// maxHeight: menuHeight ? menuHeight : provided.maxHeight
-				maxHeight: menuHeight ? menuHeight : 200
-			})
+				maxHeight: menuHeight ? menuHeight : 200,
+			}),
 		};
 
 		return (
@@ -58,12 +37,12 @@ export default class MySelect extends Component {
 				onChange={onChange}
 				options={options}
 				placeholder={placeholder}
-				theme={theme => ({
+				theme={(theme) => ({
 					...theme,
 					colors: {
 						...theme.colors,
-						primary: "var(--colorPrimary)"
-					}
+						primary: "var(--colorPrimary)",
+					},
 				})}
 			/>
 		);

@@ -17,92 +17,67 @@ import ForgotPasswordPage from "./pages/ForgotPassword";
 import ResetPasswordPage from "./pages/ResetPassword";
 import CompanyDetail from "./pages/CompanyDetail";
 import Profile from "./pages/Profile";
-import Error404 from "./pages/Error404";
+import Except from "./pages/Except";
+import { LangProvider } from "./utils/LanguageContext";
 
-export default class App extends Component {
-    state = {
-        special: false,
-        headerTransparent: true,
-        headerAutoHide: true,
-        loading: false
-    };
+class App extends Component {
+	state = {
+		headerTransparent: true,
+		headerAutoHide: true,
+		selectedLang: 2,
+		needSearchBar: true,
+		needFooter: true,
+	};
 
-    componentDidMount = () => {
-        if (window.location.pathname.search("/company/") !== -1) {
-            this.setState({ headerAutoHide: false });
-        }
-        if (
-            window.location.pathname === "/login" ||
-            window.location.pathname === "/register" ||
-            window.location.pathname === "/forgot-password"
-        ) {
-            this.setState({ special: true });
-        }
-    };
+	componentWillMount = () => {
+		if (window.location.pathname.search("/company/") !== -1) {
+			this.setState({ headerAutoHide: false, needFooter: false });
+		}
+		if (window.location.pathname === "/user-edit") {
+			this.setState({ needFooter: false });
+		}
+		if (window.location.pathname === "/login" || window.location.pathname === "/register" || window.location.pathname === "/forgot-password") {
+			this.setState({ needSearchBar: false, needFooter: false });
+		}
+	};
 
-    render() {
-        const { special, headerTransparent, headerAutoHide } = this.state;
+	selectLang = (lang) => {
+		this.setState({
+			selectedLang: lang,
+		});
+	};
 
-        return (
-            <div>
-                <BrowserRouter>
-                    <Header
-                        needSearchBar={special ? false : true}
-                        isTransparent={headerTransparent}
-                        autoHide={headerAutoHide}
-                    />
-                    <div className="body">
-                        <Switch>
-                            <Route exact path="/" component={LandingPage} />
-                            <Route exact path="/login" component={LoginPage} />
-                            <Route
-                                exact
-                                path="/register"
-                                component={RegisterPage}
-                            />
-                            <Route
-                                path="/forgot-password"
-                                component={ForgotPasswordPage}
-                            />
-                            <Route
-                                path="/reset-password/:id"
-                                component={ResetPasswordPage}
-                            />
-                            <Route
-                                exact
-                                path="/terms"
-                                component={TermsAndConditions}
-                            />
-                            <Route
-                                exact
-                                path="/policy"
-                                component={PrivacyPolicy}
-                            />
-                            <Route
-                                exact
-                                path="/dashboard"
-                                component={Dashboard}
-                            />
-                            <Route
-                                exact
-                                path="/company/:id"
-                                component={CompanyDetail}
-                            />
-                            <Route
-                                exact
-                                path="/user-edit"
-                                component={Profile}
-                            />
-                            <Route component={Error404} />
-                        </Switch>
-                    </div>
-                    {!special ? <Footer /> : <div />}
-                </BrowserRouter>
-            </div>
-        );
-    }
+	render() {
+		const { headerTransparent, headerAutoHide, selectedLang, needSearchBar, needFooter } = this.state;
+
+		return (
+			<div>
+				<LangProvider value={{ lang: selectedLang }}>
+					<BrowserRouter>
+						<Header needSearchBar={needSearchBar} isTransparent={headerTransparent} autoHide={headerAutoHide} onSelectedLang={this.selectLang} />
+						<div className="body">
+							<Switch>
+								<Route exact path="/" component={LandingPage} />
+								<Route exact path="/login" component={LoginPage} />
+								<Route exact path="/register" component={RegisterPage} />
+								<Route path="/forgot-password" component={ForgotPasswordPage} />
+								<Route path="/reset-password/:id" component={ResetPasswordPage} />
+								<Route exact path="/terms" component={TermsAndConditions} />
+								<Route exact path="/policy" component={PrivacyPolicy} />
+								<Route exact path="/dashboard" component={Dashboard} />
+								<Route exact path="/company/:id" component={CompanyDetail} />
+								<Route exact path="/user-edit" component={Profile} />
+								<Route component={Except} />
+							</Switch>
+						</div>
+						{needFooter && <Footer />}
+					</BrowserRouter>
+				</LangProvider>
+			</div>
+		);
+	}
 }
-
+export default App;
 // function App() {
 // 	let special = false;
 // 	let headerTransparent = true;

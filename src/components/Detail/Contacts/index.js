@@ -6,40 +6,32 @@ export default class DetailContacts extends Component {
 		const { profile } = this.props;
 		return (
 			<div className="detail-contacts">
-				<h5 className="my-4 text-dark-light text-uppercase text-center">
-					Contacts
-				</h5>
+				<h5 className="my-4 text-dark-light text-uppercase text-center">Contacts</h5>
 				<div className="d-flex justify-content-around">
 					<div>
-						<div className="d-flex">
-							<label className="text-dark-light">
-								Address :{" "}
-							</label>
-							<p>{profile && profile.user.companyAddress}</p>
+						<div className="d-flex align-items-center py-2">
+							<label className="text-dark-light">Address : </label>
+							<span>{profile && profile.user.companyAddress}</span>
 						</div>
-						<div className="d-flex">
+						<div className="d-flex align-items-center py-2">
 							<label className="text-dark-light">Phone : </label>
-							<p>{profile && profile.user.companyPhone}</p>
+							<span>{profile && profile.user.companyPhone}</span>
 						</div>
-						<div className="d-flex">
-							<label className="text-dark-light">
-								Website :{" "}
-							</label>
-							<p>
-								<a href="/">
+						<div className="d-flex align-items-center py-2">
+							<label className="text-dark-light">Website : </label>
+							<span>
+								<a href={profile.user.website} className="text-primary" target="blank">
 									{profile && profile.user.website}
 								</a>
-							</p>
+							</span>
 						</div>
-						<div className="d-flex">
+						<div className="d-flex align-items-center py-2">
 							<label className="text-dark-light">Email : </label>
-							<p>{profile && profile.user.companyEmail}</p>
+							<span>{profile && profile.user.companyEmail}</span>
 						</div>
-						<div className="d-flex">
-							<label className="text-dark-light">
-								2nd Email :{" "}
-							</label>
-							<p>{profile && profile.user.company2ndEmail}</p>
+						<div className="d-flex align-items-center py-2">
+							<label className="text-dark-light">2nd Email : </label>
+							<span>{profile && profile.user.company2ndEmail}</span>
 						</div>
 					</div>
 				</div>

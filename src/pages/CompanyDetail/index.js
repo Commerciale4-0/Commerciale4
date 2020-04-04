@@ -11,7 +11,7 @@ export default class CompanyDetail extends Component {
 
 		this.state = {
 			profile: null,
-			isProcessing: false
+			isProcessing: false,
 		};
 	}
 
@@ -22,17 +22,16 @@ export default class CompanyDetail extends Component {
 		}
 
 		this.setState({ isProcessing: true });
-		await requestAPI(`/user/${id}`, "GET")
-			.then(res => res.data)
-			.then(data => {
-				if (data) {
-					this.setState({ profile: data });
+		await requestAPI("/user", "POST", { id: id })
+			.then((res) => {
+				if (res.status === 1) {
+					this.setState({ profile: res.data });
 				} else {
 					console.log("Connection failed!");
 				}
 				this.setState({ isProcessing: false });
 			})
-			.catch(e => {
+			.catch((e) => {
 				console.log("Connection failed!!");
 				this.setState({ isProcessing: false });
 			});

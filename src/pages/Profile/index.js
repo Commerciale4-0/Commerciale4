@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import "./index.css";
-import { requestAPI } from "../../utils/api";
 import ProfileCompany from "../../components/Profile/Company";
 import ProfileNews from "../../components/Profile/News";
 import ProfileAccount from "../../components/Profile/Account";
@@ -14,7 +13,7 @@ export default class Profile extends Component {
 
 		this.state = {
 			selectedCategory: 0,
-			userData: null
+			userData: null,
 		};
 	}
 
@@ -40,14 +39,10 @@ export default class Profile extends Component {
 									key={index}
 									onClick={() =>
 										this.setState({
-											selectedCategory: index
+											selectedCategory: index,
 										})
 									}
-									className={
-										selectedCategory === index
-											? "active"
-											: ""
-									}
+									className={selectedCategory === index ? "active" : ""}
 								>
 									{menu}
 								</button>
@@ -56,33 +51,21 @@ export default class Profile extends Component {
 						<div className="right-panel">
 							<div
 								style={{
-									display:
-										selectedCategory === 0
-											? "block"
-											: "none"
+									display: selectedCategory === 0 ? "block" : "none",
 								}}
 							>
 								<ProfileCompany profile={userData.user} />
 							</div>
 							<div
 								style={{
-									display:
-										selectedCategory === 1
-											? "block"
-											: "none"
+									display: selectedCategory === 1 ? "block" : "none",
 								}}
 							>
-								<ProfileNews
-									posts={userData.posts}
-									userId={userData.user.id}
-								/>
+								<ProfileNews posts={userData.posts} userId={userData.user.id} />
 							</div>
 							<div
 								style={{
-									display:
-										selectedCategory === 2
-											? "block"
-											: "none"
+									display: selectedCategory === 2 ? "block" : "none",
 								}}
 							>
 								<ProfileAccount userData={userData} />

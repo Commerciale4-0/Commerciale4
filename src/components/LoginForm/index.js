@@ -13,20 +13,20 @@ export default class LoginForm extends Component {
 		this.state = {
 			remember: false,
 			alertData: null,
-			isProcessing: false
+			isProcessing: false,
 		};
 
 		this.refEmail = React.createRef();
 		this.refPassword = React.createRef();
 	}
 
-	handleClickSignup = e => {
+	handleClickSignup = (e) => {
 		window.location.href = "/register";
 	};
 
-	handleClickRemember = e => {
+	handleClickRemember = (e) => {
 		this.setState({
-			remember: !this.state.remember
+			remember: !this.state.remember,
 		});
 	};
 
@@ -40,7 +40,7 @@ export default class LoginForm extends Component {
 		return true;
 	};
 
-	handleClickLogin = e => {
+	handleClickLogin = (e) => {
 		if (!this.validate()) {
 			return;
 		}
@@ -48,8 +48,8 @@ export default class LoginForm extends Component {
 		this.setState({ isProcessing: true });
 		requestAPI("/user/login", "POST", {
 			email: this.refEmail.current.value,
-			password: this.refPassword.current.value
-		}).then(res => {
+			password: this.refPassword.current.value,
+		}).then((res) => {
 			if (res.status !== 1) {
 				alert(res.message);
 			} else {
@@ -66,10 +66,7 @@ export default class LoginForm extends Component {
 		const bottomPanelSM = (
 			<div className="bottom-panel-sm">
 				<div className="mx-auto w-25 mt-4">
-					<button
-						className="txt-upper"
-						onClick={this.handleClickLogin}
-					>
+					<button className="txt-upper" onClick={this.handleClickLogin}>
 						Log in
 					</button>
 				</div>
@@ -77,10 +74,7 @@ export default class LoginForm extends Component {
 					<a href="/forgot-password" className="">
 						Forgot Password?
 					</a>
-					<button
-						className="txt-upper"
-						onClick={this.handleClickSignup}
-					>
+					<button className="txt-upper" onClick={this.handleClickSignup}>
 						Register
 					</button>
 				</div>
@@ -95,24 +89,12 @@ export default class LoginForm extends Component {
 					</a>
 				</div>
 				<div className="d-flex justify-content-center mt-5">
-					<input
-						id="rememberme"
-						type="checkbox"
-						name="remember-me"
-						className="input-checkbox"
-					/>
-					<label
-						className="label-checkbox"
-						htmlFor="rememberme"
-						onClick={this.handleClickRemember}
-					>
+					<input id="rememberme" type="checkbox" name="remember-me" className="input-checkbox" />
+					<label className="label-checkbox" htmlFor="rememberme" onClick={this.handleClickRemember}>
 						Remember me
 					</label>
 				</div>
-				<button
-					className="txt-upper w-100 mt-4"
-					onClick={this.handleClickLogin}
-				>
+				<button className="txt-upper w-100 mt-4" onClick={this.handleClickLogin}>
 					Sign in
 				</button>
 			</div>
@@ -120,32 +102,18 @@ export default class LoginForm extends Component {
 
 		return (
 			<div className="my-form login-form">
-				{alertData ? (
-					<Alert variant={alertData.variant}>{alertData.text}</Alert>
-				) : (
-					<div></div>
-				)}
+				{alertData ? <Alert variant={alertData.variant}>{alertData.text}</Alert> : <div></div>}
 				<span className="title text-center mt-4">log in</span>
 				<div className="input-row">
 					<div className="mx-auto">
 						<img src="images/login/username.png" alt="" />
-						<input
-							type="text"
-							name="email"
-							placeholder="Email"
-							ref={this.refEmail}
-						/>
+						<input type="text" name="email" placeholder="Email" ref={this.refEmail} />
 					</div>
 				</div>
 				<div className="input-row">
 					<div className="mx-auto">
 						<img src="images/login/pass.png" alt="" />
-						<input
-							type="password"
-							name="password"
-							placeholder="Password"
-							ref={this.refPassword}
-						/>
+						<input type="password" name="password" placeholder="Password" ref={this.refPassword} />
 					</div>
 				</div>
 				{bottomPanelSM}

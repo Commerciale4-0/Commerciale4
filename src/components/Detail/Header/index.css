@@ -1,6 +1,7 @@
 .detail-header {
 	background: white;
-	position: relative;
+	position: fixed;
+	z-index: 1;
 }
 
 .detail-header .background {
@@ -38,7 +39,9 @@
 	margin: auto 0 auto auto;
 	text-transform: uppercase;
 }
-
+.detail-header button > a {
+	color: white;
+}
 @media (max-width: 768px) {
 	.detail-header .official-name {
 		display: block;
@@ -51,10 +54,11 @@
 @media (max-width: 576px) {
 	.detail-header {
 		box-shadow: 0 0.05em 0.2em #ddd !important;
+		position: relative;
 	}
 
 	.detail-header .background {
-		height: 150px;
+		height: 140px;
 	}
 
 	.detail-header .logo {

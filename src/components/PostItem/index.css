@@ -7,18 +7,23 @@
 	cursor: pointer;
 }
 
-.post-item .post-img {
-	background: #eee;
-	max-width: 140px;
-	min-width: 140px;
-	max-height: 100px;
-	min-height: 100px;
-	margin-top: auto;
+.post-item .image-panel {
+	width: 140px;
+	display: flex;
+	justify-content: center;
+	margin-right: 20px;
+	margin-top: 6px;
+}
+.post-item .image-panel img {
+	max-width: 100%;
+	max-height: 140px;
 	margin-bottom: auto;
 	border-radius: 4px;
-	cursor: pointer;
 }
 
+.post-item .content-panel {
+	flex: 1;
+}
 .post-item .publish-date {
 	font-size: 14px;
 	text-align: right;
@@ -50,6 +55,6 @@
 	}
 
 	.post-item .publish-date {
-		font-size: 12px;
+		font-size: 12px !important;
 	}
 }
