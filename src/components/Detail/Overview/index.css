@@ -21,6 +21,10 @@
 }
 
 @media (max-width: 576px) {
+	.detail-overview {
+		min-height: calc(100vh - 152px);
+	}
+
 	.detail-overview h3 {
 		display: none;
 	}

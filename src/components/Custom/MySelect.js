@@ -3,7 +3,7 @@ import Select from "react-select";
 
 export default class MySelect extends Component {
 	render() {
-		const { value, onChange, options, placeholder, checkValid, width, borderColor, menuHeight } = this.props;
+		const { value, onChange, options, placeholder, checkValid, width, borderColor, menuHeight, isMulti } = this.props;
 
 		const styles = {
 			control: (provided, state) => ({
@@ -36,6 +36,8 @@ export default class MySelect extends Component {
 				value={value}
 				onChange={onChange}
 				options={options}
+				isMulti={isMulti}
+				isClearable={false}
 				placeholder={placeholder}
 				theme={(theme) => ({
 					...theme,

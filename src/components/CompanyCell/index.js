@@ -34,6 +34,9 @@ export default class CompanyCell extends Component {
 
 	render() {
 		const { company, viewMode, handleClickProfile } = this.props;
+
+		let tagLength = 0;
+
 		return (
 			<div className={`company-cell row ${viewMode ? "list" : "grid"}`}>
 				<div className={`logo col-xl-2 col-3`}>
@@ -82,7 +85,15 @@ export default class CompanyCell extends Component {
 						<span>
 							<i className="fa fa-tags" />
 						</span>
-						<div className="tags">{company.tags && company.tags.map((tag, index) => <span key={index}>{tag}</span>)}</div>
+						<div className="tags">
+							{company.tags &&
+								company.tags.map((tag, index) => {
+									tagLength += tag.length;
+									if (tagLength < 30) {
+										return <span key={index}>{tag}</span>;
+									}
+								})}
+						</div>
 					</div>
 					<div className="d-flex justify-content-end pt-2">
 						<button className="text-uppercase text-bold" onClick={handleClickProfile}>

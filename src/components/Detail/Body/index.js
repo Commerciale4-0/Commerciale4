@@ -6,22 +6,24 @@ import DetailContacts from "../Contacts";
 import { stringWithUnitFromNumber } from "../../../utils";
 
 const MENUS = [
-	{ id: 1, title: "About us" },
-	{ id: 2, title: "Product & Service" },
-	{ id: 3, title: "Contacts" },
+	{ id: 0, title: "About us" },
+	{ id: 1, title: "Product & Service" },
+	{ id: 2, title: "Contacts" },
 ];
 
 export default class DetailBody extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			selectedMenu: 1,
+			selectedMenu: 0,
 			isMobile: false,
 		};
 
-		this.leftPanel = React.createRef();
-		this.rightPanel = React.createRef();
 		this.menuPanel = React.createRef();
+
+		this.aboutUsPanel = React.createRef();
+		this.productsPanel = React.createRef();
+		this.contactsPanel = React.createRef();
 	}
 
 	componentDidMount = () => {
@@ -29,6 +31,13 @@ export default class DetailBody extends Component {
 		window.addEventListener("resize", this.handleWindowResize);
 		if (window.innerWidth <= 576) {
 			window.addEventListener("scroll", this.handleWindowScroll);
+		}
+	};
+
+	componentDidUpdate = () => {
+		if (window.innerWidth > 576 && this.props.profile) {
+			let maxHeight = Math.max(this.aboutUsPanel.current.offsetHeight, this.productsPanel.current.offsetHeight, this.contactsPanel.current.offsetHeight);
+			this.aboutUsPanel.current.style.height = this.productsPanel.current.style.height = this.contactsPanel.current.style.height = maxHeight + "px";
 		}
 	};
 
@@ -107,18 +116,20 @@ export default class DetailBody extends Component {
 
 		return (
 			<div className="detail-body">
-				<div className="left-panel" ref={this.leftPanel}>
+				<div className="left-panel">
 					{isMobile ? infoPanel : menuPanel}
 					{isMobile ? menuPanel : infoPanel}
 				</div>
-				<div className="right-panel" ref={this.rightPanel}>
-					{selectedMenu === 1 ? (
+				<div className="right-panel">
+					<div className={selectedMenu === 0 ? "d-block" : "d-none"} ref={this.aboutUsPanel}>
 						<DetailOverview profile={profile} />
-					) : selectedMenu === 2 ? (
+					</div>
+					<div className={selectedMenu === 1 ? "d-block" : "d-none"} ref={this.productsPanel}>
 						<DetailProduct profile={profile} />
-					) : (
-						selectedMenu === 3 && <DetailContacts profile={profile} />
-					)}
+					</div>
+					<div className={selectedMenu === 2 ? "d-block" : "d-none"} ref={this.contactsPanel}>
+						<DetailContacts profile={profile} />
+					</div>
 				</div>
 			</div>
 		);

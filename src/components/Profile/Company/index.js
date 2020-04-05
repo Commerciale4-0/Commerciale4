@@ -8,14 +8,14 @@ import { requestAPI } from "../../../utils/api";
 import SpinnerView from "../../SpinnerView";
 import Lang from "../../Lang";
 
-const IMAGE_COVER = { ratio: 1200 / 240, maxWidth: 1200 };
-const IMAGE_LOGO = { ratio: 1, maxWidth: 300 };
-const IMAGE_PRODUCT = { ratio: 2, maxWidth: 880 };
+const IMAGE_COVER = { ratio: 1200 / 240, maxWidth: 1200, circle: false };
+const IMAGE_LOGO = { ratio: 1, maxWidth: 300, circle: true };
+const IMAGE_PRODUCT = { ratio: 2, maxWidth: 880, circle: false };
 
 const SUB_MENUS = ["About us", "Product & service", "Contacts"];
 
-const INTRO_MAX_LENGTH = 1200;
-const WHATWEDO_MAX_LENGTH = 1200;
+const INTRO_MAX_LENGTH = 300;
+const WHATWEDO_MAX_LENGTH = 300;
 
 export default class ProfileCompany extends Component {
 	constructor(props) {
@@ -85,10 +85,12 @@ export default class ProfileCompany extends Component {
 		this.ref2ndEmail = React.createRef();
 	}
 
-	componentDidMount = () => {
-		let maxHeight = Math.max(this.aboutUsPanel.current.offsetHeight, this.productsPanel.current.offsetHeight, this.contactsPanel.current.offsetHeight);
-
-		this.aboutUsPanel.current.style.height = this.productsPanel.current.style.height = this.contactsPanel.current.style.height = maxHeight + "px";
+	handleChangeTab = (index) => {
+		let maxHeight = this.aboutUsPanel.current.offsetHeight;
+		if (maxHeight > 0) {
+			this.productsPanel.current.style.height = this.contactsPanel.current.style.height = maxHeight + "px";
+		}
+		this.setState({ selectedTab: index });
 	};
 
 	handleClickSave = async (e) => {
@@ -230,6 +232,7 @@ export default class ProfileCompany extends Component {
 	};
 
 	handleISOChange = (selectedISO) => {
+		console.log(selectedISO);
 		this.setState({ selectedISO });
 	};
 
@@ -380,23 +383,13 @@ export default class ProfileCompany extends Component {
 					<Lang onChange={this.handleChangeIntroLang} />
 				</div>
 				<div className={selectedIntroLang === 2 ? "d-block" : "d-none"}>
-					<textarea
-						maxLength={INTRO_MAX_LENGTH}
-						ref={this.refIntro}
-						defaultValue={profile && profile.introduction}
-						onChange={this.handleChangeText}
-					></textarea>
+					<textarea maxLength={INTRO_MAX_LENGTH} ref={this.refIntro} defaultValue={profile && profile.introduction} onChange={this.handleChangeText}></textarea>
 					<div className="char-limit">
 						{introLength}/{INTRO_MAX_LENGTH}
 					</div>
 				</div>
 				<div className={selectedIntroLang === 1 ? "d-block" : "d-none"}>
-					<textarea
-						maxLength={INTRO_MAX_LENGTH}
-						ref={this.refIntroIt}
-						defaultValue={profile && profile.introductionIt}
-						onChange={this.handleChangeText}
-					/>
+					<textarea maxLength={INTRO_MAX_LENGTH} ref={this.refIntroIt} defaultValue={profile && profile.introductionIt} onChange={this.handleChangeText} />
 					<div className="char-limit">
 						{introItLength}/{INTRO_MAX_LENGTH}
 					</div>
@@ -407,12 +400,7 @@ export default class ProfileCompany extends Component {
 				</div>
 				<div>
 					<div className={selectedWhatDoLang === 2 ? "d-block" : "d-none"}>
-						<textarea
-							maxLength={WHATWEDO_MAX_LENGTH}
-							ref={this.refWhatWeDo}
-							defaultValue={profile && profile.whatWeDo}
-							onChange={this.handleChangeText}
-						/>
+						<textarea maxLength={WHATWEDO_MAX_LENGTH} ref={this.refWhatWeDo} defaultValue={profile && profile.whatWeDo} onChange={this.handleChangeText} />
 						<div className="char-limit">
 							{whatWeDoLength}/{WHATWEDO_MAX_LENGTH}
 						</div>
@@ -466,6 +454,7 @@ export default class ProfileCompany extends Component {
 						<span>ISO:</span>
 						<MySelect
 							value={selectedISO}
+							isMulti
 							onChange={this.handleISOChange}
 							options={ISO}
 							width={300}
@@ -567,15 +556,7 @@ export default class ProfileCompany extends Component {
 				<div className="info-panel">
 					<div className="tab-header">
 						{SUB_MENUS.map((menu, index) => (
-							<button
-								key={index}
-								className={`tab-item ${selectedTab === index ? "active" : ""}`}
-								onClick={() =>
-									this.setState({
-										selectedTab: index,
-									})
-								}
-							>
+							<button key={index} className={`tab-item ${selectedTab === index ? "active" : ""}`} onClick={() => this.handleChangeTab(index)}>
 								{menu}
 							</button>
 						))}

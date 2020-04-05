@@ -20,7 +20,7 @@ export default class DetailContacts extends Component {
 						<div className="d-flex align-items-center py-2">
 							<label className="text-dark-light">Website : </label>
 							<span>
-								<a href={profile.user.website} className="text-primary" target="blank">
+								<a href={profile && profile.user.website} className="text-primary" target="blank">
 									{profile && profile.user.website}
 								</a>
 							</span>

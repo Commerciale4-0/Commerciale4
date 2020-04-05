@@ -96,7 +96,7 @@ export default class ImageCropper extends Component {
 		const { options, onCancel } = this.props;
 		return (
 			<div className="cropper-modal">
-				<div className={`-content ${options.ratio === 1 && "circle"}`}>
+				<div className={`-content ${options.circle && "circle"}`}>
 					<h5 className="mb-3">Crop image</h5>
 					<ReactCrop src={options.image} crop={this.state.crop} onChange={this.handleCropChange} />
 					<div className="mt-2 d-flex justify-content-end">

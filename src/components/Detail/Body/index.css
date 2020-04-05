@@ -1,6 +1,5 @@
 .detail-body {
 	display: flex;
-	margin-top: 316px;
 }
 
 /* .detail-body .left-panel,
@@ -13,7 +12,6 @@
 
 .detail-body .left-panel {
 	width: 280px;
-	position: fixed;
 }
 @media (max-width: 1200px) and (min-width: 577px) {
 	.detail-body .left-panel {
@@ -26,7 +24,6 @@
 	margin-left: 20px;
 	padding: 20px;
 	background: white;
-	margin-left: 280px;
 	min-height: calc(100vh - 316px - 46px);
 }
 /* .detail-body .left-panel::-webkit-scrollbar,
@@ -97,11 +94,9 @@
 @media (max-width: 576px) {
 	.detail-body {
 		display: block;
-		margin-top: 0;
 	}
 	.detail-body .left-panel {
 		width: 100%;
-		position: relative;
 	}
 	.detail-body .right-panel {
 		display: block;

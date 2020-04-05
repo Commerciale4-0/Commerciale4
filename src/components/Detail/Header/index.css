@@ -1,6 +1,6 @@
 .detail-header {
 	background: white;
-	position: fixed;
+	position: relative;
 	z-index: 1;
 }
 

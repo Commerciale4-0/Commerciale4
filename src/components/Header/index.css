@@ -34,14 +34,9 @@
 }
 
 .header .item.title,
+.header .item.user,
 .header-mobile .title {
 	text-align: center;
-	/* font-size: 24px;
-    font-weight: 600;
-    background: linear-gradient(to right, #30cfd0 0%, #330867 80%);
-    background-clip: border-box;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent; */
 }
 
 .header .title img {
@@ -49,9 +44,9 @@
 	height: 48px;
 }
 
-.header .item.user {
+.header .item.user button {
 	font-size: 15px;
-	text-align: center;
+	padding: 0 8px;
 }
 
 .search-bar > input {
@@ -108,24 +103,6 @@
 }
 .header-mobile .popup {
 	margin-top: 0;
-}
-
-.header .item.user button {
-	background: var(--colorSecondary);
-	border-radius: 4px;
-	color: var(--colorText);
-	padding: 7px 10px;
-}
-.header .item.user button:hover {
-	background: #bbb;
-}
-
-.header .item.user i {
-	margin-left: 10px;
-}
-
-.header .item a:hover {
-	color: var(--colorHighlight);
 }
 
 .header-mobile {

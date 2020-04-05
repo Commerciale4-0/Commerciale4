@@ -43,12 +43,17 @@ export default class FilterForm extends Component {
 
 	componentWillReceiveProps = (props) => {
 		if (props.initialFilter && props.update) {
-			// this.refKey.current.setInputValue(props.initialFilter.key);
 			this.setState({
 				selectedCity: props.initialFilter.city,
 				selectedRegion: props.initialFilter.region,
 				selectedCode: props.initialFilter.ateco,
 				radius: props.initialFilter.radius,
+				selectedType: props.initialFilter.type,
+				selectedEmployeeMin: props.initialFilter.employeeMin,
+				selectedEmployeeMax: props.initialFilter.employeeMax,
+				selectedRevenueMin: props.initialFilter.revenueMin,
+				selectedRevenueMax: props.initialFilter.revenueMax,
+				tags: props.initialFilter.tags,
 			});
 
 			if (props.initialFilter.region) {
@@ -180,22 +185,17 @@ export default class FilterForm extends Component {
 	};
 
 	handleClickSearch = () => {
-		let tags = this.state.tags.map((tag) => {
-			return tag.name;
-		});
-
 		this.props.handleSearch({
-			city: this.state.selectedCity && this.state.selectedCity.value ? this.state.selectedCity.label : null,
-			region: this.state.selectedRegion && this.state.selectedRegion.value ? this.state.selectedRegion.label : null,
+			city: this.state.selectedCity,
+			region: this.state.selectedRegion,
 			radius: this.state.radius,
-			ateco: this.state.selectedCode && this.state.selectedCode.value ? this.state.selectedCode.label : null,
-			type:
-				this.state.selectedType && this.state.selectedType.value ? (this.state.selectedType.value === 3 ? "all" : this.state.selectedType.label) : null,
-			employeeMin: this.state.selectedEmployeeMin && this.state.selectedEmployeeMin.value ? this.state.selectedEmployeeMin.label : null,
-			employeeMax: this.state.selectedEmployeeMax && this.state.selectedEmployeeMax.value ? this.state.selectedEmployeeMax.label : null,
-			revenueMin: this.state.selectedRevenueMin && this.state.selectedRevenueMin.value ? this.state.selectedRevenueMin.label : null,
-			revenueMax: this.state.selectedRevenueMax && this.state.selectedRevenueMax.value ? this.state.selectedRevenueMax.label : null,
-			tags: tags,
+			ateco: this.state.selectedCode,
+			type: this.state.selectedType,
+			employeeMin: this.state.selectedEmployeeMin,
+			employeeMax: this.state.selectedEmployeeMax,
+			revenueMin: this.state.selectedRevenueMin,
+			revenueMax: this.state.selectedRevenueMax,
+			tags: this.state.tags,
 		});
 	};
 

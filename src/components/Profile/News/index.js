@@ -128,8 +128,8 @@ export default class ProfileNews extends Component {
 		reader.onloadend = () => {
 			this.setState({
 				imageToCrop: {
-					ratio: 16 / 9,
-					maxWidth: 800,
+					ratio: 1,
+					maxWidth: 600,
 					image: reader.result,
 				},
 			});
@@ -192,9 +192,7 @@ export default class ProfileNews extends Component {
 						<PostItem key={index} data={post} handleDelete={() => this.handleDeleteNews(post)} />
 					))}
 				</div>
-				{imageToCrop && imageToCrop.image && (
-					<ImageCropper options={imageToCrop} onSave={this.handleImageCropped} onCancel={this.handleCropCancelled} />
-				)}
+				{imageToCrop && imageToCrop.image && <ImageCropper options={imageToCrop} onSave={this.handleImageCropped} onCancel={this.handleCropCancelled} />}
 				{isProcessing && <SpinnerView />}
 			</div>
 		);

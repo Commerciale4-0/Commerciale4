@@ -56,7 +56,7 @@ export default class DetailOverView extends Component {
 						</div>
 					))
 				) : (
-					<div></div>
+					<div className="text-center pt-2 pb-4">No news available</div>
 				)}
 				{selectedPost && <PostItemDetail post={selectedPost} onClose={() => this.setState({ selectedPost: null })} />}
 			</div>

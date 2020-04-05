@@ -160,16 +160,11 @@ button:hover {
 	border: none !important;
 	background-color: var(--colorBg) !important;
 	color: var(--colorText) !important;
-	text-align: left;
+	/* text-align: left; */
 	height: 36px;
+	min-width: 240px;
 }
 
-@media screen and (max-width: 768px) {
-	.dropdown-toggle.btn-primary {
-		font-size: 13px;
-		height: 32px;
-	}
-}
 .dropdown-toggle::after {
 	float: right;
 	margin-top: 0.55em;
@@ -187,7 +182,7 @@ button:hover {
 
 .dropdown-menu {
 	padding: 2px 0;
-	min-width: 170px;
+	min-width: 240px;
 }
 .dropdown-menu.show {
 	display: block;
@@ -195,6 +190,22 @@ button:hover {
 }
 .dropdown-item:active {
 	background-color: #bbb !important;
+}
+
+@media screen and (max-width: 1199px) {
+	.dropdown-toggle.btn-primary,
+	.dropdown-menu {
+		width: 90%;
+		min-width: auto;
+	}
+}
+
+@media screen and (max-width: 768px) {
+	.dropdown-toggle.btn-primary,
+	.dropdown-menu {
+		width: 100%;
+		min-width: auto;
+	}
 }
 
 /* Pagination */

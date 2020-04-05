@@ -246,7 +246,7 @@ export default class Dashboard extends Component {
 	}
 
 	handleClickSearch = async (filter) => {
-		// sessionStorage.setItem("filter", JSON.stringify(filter));
+		sessionStorage.setItem("filter", JSON.stringify(filter));
 		this.setState({
 			updateFilterForm: false,
 		});
@@ -286,12 +286,12 @@ export default class Dashboard extends Component {
 
 		temp = temp.filter(
 			(company) =>
-				(!filter.ateco || filter.ateco === company.ateco) &&
-				(!filter.type || filter.type === company.typeOfCompany || (filter.type === "all" && company.typeOfCompany)) &&
-				(!filter.employeeMin || numberFromStringWithUnit(filter.employeeMin) <= numberFromStringWithUnit(company.employees)) &&
-				(!filter.employeeMax || numberFromStringWithUnit(filter.employeeMax) >= numberFromStringWithUnit(company.employees)) &&
-				(!filter.revenueMin || numberFromStringWithUnit(filter.revenueMin) <= numberFromStringWithUnit(company.revenues)) &&
-				(!filter.revenueMax || numberFromStringWithUnit(filter.revenueMax) >= numberFromStringWithUnit(company.revenues))
+				(!filter.ateco || !filter.ateco.value || filter.ateco.label === company.ateco) &&
+				(!filter.type || !filter.type.value || filter.type.label === company.typeOfCompany || (filter.type.value === 3 && company.typeOfCompany)) &&
+				(!filter.employeeMin || !filter.employeeMin.value || numberFromStringWithUnit(filter.employeeMin.label) <= numberFromStringWithUnit(company.employees)) &&
+				(!filter.employeeMax || !filter.employeeMax.value || numberFromStringWithUnit(filter.employeeMax.label) >= numberFromStringWithUnit(company.employees)) &&
+				(!filter.revenueMin || !filter.revenueMin.value || numberFromStringWithUnit(filter.revenueMin.label) <= numberFromStringWithUnit(company.revenues)) &&
+				(!filter.revenueMax || !filter.revenueMax.value || numberFromStringWithUnit(filter.revenueMax.label) >= numberFromStringWithUnit(company.revenues))
 		);
 
 		if (filter.tags && filter.tags.length) {
@@ -304,7 +304,7 @@ export default class Dashboard extends Component {
 						let tag = company.tags[j];
 						let found = false;
 						for (let k in filter.tags) {
-							if (filter.tags[k] === tag) {
+							if (filter.tags[k].name === tag) {
 								temp2.push(company);
 								found = true;
 								break;
@@ -331,14 +331,14 @@ export default class Dashboard extends Component {
 	};
 
 	getCompaniesInRadius = async (companies, city, region, radius) => {
-		if (!region) {
+		if (!region || !region.value) {
 			return companies;
 		}
 
 		let items = [];
-		if (!city) {
+		if (!city || !city.value) {
 			for (let i in companies) {
-				if (companies[i].region === region) {
+				if (companies[i].region === region.label) {
 					items.push(companies[i]);
 				}
 			}
@@ -347,7 +347,7 @@ export default class Dashboard extends Component {
 
 		let latitude = 0.0;
 		let longitude = 0.0;
-		await geocodeByAddress(city, region)
+		await geocodeByAddress(city.label, region.label)
 			.then((res) => {
 				latitude = res.lat;
 				longitude = res.lng;
@@ -451,9 +451,7 @@ export default class Dashboard extends Component {
 		const filterBarMD = (
 			<div className="filter-bar">
 				<span className="result-md">
-					{`${(activePage - 1) * itemsCountPerPage + 1}-${(activePage - 1) * itemsCountPerPage + companiesToShow.length} / ${
-						filteredCompanies.length
-					} results`}
+					{`${(activePage - 1) * itemsCountPerPage + 1}-${(activePage - 1) * itemsCountPerPage + companiesToShow.length} / ${filteredCompanies.length} results`}
 				</span>
 				<div className="d-flex">
 					{dropdown}
