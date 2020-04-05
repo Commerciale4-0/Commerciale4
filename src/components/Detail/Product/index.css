@@ -1,32 +1,33 @@
 .carousel {
-	height: 400px;
-	margin: auto;
+    width: 400px !important;
+    height: 400px;
+    margin: auto;
 }
 
 .carousel .control-arrow {
-	min-width: 30px;
+    min-width: 30px;
 }
 
 .carousel .slider-wrapper,
 .carousel .slider-wrapper .slider,
 .carousel .slider-wrapper .slider .slide,
 .carousel img {
-	height: 100%;
+    height: 100%;
 }
 
 @media (max-width: 576px) {
-	.detail-product {
-		min-height: calc(100vh - 152px);
-	}
+    .detail-product {
+        min-height: calc(100vh - 152px);
+    }
 
-	.carousel {
-		height: 50vw;
-	}
-	.detail-product p {
-		font-size: 14px !important;
-	}
+    .carousel {
+        height: 50vw;
+    }
+    .detail-product p {
+        font-size: 14px !important;
+    }
 
-	.carousel .slider-wrapper .slider .slide {
-		min-height: 100px;
-	}
+    .carousel .slider-wrapper .slider .slide {
+        min-height: 100px;
+    }
 }

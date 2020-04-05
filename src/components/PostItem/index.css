@@ -1,60 +1,60 @@
 .post-item {
-	display: flex;
-	border-radius: 4px;
-	background: white;
-	padding: 14px 20px;
-	margin-bottom: 10px;
-	cursor: pointer;
+    display: flex;
+    border-radius: 4px;
+    background: white;
+    padding: 14px 20px;
+    margin-bottom: 10px;
+    cursor: pointer;
 }
 
 .post-item .image-panel {
-	width: 140px;
-	display: flex;
-	justify-content: center;
-	margin-right: 20px;
-	margin-top: 6px;
+    width: 120px;
+    display: flex;
+    justify-content: center;
+    margin-right: 20px;
+    margin-top: 6px;
 }
 .post-item .image-panel img {
-	max-width: 100%;
-	max-height: 140px;
-	margin-bottom: auto;
-	border-radius: 4px;
+    max-width: 100%;
+    max-height: 120px;
+    margin-bottom: auto;
+    border-radius: 4px;
 }
 
 .post-item .content-panel {
-	flex: 1;
+    flex: 1;
 }
 .post-item .publish-date {
-	font-size: 14px;
-	text-align: right;
-	margin-bottom: 0;
-	color: #888;
+    font-size: 14px;
+    text-align: right;
+    margin-bottom: 0;
+    color: #888;
 }
 
 .post-item button {
-	background: transparent;
-	min-width: 0;
-	color: var(--colorText);
-	padding: 0 8px;
-	float: right;
+    background: transparent;
+    min-width: 0;
+    color: var(--colorText);
+    padding: 0 8px;
+    float: right;
 }
 
 @media (max-width: 576px) {
-	.post-item {
-		display: block;
-		padding: 8px;
-	}
+    .post-item {
+        display: block;
+        padding: 8px;
+    }
 
-	.post-item img {
-		max-width: 80px;
-		max-height: 80px;
-	}
+    .post-item img {
+        max-width: 80px;
+        max-height: 80px;
+    }
 
-	.post-item p {
-		margin-bottom: 4px;
-	}
+    .post-item p {
+        margin-bottom: 4px;
+    }
 
-	.post-item .publish-date {
-		font-size: 12px !important;
-	}
+    .post-item .publish-date {
+        font-size: 12px !important;
+    }
 }
