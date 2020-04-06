@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./index.css";
 import MySelect from "../../Custom/MySelect";
-import { ISO, COMPANY_TYPES, LOGGED_USER } from "../../../utils";
+import { ISO, COMPANY_TYPES, LOGGED_USER, stringWithUnitFromNumber } from "../../../utils";
 import ReactTags from "react-tag-autocomplete";
 import ImageCropper from "../../ImageCropper";
 import { requestAPI } from "../../../utils/api";
@@ -52,7 +52,7 @@ export default class ProfileCompany extends Component {
             selectedType: selectedType,
             tags: tags,
             suggestions: [],
-            tagsPlaceholder: "Type to add",
+            tagsPlaceholder: "Type to add ",
             targetToCrop: null,
             originPhotos: originPhotos,
             coverImage: originPhotos.background,
@@ -66,6 +66,9 @@ export default class ProfileCompany extends Component {
             introItLength: 0,
             whatWeDoLength: 0,
             whatWeDoItLength: 0,
+
+            hintEmployees: props.profile && props.profile.employees ? stringWithUnitFromNumber(props.profile.employees) : "",
+            hintRevenues: props.profile && props.profile.revenues ? stringWithUnitFromNumber(props.profile.revenues) : "",
         };
 
         this.aboutUsPanel = React.createRef();
@@ -87,6 +90,16 @@ export default class ProfileCompany extends Component {
         this.refEmail = React.createRef();
         this.ref2ndEmail = React.createRef();
     }
+
+    componentDidMount = () => {
+        if (this.state.tags.length === MAX_TAGS) {
+            let elem = document.querySelector(".react-tags__search-input");
+            console.log(elem);
+            if (elem) {
+                elem.style.display = "none";
+            }
+        }
+    };
 
     handleChangeTab = (index) => {
         let maxHeight = this.aboutUsPanel.current.offsetHeight;
@@ -253,18 +266,19 @@ export default class ProfileCompany extends Component {
         tags.splice(i, 1);
         this.setState({ tags });
 
-        let elems = document.getElementsByClassName("react-tags__search-input");
-        if (elems && elems.length) {
-            elems[0].style.display = "block";
-            elems[0].focus();
+        let elem = document.querySelector(".react-tags__search-input");
+        if (!elem) {
+            return;
         }
+
+        elem.style.display = "block";
+        elem.focus();
+
         if (!tags || !tags.length) {
             this.setState({
-                tagsPlaceholder: "Type to add",
+                tagsPlaceholder: "Type to add ",
             });
-            if (elems && elems.length) {
-                elems[0].style.width = "16ch";
-            }
+            elem.style.width = "16ch";
         } else {
             this.setState({
                 tagsPlaceholder: `Max:${MAX_TAGS}(Left:${MAX_TAGS - tags.length})`,
@@ -279,9 +293,9 @@ export default class ProfileCompany extends Component {
         }
 
         if (tags.length === MAX_TAGS - 1) {
-            let elems = document.getElementsByClassName("react-tags__search-input");
-            if (elems && elems.length) {
-                elems[0].style.display = "none";
+            let elem = document.querySelector(".react-tags__search-input");
+            if (elem) {
+                elem.style.display = "none";
             }
         } else {
             this.setState({
@@ -378,6 +392,24 @@ export default class ProfileCompany extends Component {
         }
     };
 
+    handleChangeEmployees = (e) => {
+        let number = parseInt(e.target.value);
+        let employees = "";
+        if (number) {
+            employees = stringWithUnitFromNumber(number);
+        }
+        this.setState({ hintEmployees: employees });
+    };
+
+    handleChangeRevenues = (e) => {
+        let number = parseInt(e.target.value);
+        let revenues = "";
+        if (number) {
+            revenues = stringWithUnitFromNumber(number);
+        }
+        this.setState({ hintRevenues: revenues });
+    };
+
     render() {
         const {
             selectedTab,
@@ -397,6 +429,8 @@ export default class ProfileCompany extends Component {
             introItLength,
             whatWeDoLength,
             whatWeDoItLength,
+            hintEmployees,
+            hintRevenues,
         } = this.state;
 
         const { profile } = this.props;
@@ -492,11 +526,13 @@ export default class ProfileCompany extends Component {
                 <div className="mt-3">
                     <div className="info-row">
                         <span>N employees:</span>
-                        <input ref={this.refEmployee} defaultValue={profile && profile.employees} />
+                        <input ref={this.refEmployee} type="number" defaultValue={profile && profile.employees} onChange={this.handleChangeEmployees} />
+                        <div className="number-hint">{hintEmployees}</div>
                     </div>
                     <div className="info-row">
                         <span>Revenues:</span>
-                        <input ref={this.refRevenue} defaultValue={profile && profile.revenues} />
+                        <input ref={this.refRevenue} type="number" defaultValue={profile && profile.revenues} onChange={this.handleChangeRevenues} />
+                        <div className="number-hint">{hintRevenues}</div>
                     </div>
                     <div className="info-row">
                         <span>ISO:</span>

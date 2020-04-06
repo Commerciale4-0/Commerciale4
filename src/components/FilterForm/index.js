@@ -106,17 +106,17 @@ export default class FilterForm extends Component {
         const tags = this.state.tags.slice(0);
         tags.splice(i, 1);
         this.setState({ tags });
-        let elems = document.getElementsByClassName("react-tags__search-input");
-        if (elems && elems.length) {
-            elems[0].style.display = "block";
-            elems[0].focus();
+        let elem = document.querySelector(".react-tags__search-input");
+        if (elem) {
+            elem.style.display = "block";
+            elem.focus();
         }
         if (!tags || !tags.length) {
             this.setState({
                 tagsPlaceholder: "Search with #TAGS",
             });
-            if (elems && elems.length) {
-                elems[0].style.width = "16ch";
+            if (elem) {
+                elem.style.width = "16ch";
             }
         } else {
             this.setState({
@@ -132,9 +132,9 @@ export default class FilterForm extends Component {
         }
 
         if (tags.length === MAX_TAGS - 1) {
-            let elems = document.getElementsByClassName("react-tags__search-input");
-            if (elems && elems.length) {
-                elems[0].style.display = "none";
+            let elem = document.querySelector(".react-tags__search-input");
+            if (elem) {
+                elem.style.display = "none";
             }
         } else {
             this.setState({

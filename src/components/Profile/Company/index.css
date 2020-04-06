@@ -76,6 +76,13 @@
     padding: 6px 8px;
 }
 
+.user-profile .info-panel .info-row .number-hint {
+    position: absolute;
+    margin-left: 266px;
+    width: 100px;
+    color: #666;
+}
+
 .user-profile .info-panel .photos-panel {
     display: flex;
 }
