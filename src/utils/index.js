@@ -368,7 +368,7 @@ export const orderTags = (srcTags, searchTags) => {
         let searchTag = searchTags[i].name;
         for (let j in srcTags) {
             let tag = srcTags[j];
-            if (tag === searchTag) {
+            if (tag.toLowerCase() === searchTag.toLowerCase()) {
                 matchedTags.push(tag);
                 srcTags.splice(j, 1);
                 break;

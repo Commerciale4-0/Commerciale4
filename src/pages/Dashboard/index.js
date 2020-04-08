@@ -306,7 +306,7 @@ export default class Dashboard extends Component {
                         let tag = company.tags[j];
                         let found = false;
                         for (let k in filter.tags) {
-                            if (filter.tags[k].name === tag) {
+                            if (filter.tags[k].name.toLowerCase() === tag.toLowerCase()) {
                                 temp2.push(company);
                                 found = true;
                                 break;
