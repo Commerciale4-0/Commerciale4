@@ -6,9 +6,9 @@ import DetailContacts from "../Contacts";
 import { stringWithUnitFromNumber } from "../../../utils";
 
 const MENUS = [
-    { id: 0, title: "About us" },
-    { id: 1, title: "Product & Service" },
-    { id: 2, title: "Contacts" },
+    { id: 0, title: "About us", icon: "fa-user" },
+    { id: 1, title: "Product & Service", icon: "fa-cogs" },
+    { id: 2, title: "Contacts", icon: "fa-info-circle" },
 ];
 
 export default class DetailBody extends Component {
@@ -91,10 +91,25 @@ export default class DetailBody extends Component {
             <div className="menu-panel" ref={this.menuPanel}>
                 {MENUS.map((menu) => (
                     <div key={menu.id} className={`menu ${selectedMenu === menu.id ? "active" : ""}`} onClick={() => this.handleChangeMenu(menu.id)}>
+                        {!isMobile && <i className={`fa ${menu.icon} pr-3`} />}
                         {menu.title}
                     </div>
                 ))}
             </div>
+        );
+
+        const tagsPanel = !isMobile && (
+            <div className="-tags">
+                <i className="fa fa-tags" />
+                <div>{profile && profile.user.tags && profile.user.tags.map((tag, index) => <label key={index}>{tag}</label>)}</div>
+            </div>
+        );
+
+        const isoPanel = !isMobile && (
+            <p>
+                <span>ISO</span>
+                {profile && profile.user.iso}
+            </p>
         );
 
         const infoPanel = (
@@ -108,25 +123,17 @@ export default class DetailBody extends Component {
                         <i className="fa fa-line-chart" />
                         {profile && stringWithUnitFromNumber(profile.user.revenues)}
                     </p>
-                    <p>
-                        <span>ISO</span>
-                        {profile && profile.user.iso}
-                    </p>
-                </div>
-                <div className="row-on-mobile">
+                    {/* {isoPanel} */}
                     <p className="-ateco">
                         <span>NACE</span>
                         {profile && profile.user.ateco}
                     </p>
-                    <p className="-type">
-                        <span>TYPE</span>
-                        {profile && profile.user.typeOfCompany}
-                    </p>
                 </div>
-                <div className="-tags">
-                    <i className="fa fa-tags" />
-                    <div>{profile && profile.user.tags && profile.user.tags.map((tag, index) => <label key={index}>{tag}</label>)}</div>
-                </div>
+                <p className="-type mb-0">
+                    <span>TYPE</span>
+                    {profile && profile.user.typeOfCompany}
+                </p>
+                {/* {tagsPanel} */}
             </div>
         );
 

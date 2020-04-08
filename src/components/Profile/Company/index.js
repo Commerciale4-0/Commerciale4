@@ -24,12 +24,27 @@ export default class ProfileCompany extends Component {
         super(props);
 
         let tags = [];
+        let tagsIt = [];
         props.profile.tags &&
             props.profile.tags.forEach((tag) => {
                 tags.push({ name: tag });
             });
+        props.profile.tagsIt &&
+            props.profile.tagsIt.forEach((tagIt) => {
+                tagsIt.push({ name: tagIt });
+            });
 
-        let selectedISO = ISO.filter((code) => code.label === props.profile.iso);
+        let selectedISO = [];
+        if (props.profile && props.profile.iso) {
+            for (let i in props.profile.iso) {
+                for (let j in ISO) {
+                    if (ISO[j].label === props.profile.iso[i]) {
+                        selectedISO.push(ISO[j]);
+                        break;
+                    }
+                }
+            }
+        }
 
         let selectedType = COMPANY_TYPES.filter((type) => type.label === props.profile.typeOfCompany);
 
@@ -51,8 +66,10 @@ export default class ProfileCompany extends Component {
             selectedISO: selectedISO,
             selectedType: selectedType,
             tags: tags,
+            tagsIt: tagsIt,
             suggestions: [],
             tagsPlaceholder: "Type to add ",
+            tagsItPlaceholder: "Digita per aggiungere",
             targetToCrop: null,
             originPhotos: originPhotos,
             coverImage: originPhotos.background,
@@ -61,6 +78,7 @@ export default class ProfileCompany extends Component {
             isProcessing: false,
             selectedIntroLang: 2,
             selectedWhatDoLang: 2,
+            selectedTagsLang: 2,
 
             introLength: 0,
             introItLength: 0,
@@ -92,9 +110,14 @@ export default class ProfileCompany extends Component {
     }
 
     componentDidMount = () => {
-        if (this.state.tags.length === MAX_TAGS) {
-            let elem = document.querySelector(".react-tags__search-input");
-            console.log(elem);
+        if (this.state.tags.length >= MAX_TAGS) {
+            let elem = document.querySelector(".tags-en .react-tags__search-input");
+            if (elem) {
+                elem.style.display = "none";
+            }
+        }
+        if (this.state.tagsIt.length >= MAX_TAGS) {
+            let elem = document.querySelector(".tags-it .react-tags__search-input");
             if (elem) {
                 elem.style.display = "none";
             }
@@ -110,12 +133,17 @@ export default class ProfileCompany extends Component {
     };
 
     handleClickSave = async (e) => {
-        const { originPhotos, coverImage, logoImage, productImages, tags, selectedISO, selectedType } = this.state;
+        const { originPhotos, coverImage, logoImage, productImages, tags, tagsIt, selectedISO, selectedType } = this.state;
 
         let newTags = [];
+        let newTagsIt = [];
         tags &&
             tags.forEach((tag) => {
                 newTags.push(tag.name);
+            });
+        tagsIt &&
+            tagsIt.forEach((tagIt) => {
+                newTagsIt.push(tagIt.name);
             });
 
         let employees = parseInt(this.refEmployee.current.value);
@@ -127,6 +155,10 @@ export default class ProfileCompany extends Component {
         if (!revenues) {
             revenues = 0;
         }
+        let arrayISO = [];
+        for (let i in selectedISO) {
+            arrayISO.push(selectedISO[i].label);
+        }
 
         let dataToSave = {
             id: this.props.profile.id,
@@ -137,7 +169,7 @@ export default class ProfileCompany extends Component {
                 whatWeDoIt: this.refWhatWeDoIt.current.value,
                 employees: employees,
                 revenues: revenues,
-                iso: selectedISO && selectedISO.label,
+                iso: selectedISO && arrayISO,
                 typeOfCompany: selectedType && selectedType.label,
                 productName: this.refProductName.current.value,
                 productDetail: this.refProductDetail.current.value,
@@ -147,6 +179,7 @@ export default class ProfileCompany extends Component {
                 companyEmail: this.refEmail.current.value,
                 company2ndEmail: this.ref2ndEmail.current.value,
                 tags: newTags,
+                tagsIt: newTagsIt,
             },
 
             imageData: {
@@ -249,7 +282,6 @@ export default class ProfileCompany extends Component {
     };
 
     handleISOChange = (selectedISO) => {
-        console.log(selectedISO);
         this.setState({ selectedISO });
     };
 
@@ -266,7 +298,7 @@ export default class ProfileCompany extends Component {
         tags.splice(i, 1);
         this.setState({ tags });
 
-        let elem = document.querySelector(".react-tags__search-input");
+        let elem = document.querySelector(".tags-en .react-tags__search-input");
         if (!elem) {
             return;
         }
@@ -285,7 +317,6 @@ export default class ProfileCompany extends Component {
             });
         }
     };
-
     handleTagAddition = (tag) => {
         const { tags } = this.state;
         if (tags.filter((elem) => elem.name === tag.name).length) {
@@ -293,7 +324,7 @@ export default class ProfileCompany extends Component {
         }
 
         if (tags.length === MAX_TAGS - 1) {
-            let elem = document.querySelector(".react-tags__search-input");
+            let elem = document.querySelector(".tags-en .react-tags__search-input");
             if (elem) {
                 elem.style.display = "none";
             }
@@ -302,9 +333,54 @@ export default class ProfileCompany extends Component {
                 tagsPlaceholder: `Max:${MAX_TAGS}(Left:${MAX_TAGS - tags.length - 1})`,
             });
         }
-
         const newTags = [].concat(tags, tag);
         this.setState({ tags: newTags });
+    };
+
+    handleTagItDelete = (i) => {
+        const tagsIt = this.state.tagsIt.slice(0);
+        tagsIt.splice(i, 1);
+        this.setState({ tagsIt });
+
+        let elem = document.querySelector(".tags-it .react-tags__search-input");
+        if (!elem) {
+            return;
+        }
+
+        elem.style.display = "block";
+        elem.focus();
+
+        if (!tagsIt || !tagsIt.length) {
+            this.setState({
+                tagsItPlaceholder: "Digita per aggiungere",
+            });
+            elem.style.width = "20ch";
+        } else {
+            this.setState({
+                tagsItPlaceholder: `Max:${MAX_TAGS}(Left:${MAX_TAGS - tagsIt.length})`,
+            });
+        }
+    };
+
+    handleTagItAddition = (tagIt) => {
+        const { tagsIt } = this.state;
+        if (tagsIt.filter((elem) => elem.name === tagIt.name).length) {
+            return;
+        }
+
+        if (tagsIt.length === MAX_TAGS - 1) {
+            let elem = document.querySelector(".tags-it .react-tags__search-input");
+            if (elem) {
+                elem.style.display = "none";
+            }
+        } else {
+            this.setState({
+                tagsItPlaceholder: `Max:${MAX_TAGS}(Left:${MAX_TAGS - tagsIt.length - 1})`,
+            });
+        }
+
+        const newTagsIt = [].concat(tagsIt, tagIt);
+        this.setState({ tagsIt: newTagsIt });
     };
 
     handleBrowseFile = (index, info) => {
@@ -371,8 +447,16 @@ export default class ProfileCompany extends Component {
         this.setState({ selectedWhatDoLang });
     };
 
+    handleChangeTagsLang = (selectedTagsLang) => {
+        let elem = document.querySelector(".tags-it .react-tags__search-input");
+
+        if (selectedTagsLang === 1) {
+            elem.style.width = "20ch";
+        }
+
+        this.setState({ selectedTagsLang });
+    };
     getTextLength = (e) => {
-        console.log(e);
         return e && e.value.length;
     };
 
@@ -416,8 +500,10 @@ export default class ProfileCompany extends Component {
             selectedISO,
             selectedType,
             tags,
+            tagsIt,
             suggestions,
             tagsPlaceholder,
+            tagsItPlaceholder,
             targetToCrop,
             coverImage,
             logoImage,
@@ -425,6 +511,7 @@ export default class ProfileCompany extends Component {
             isProcessing,
             selectedIntroLang,
             selectedWhatDoLang,
+            selectedTagsLang,
             introLength,
             introItLength,
             whatWeDoLength,
@@ -450,23 +537,13 @@ export default class ProfileCompany extends Component {
                     <Lang onChange={this.handleChangeIntroLang} />
                 </div>
                 <div className={selectedIntroLang === 2 ? "d-block" : "d-none"}>
-                    <textarea
-                        maxLength={INTRO_MAX_LENGTH}
-                        ref={this.refIntro}
-                        defaultValue={profile && profile.introduction}
-                        onChange={this.handleChangeText}
-                    ></textarea>
+                    <textarea maxLength={INTRO_MAX_LENGTH} ref={this.refIntro} defaultValue={profile && profile.introduction} onChange={this.handleChangeText}></textarea>
                     <div className="char-limit">
                         {introLength}/{INTRO_MAX_LENGTH}
                     </div>
                 </div>
                 <div className={selectedIntroLang === 1 ? "d-block" : "d-none"}>
-                    <textarea
-                        maxLength={INTRO_MAX_LENGTH}
-                        ref={this.refIntroIt}
-                        defaultValue={profile && profile.introductionIt}
-                        onChange={this.handleChangeText}
-                    />
+                    <textarea maxLength={INTRO_MAX_LENGTH} ref={this.refIntroIt} defaultValue={profile && profile.introductionIt} onChange={this.handleChangeText} />
                     <div className="char-limit">
                         {introItLength}/{INTRO_MAX_LENGTH}
                     </div>
@@ -477,12 +554,7 @@ export default class ProfileCompany extends Component {
                 </div>
                 <div>
                     <div className={selectedWhatDoLang === 2 ? "d-block" : "d-none"}>
-                        <textarea
-                            maxLength={WHATWEDO_MAX_LENGTH}
-                            ref={this.refWhatWeDo}
-                            defaultValue={profile && profile.whatWeDo}
-                            onChange={this.handleChangeText}
-                        />
+                        <textarea maxLength={WHATWEDO_MAX_LENGTH} ref={this.refWhatWeDo} defaultValue={profile && profile.whatWeDo} onChange={this.handleChangeText} />
                         <div className="char-limit">
                             {whatWeDoLength}/{WHATWEDO_MAX_LENGTH}
                         </div>
@@ -501,38 +573,59 @@ export default class ProfileCompany extends Component {
                 </div>
                 <hr />
                 <div>
+                    <div className="float-right">
+                        <Lang onChange={this.handleChangeTagsLang} />
+                    </div>
                     TAGS
                     <br />
-                    <span className="text-small">Select the main keyword that represent your company.</span>
-                    <div className="info-row mt-3">
-                        <ReactTags
-                            tags={tags}
-                            suggestions={suggestions}
-                            placeholderText={tagsPlaceholder}
-                            onDelete={this.handleTagDelete.bind(this)}
-                            onAddition={this.handleTagAddition.bind(this)}
-                            allowNew
-                        />
-                    </div>
-                    <div className="d-flex justify-content-center">
-                        <div className="tag-hint">
-                            Examples: <label>lasercut</label>
-                            <label>welding</label>
-                            <label>CNC</label>
+                    <div>
+                        <span className="text-small">Select the main keyword that represent your company.</span>
+                        <div className="info-row mt-3">
+                            <div className="tags-en">
+                                <div className={selectedTagsLang === 2 ? "d-block" : "d-none"}>
+                                    <ReactTags
+                                        tags={tags}
+                                        suggestions={suggestions}
+                                        placeholderText={tagsPlaceholder}
+                                        onDelete={this.handleTagDelete.bind(this)}
+                                        onAddition={this.handleTagAddition.bind(this)}
+                                        allowNew
+                                    />
+                                </div>
+                            </div>
+                            <div className="tags-it">
+                                <div className={selectedTagsLang === 1 ? "d-block" : "d-none"}>
+                                    <ReactTags
+                                        tags={tagsIt}
+                                        suggestions={suggestions}
+                                        placeholderText={tagsItPlaceholder}
+                                        onDelete={this.handleTagItDelete.bind(this)}
+                                        onAddition={this.handleTagItAddition.bind(this)}
+                                        allowNew
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="d-flex justify-content-center">
+                            <div className="tag-hint">
+                                Examples: <label>lasercut</label>
+                                <label>welding</label>
+                                <label>CNC</label>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <hr />
                 <div className="mt-3">
                     <div className="info-row">
-                        <span>N employees:</span>
+                        <span>N° employees:</span>
                         <input ref={this.refEmployee} type="number" defaultValue={profile && profile.employees} onChange={this.handleChangeEmployees} />
-                        <div className="number-hint">{hintEmployees}</div>
+                        <div className="number-hint">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{hintEmployees}</div>
                     </div>
                     <div className="info-row">
                         <span>Revenues:</span>
                         <input ref={this.refRevenue} type="number" defaultValue={profile && profile.revenues} onChange={this.handleChangeRevenues} />
-                        <div className="number-hint">{hintRevenues}</div>
+                        <div className="number-hint">€&nbsp;&nbsp;&nbsp;{hintRevenues}</div>
                     </div>
                     <div className="info-row">
                         <span>ISO:</span>

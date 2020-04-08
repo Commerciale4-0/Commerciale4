@@ -13,15 +13,19 @@ export default class CompanyDetailProduct extends Component {
                 {profile && profile.user.productPhotos && profile.user.productPhotos.length ? (
                     profile.user.productPhotos.length > 1 ? (
                         <div className="d-flex justify-content-center">
-                            <Carousel showStatus={false} showThumbs={false} infiniteLoop={true}>
-                                {profile.user.productPhotos.map((photo, index) => (
-                                    <img src={process.env.REACT_APP_AWS_PREFIX + photo} key={index} alt="" />
-                                ))}
-                            </Carousel>
+                            <div className="slide-container">
+                                <Carousel showStatus={false} showThumbs={false} infiniteLoop={true}>
+                                    {profile.user.productPhotos.map((photo, index) => (
+                                        <img src={process.env.REACT_APP_AWS_PREFIX + photo} key={index} alt="" />
+                                    ))}
+                                </Carousel>
+                            </div>
                         </div>
                     ) : (
                         <div className="d-flex justify-content-center">
-                            <img className="carousel" src={process.env.REACT_APP_AWS_PREFIX + profile.user.productPhotos[0]} alt="" />
+                            <div className="slide-container">
+                                <img className="carousel" src={process.env.REACT_APP_AWS_PREFIX + profile.user.productPhotos[0]} alt="" />
+                            </div>
                         </div>
                     )
                 ) : (

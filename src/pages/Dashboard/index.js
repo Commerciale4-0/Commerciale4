@@ -6,7 +6,7 @@ import CompanyCell from "../../components/CompanyCell";
 import { Dropdown } from "react-bootstrap";
 // import Sidebar from "../../components/Sidebar";
 import Pagination from "react-js-pagination";
-import { distanceFromCoords, numberFromStringWithUnit, LOGGED_USER } from "../../utils";
+import { distanceFromCoords, numberFromStringWithUnit, orderTags, LOGGED_USER } from "../../utils";
 import SpinnerView from "../../components/SpinnerView";
 
 const orders = [
@@ -294,6 +294,8 @@ export default class Dashboard extends Component {
                 (!filter.revenueMax || !filter.revenueMax.value || numberFromStringWithUnit(filter.revenueMax.label) >= numberFromStringWithUnit(company.revenues))
         );
 
+        temp = await this.getCompaniesInRadius(temp, filter.city, filter.region, filter.radius);
+
         if (filter.tags && filter.tags.length) {
             let temp2 = [];
 
@@ -317,9 +319,12 @@ export default class Dashboard extends Component {
                 }
             }
             temp = temp2.slice(0);
-        }
 
-        temp = await this.getCompaniesInRadius(temp, filter.city, filter.region, filter.radius);
+            for (let i in temp) {
+                let company = temp[i];
+                company.tags = orderTags(company.tags, filter.tags);
+            }
+        }
 
         this.setState({
             filteredCompanies: temp,

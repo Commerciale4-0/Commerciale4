@@ -290,7 +290,7 @@ export default class FilterForm extends Component {
                 </Row>
                 <Row className="mt-2 px-2 align-items-center">
                     <Col className="mb-1" xs={isInDashboard ? 12 : 4}>
-                        N employees
+                        N° employees
                     </Col>
                     <Col xs={isInDashboard ? 6 : 4}>
                         <MySelect value={selectedEmployeeMin} onChange={this.handleEmployeeMinChange} options={minEmployees} placeholder="Min" />

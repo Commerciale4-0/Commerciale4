@@ -298,6 +298,7 @@ export const numberFromStringWithUnit = (str) => {
     if (typeof str === "number") {
         return str;
     }
+
     if (!str || !str.length) {
         return 0;
     }
@@ -306,44 +307,79 @@ export const numberFromStringWithUnit = (str) => {
     if (index !== -1) {
         return parseInt(str.substr(0, index)) * 1000;
     }
+
     index = str.search("M");
     if (index !== -1) {
         return parseInt(str.substr(0, index)) * 1000000;
     }
+
     index = str.search("B");
     if (index !== -1) {
         return parseInt(str.substr(0, index)) * 1000000000;
     }
+
     return parseInt(str);
 };
 
 export const stringWithUnitFromNumber = (numberStr) => {
     let number = parseInt(numberStr);
+
     if (!number) {
         return 0;
     }
 
     if (number >= 1000000000) {
-        if (number % 1000000000 > 0) {
-            return `${(number / 1000000000).toFixed(2)}B`;
-        } else {
-            return `${number / 1000000000}B`;
-        }
+        return getStringWithUnit(number, 1000000000) + "B";
     }
 
     if (number >= 1000000) {
-        if (number % 1000000 > 0) {
-            return `${(number / 1000000).toFixed(2)}M`;
-        } else {
-            return `${number / 1000000}M`;
-        }
+        return getStringWithUnit(number, 1000000) + "M";
     }
+
     if (number >= 1000) {
-        if (number % 1000 > 0) {
-            return `${(number / 1000).toFixed(2)}K`;
+        return getStringWithUnit(number, 1000) + "K";
+    }
+
+    return number;
+};
+
+const getStringWithUnit = (number, unit) => {
+    if (number % unit > 0) {
+        if (+(number / unit).toFixed(2).toString().slice(-1) === 0) {
+            return (number / unit).toFixed(1);
         } else {
-            return `${number / 1000}K`;
+            return (number / unit).toFixed(2);
+        }
+    } else {
+        return number / unit;
+    }
+};
+
+export const orderTags = (srcTags, searchTags) => {
+    if (!srcTags) {
+        return null;
+    }
+
+    if (!searchTags || !searchTags.length) {
+        return srcTags;
+    }
+    let matchedTags = [];
+    for (let i in searchTags) {
+        let searchTag = searchTags[i].name;
+        for (let j in srcTags) {
+            let tag = srcTags[j];
+            if (tag === searchTag) {
+                matchedTags.push(tag);
+                srcTags.splice(j, 1);
+                break;
+            }
         }
     }
-    return number;
+
+    let tags = matchedTags.slice(0);
+    srcTags.forEach((tag) => {
+        tags.push(tag);
+    });
+
+    return tags;
 };
