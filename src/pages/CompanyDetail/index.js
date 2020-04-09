@@ -5,7 +5,8 @@ import "./index.css";
 import { requestAPI } from "../../utils/api";
 import SpinnerView from "../../components/SpinnerView";
 import { orderTags } from "../../utils";
-
+import { LangConsumer } from "../../utils/LanguageContext";
+let stateContext = null;
 export default class CompanyDetail extends Component {
     constructor(props) {
         super(props);
@@ -30,7 +31,11 @@ export default class CompanyDetail extends Component {
                     if (profile.user) {
                         let filter = JSON.parse(sessionStorage.getItem("filter"));
                         if (filter) {
-                            profile.user.tags = orderTags(profile.user.tags, filter.tags);
+                            if (stateContext === 2) {
+                                profile.user.tags = orderTags(profile.user.tags, filter.tags);
+                            } else {
+                                profile.user.tagsIt = orderTags(profile.user.tagsIt, filter.tags);
+                            }
                         }
                     }
                     this.setState({ profile: res.data });
@@ -49,6 +54,11 @@ export default class CompanyDetail extends Component {
         const { profile, isProcessing } = this.state;
         return (
             <div>
+                <LangConsumer>
+                    {(value) => {
+                        stateContext = value.lang;
+                    }}
+                </LangConsumer>
                 <div className="company-detail container">
                     <DetailHeader profile={profile && profile.user} />
                     <DetailBody profile={profile} />

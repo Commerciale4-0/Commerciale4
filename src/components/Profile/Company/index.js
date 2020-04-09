@@ -216,7 +216,7 @@ export default class ProfileCompany extends Component {
             }
         }
 
-        dataToSave.imageData.removedPhotos = removedPhotos;
+        // dataToSave.imageData.removedPhotos = removedPhotos;
 
         let newImages = [];
         for (let i in productImages) {
@@ -231,13 +231,10 @@ export default class ProfileCompany extends Component {
 
         dataToSave.imageData.productPhotos = newImages;
 
-        console.log(dataToSave);
         this.setState({ isProcessing: true });
 
         await requestAPI("/user/profile/edit", "POST", dataToSave).then((res) => {
-            this.setState({ isProcessing: false });
             if (res.status === 1) {
-                console.log(res.data);
                 if (res.data) {
                     let originPhotos = this.state.originPhotos;
                     if (res.data.background) {
@@ -268,8 +265,18 @@ export default class ProfileCompany extends Component {
 
                     console.log(newData);
                     sessionStorage.setItem(LOGGED_USER, JSON.stringify(newData));
+                    this.requestRemovePhotos(removedPhotos);
                 }
+            } else {
+                this.setState({ isProcessing: false });
             }
+        });
+    };
+
+    requestRemovePhotos = async (photos) => {
+        await requestAPI("/user/profile/remove-photos", "POST", photos).then((res) => {
+            console.log(res.status);
+            this.setState({ isProcessing: false });
         });
     };
 

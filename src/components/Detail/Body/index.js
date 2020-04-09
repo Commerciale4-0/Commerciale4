@@ -74,7 +74,6 @@ export default class DetailBody extends Component {
         panels[selectedMenu].style.display = "block";
         if (window.innerWidth > 576) {
             let maxHeight = Math.max(this.state.panelHeightMax, currentHeight, panels[selectedMenu].clientHeight);
-            console.log(maxHeight);
             panels.forEach((panel) => {
                 panel.style.height = maxHeight + "px";
             });
