@@ -29,7 +29,9 @@ export default class CompanyDetail extends Component {
                     let profile = res.data;
                     if (profile.user) {
                         let filter = JSON.parse(sessionStorage.getItem("filter"));
-                        profile.user.tags = orderTags(profile.user.tags, filter.tags);
+                        if (filter) {
+                            profile.user.tags = orderTags(profile.user.tags, filter.tags);
+                        }
                     }
                     this.setState({ profile: res.data });
                 } else {

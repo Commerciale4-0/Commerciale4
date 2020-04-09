@@ -68,28 +68,22 @@ export default class DetailBody extends Component {
     };
 
     handleChangeMenu = (selectedMenu) => {
-        let panels = [
-            this.aboutUsPanel.current,
-            this.productsPanel.current,
-            this.contactsPanel.current,
-        ];
+        let panels = [this.aboutUsPanel.current, this.productsPanel.current, this.contactsPanel.current];
         let currentHeight = panels[this.state.selectedMenu].clientHeight;
-        panels.forEach((panel) => {
-            panel.style.display = "none";
-        });
 
         panels[selectedMenu].style.display = "block";
         if (window.innerWidth > 576) {
-            let maxHeight = Math.max(
-                this.state.panelHeightMax,
-                currentHeight,
-                panels[selectedMenu].clientHeight
-            );
+            let maxHeight = Math.max(this.state.panelHeightMax, currentHeight, panels[selectedMenu].clientHeight);
             console.log(maxHeight);
             panels.forEach((panel) => {
                 panel.style.height = maxHeight + "px";
             });
         }
+        panels.forEach((panel, index) => {
+            if (index !== selectedMenu) {
+                panel.style.display = "none";
+            }
+        });
 
         this.setState({ selectedMenu });
     };
@@ -101,11 +95,7 @@ export default class DetailBody extends Component {
         const menuPanel = (
             <div className="menu-panel" ref={this.menuPanel}>
                 {MENUS.map((menu) => (
-                    <div
-                        key={menu.id}
-                        className={`menu ${selectedMenu === menu.id ? "active" : ""}`}
-                        onClick={() => this.handleChangeMenu(menu.id)}
-                    >
+                    <div key={menu.id} className={`menu ${selectedMenu === menu.id ? "active" : ""}`} onClick={() => this.handleChangeMenu(menu.id)}>
                         {!isMobile && <i className={`fa ${menu.icon} pr-3`} />}
                         {menu.title}
                     </div>
@@ -120,16 +110,8 @@ export default class DetailBody extends Component {
                     <LangConsumer>
                         {(value) =>
                             value.lang === 2
-                                ? profile &&
-                                  profile.user.tags &&
-                                  profile.user.tags.map((tag, index) => (
-                                      <label key={index}>{tag}</label>
-                                  ))
-                                : profile &&
-                                  profile.user.tagsIt &&
-                                  profile.user.tagsIt.map((tagIt, index) => (
-                                      <label key={index}>{tagIt}</label>
-                                  ))
+                                ? profile && profile.user.tags && profile.user.tags.map((tag, index) => <label key={index}>{tag}</label>)
+                                : profile && profile.user.tagsIt && profile.user.tagsIt.map((tagIt, index) => <label key={index}>{tagIt}</label>)
                         }
                     </LangConsumer>
                 </div>
@@ -143,11 +125,7 @@ export default class DetailBody extends Component {
                     {profile &&
                         profile.user.iso &&
                         profile.user.iso.map((item, index) => (
-                            <label
-                                key={index}
-                                className="no-bg"
-                                style={{ textDecoration: "underline" }}
-                            >
+                            <label key={index} className="no-bg" style={{ textDecoration: "underline" }}>
                                 {item}
                             </label>
                         ))}
