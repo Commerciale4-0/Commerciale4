@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./index.css";
+import { LangConsumer } from "../../../utils/LanguageContext";
 
 export default class DetailContacts extends Component {
     render() {
@@ -11,7 +12,9 @@ export default class DetailContacts extends Component {
                         <span className="pr-3">
                             <b>ISO</b>
                         </span>
+
                         {profile &&
+                            profile.user.iso &&
                             profile.user.iso.map((item, index) => (
                                 <span key={index} className="pr-3" style={{ textDecoration: "underline" }}>
                                     {item}
@@ -19,20 +22,32 @@ export default class DetailContacts extends Component {
                             ))}
                     </div>
                     <div className="d-flex mb-2">
-                        <i className="fa fa-tags font-18 pr-4 mt-1" />
+                        <i className="fa fa-tags font-18 pr-4 mt-2" />
                         <div>
-                            {profile &&
-                                profile.user.tags &&
-                                profile.user.tags.map((tag, index) => (
-                                    <span className="tag" key={index}>
-                                        {tag}
-                                    </span>
-                                ))}
+                            <LangConsumer>
+                                {(value) =>
+                                    value.lang === 2
+                                        ? profile &&
+                                          profile.user.tags &&
+                                          profile.user.tags.map((tag, index) => (
+                                              <span className="tag" key={index}>
+                                                  {tag}
+                                              </span>
+                                          ))
+                                        : profile &&
+                                          profile.user.tagsIt &&
+                                          profile.user.tagsIt.map((tagIt, index) => (
+                                              <span className="tag" key={index}>
+                                                  {tagIt}
+                                              </span>
+                                          ))
+                                }
+                            </LangConsumer>
                         </div>
                     </div>
                 </div>
                 <hr />
-                <h5 className="mt-5 mb-3 text-dark-light text-uppercase">Contacts</h5>
+                <h5 className="pt-4 text-dark-light text-uppercase text-center">Contacts</h5>
                 <div className="contact-info">
                     <div>
                         <div className="d-flex align-items-center py-2">

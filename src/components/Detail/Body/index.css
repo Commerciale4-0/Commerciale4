@@ -50,8 +50,15 @@
     box-shadow: 0.1em 0.1em 0.2em #ccc;
 }
 
+.detail-body .menu i {
+    width: 40px;
+}
+.detail-body .menu.active i {
+    width: 37px;
+}
+
 .detail-body .info-panel {
-    padding: 50px 10px;
+    padding: 50px 10px 20px 0;
     margin-top: 10px;
 }
 .detail-body .info-panel p {
@@ -70,27 +77,35 @@
     margin: auto 0;
     width: 60px;
 }
-.detail-body .info-panel .-tags {
+.detail-body .info-panel .multi-values {
     display: flex;
     align-items: flex-start;
     font-size: 14px;
+    margin: 20px 0;
     /* margin-bottom: 20px; */
 }
 
-.detail-body .info-panel .-tags i {
+.detail-body .info-panel .multi-values i {
     margin-top: 6px;
 }
+.detail-body .info-panel .multi-values span {
+    margin: 0;
+    padding-top: 4px;
+}
 
-.detail-body .info-panel .-tags > div {
+.detail-body .info-panel .multi-values > div {
     flex: 1;
 }
-.detail-body .info-panel .-tags label {
+.detail-body .info-panel .multi-values label {
     padding: 0 8px;
     border-radius: 4px;
     background: #ccc;
     margin: 4px 4px 4px 0;
 }
-
+.detail-body .info-panel .multi-values label.no-bg {
+    background: transparent;
+    padding-left: 0;
+}
 @media (max-width: 576px) {
     .detail-body {
         display: block;
@@ -163,7 +178,7 @@
 		width: 60%;
 	} */
 
-    .detail-body .info-panel .-tags label {
+    .detail-body .info-panel .multi-values label {
         font-size: 13px;
     }
     /* .detail-body .info-panel > div {

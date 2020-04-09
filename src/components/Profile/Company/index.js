@@ -10,7 +10,7 @@ import Lang from "../../Lang";
 
 const IMAGE_COVER = { ratio: 1200 / 240, maxWidth: 1200, circle: false };
 const IMAGE_LOGO = { ratio: 1, maxWidth: 300, circle: true };
-const IMAGE_PRODUCT = { ratio: 1, maxWidth: 800, circle: false };
+const IMAGE_PRODUCT = { ratio: 2, maxWidth: 800, circle: false };
 
 const SUB_MENUS = ["About us", "Product & service", "Contacts"];
 
@@ -667,7 +667,7 @@ export default class ProfileCompany extends Component {
                         {productImages.map((image, index) => (
                             <div key={index} className="photo">
                                 {/* <div className="d-flex justify-content-center w-100"> */}
-                                <img className="mx-auto w-50" src={image} alt="" onClick={() => this.handleBrowseFile(index + 2, IMAGE_PRODUCT)} />
+                                <img className="mx-auto" src={image} alt="" onClick={() => this.handleBrowseFile(index + 2, IMAGE_PRODUCT)} />
                                 {/* </div> */}
                                 <button onClick={() => this.handleRemoveProductImage(index)}>
                                     <i className="fa fa-close" />

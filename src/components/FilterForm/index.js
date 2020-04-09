@@ -40,6 +40,7 @@ export default class FilterForm extends Component {
             isEnableRadius: false,
         };
 
+        this.refTags = React.createRef();
         // this.refKey = React.createRef();
     }
 
@@ -127,7 +128,7 @@ export default class FilterForm extends Component {
 
     handleTagAddition = (tag) => {
         const { tags } = this.state;
-        if (tags.filter((elem) => elem.name === tag.name).length) {
+        if (!tag.name.trim().length || tags.filter((elem) => elem.name === tag.name).length) {
             return;
         }
 
@@ -187,6 +188,20 @@ export default class FilterForm extends Component {
     };
 
     handleClickSearch = () => {
+        let elem = document.querySelector(".react-tags__search-input");
+        let tags = this.state.tags.slice(0);
+
+        if (elem) {
+            if (elem.value.trim().length) {
+                let newTag = { name: elem.value };
+                this.handleTagAddition(newTag);
+                if (!tags.filter((tag) => tag.name === newTag.name).length) {
+                    tags.push(newTag);
+                }
+            }
+            this.refTags.current.state.query = "";
+        }
+
         this.props.handleSearch({
             city: this.state.selectedCity,
             region: this.state.selectedRegion,
@@ -197,7 +212,7 @@ export default class FilterForm extends Component {
             employeeMax: this.state.selectedEmployeeMax,
             revenueMin: this.state.selectedRevenueMin,
             revenueMax: this.state.selectedRevenueMax,
-            tags: this.state.tags,
+            tags: tags,
         });
     };
 
@@ -277,6 +292,7 @@ export default class FilterForm extends Component {
                                 onDelete={this.handleTagDelete.bind(this)}
                                 onAddition={this.handleTagAddition.bind(this)}
                                 allowNew
+                                ref={this.refTags}
                             />
                         </div>
                         <div className="tag-hint">

@@ -1,9 +1,9 @@
 .slide-container {
-    box-shadow: 0 0 1.6em #888;
+    box-shadow: 0 0 0.5em #888;
 }
 
 .carousel {
-    width: 400px !important;
+    /* width: 400px !important; */
     height: 400px;
     margin: auto;
 }
@@ -26,7 +26,8 @@
 
     .carousel {
         width: 100% !important;
-        height: calc(100vw - 24px);
+        /* height: calc(100vw - 24px); */
+        height: 50vw;
     }
     .detail-product p {
         font-size: 14px !important;

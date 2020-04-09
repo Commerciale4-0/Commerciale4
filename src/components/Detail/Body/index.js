@@ -4,6 +4,7 @@ import DetailOverview from "../Overview";
 import DetailProduct from "../Product";
 import DetailContacts from "../Contacts";
 import { stringWithUnitFromNumber } from "../../../utils";
+import { LangConsumer } from "../../../utils/LanguageContext";
 
 const MENUS = [
     { id: 0, title: "About us", icon: "fa-user" },
@@ -57,24 +58,34 @@ export default class DetailBody extends Component {
         let leftPanel = document.querySelector(".detail-body .left-panel");
         let offsetY = leftPanel.offsetHeight - 104;
 
-        if (currentScrollPos > 354 + offsetY - topBarHeight) {
+        if (currentScrollPos > 334 + offsetY - topBarHeight) {
             this.menuPanel.current.style.top = 41 + topBarHeight + "px";
         } else {
-            this.menuPanel.current.style.top = `${397 + offsetY - currentScrollPos}px`;
+            this.menuPanel.current.style.top = `${377 + offsetY - currentScrollPos}px`;
         }
 
         this.setState({ prevScrollpos: currentScrollPos });
     };
 
     handleChangeMenu = (selectedMenu) => {
-        let panels = [this.aboutUsPanel.current, this.productsPanel.current, this.contactsPanel.current];
+        let panels = [
+            this.aboutUsPanel.current,
+            this.productsPanel.current,
+            this.contactsPanel.current,
+        ];
+        let currentHeight = panels[this.state.selectedMenu].clientHeight;
         panels.forEach((panel) => {
             panel.style.display = "none";
         });
 
         panels[selectedMenu].style.display = "block";
         if (window.innerWidth > 576) {
-            let maxHeight = Math.max(this.state.panelHeightMax, panels[selectedMenu].clientHeight);
+            let maxHeight = Math.max(
+                this.state.panelHeightMax,
+                currentHeight,
+                panels[selectedMenu].clientHeight
+            );
+            console.log(maxHeight);
             panels.forEach((panel) => {
                 panel.style.height = maxHeight + "px";
             });
@@ -90,7 +101,11 @@ export default class DetailBody extends Component {
         const menuPanel = (
             <div className="menu-panel" ref={this.menuPanel}>
                 {MENUS.map((menu) => (
-                    <div key={menu.id} className={`menu ${selectedMenu === menu.id ? "active" : ""}`} onClick={() => this.handleChangeMenu(menu.id)}>
+                    <div
+                        key={menu.id}
+                        className={`menu ${selectedMenu === menu.id ? "active" : ""}`}
+                        onClick={() => this.handleChangeMenu(menu.id)}
+                    >
                         {!isMobile && <i className={`fa ${menu.icon} pr-3`} />}
                         {menu.title}
                     </div>
@@ -99,17 +114,45 @@ export default class DetailBody extends Component {
         );
 
         const tagsPanel = !isMobile && (
-            <div className="-tags">
+            <div className="multi-values">
                 <i className="fa fa-tags" />
-                <div>{profile && profile.user.tags && profile.user.tags.map((tag, index) => <label key={index}>{tag}</label>)}</div>
+                <div>
+                    <LangConsumer>
+                        {(value) =>
+                            value.lang === 2
+                                ? profile &&
+                                  profile.user.tags &&
+                                  profile.user.tags.map((tag, index) => (
+                                      <label key={index}>{tag}</label>
+                                  ))
+                                : profile &&
+                                  profile.user.tagsIt &&
+                                  profile.user.tagsIt.map((tagIt, index) => (
+                                      <label key={index}>{tagIt}</label>
+                                  ))
+                        }
+                    </LangConsumer>
+                </div>
             </div>
         );
 
         const isoPanel = !isMobile && (
-            <p>
+            <div className="multi-values">
                 <span>ISO</span>
-                {profile && profile.user.iso}
-            </p>
+                <div>
+                    {profile &&
+                        profile.user.iso &&
+                        profile.user.iso.map((item, index) => (
+                            <label
+                                key={index}
+                                className="no-bg"
+                                style={{ textDecoration: "underline" }}
+                            >
+                                {item}
+                            </label>
+                        ))}
+                </div>
+            </div>
         );
 
         const infoPanel = (
@@ -123,7 +166,7 @@ export default class DetailBody extends Component {
                         <i className="fa fa-line-chart" />
                         {profile && stringWithUnitFromNumber(profile.user.revenues)}
                     </p>
-                    {/* {isoPanel} */}
+                    {isoPanel}
                     <p className="-ateco">
                         <span>NACE</span>
                         {profile && profile.user.ateco}
@@ -133,7 +176,7 @@ export default class DetailBody extends Component {
                     <span>TYPE</span>
                     {profile && profile.user.typeOfCompany}
                 </p>
-                {/* {tagsPanel} */}
+                {tagsPanel}
             </div>
         );
 

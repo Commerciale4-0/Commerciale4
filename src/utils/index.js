@@ -277,7 +277,9 @@ export const distanceFromCoords = (lat1, lon1, lat2, lon2, unit = "K") => {
         let radlat2 = (Math.PI * lat2) / 180;
         let theta = lon1 - lon2;
         let radtheta = (Math.PI * theta) / 180;
-        let dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+        let dist =
+            Math.sin(radlat1) * Math.sin(radlat2) +
+            Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
         if (dist > 1) {
             dist = 1;
         }
@@ -368,7 +370,7 @@ export const orderTags = (srcTags, searchTags) => {
         let searchTag = searchTags[i].name;
         for (let j in srcTags) {
             let tag = srcTags[j];
-            if (tag.toLowerCase() === searchTag.toLowerCase()) {
+            if (tag.toLowerCase().search(searchTag.toLowerCase()) !== -1) {
                 matchedTags.push(tag);
                 srcTags.splice(j, 1);
                 break;

@@ -8,7 +8,8 @@ import { Dropdown } from "react-bootstrap";
 import Pagination from "react-js-pagination";
 import { distanceFromCoords, numberFromStringWithUnit, orderTags, LOGGED_USER } from "../../utils";
 import SpinnerView from "../../components/SpinnerView";
-
+import { LangConsumer } from "../../utils/LanguageContext";
+let stateContext = null;
 const orders = [
     { id: 0, title: "Relevance", icon: "sort-amount-desc" },
     { id: 1, title: "↑ Revenues", icon: null },
@@ -122,7 +123,12 @@ export default class Dashboard extends Component {
                         this.setState({
                             filteredCompanies: companies,
                         });
-                        this.setCompaniesToShow(companies, this.state.selectedOrder, this.state.activePage, this.state.itemsCountPerPage);
+                        this.setCompaniesToShow(
+                            companies,
+                            this.state.selectedOrder,
+                            this.state.activePage,
+                            this.state.itemsCountPerPage
+                        );
                     }
 
                     this.setState({ isProcessing: false });
@@ -201,7 +207,12 @@ export default class Dashboard extends Component {
     };
 
     handleClickOrder = (item) => {
-        this.setCompaniesToShow(this.state.filteredCompanies, item, 1, this.state.itemsCountPerPage);
+        this.setCompaniesToShow(
+            this.state.filteredCompanies,
+            item,
+            1,
+            this.state.itemsCountPerPage
+        );
         this.setState({
             selectedOrder: item,
             activePage: 1,
@@ -223,7 +234,12 @@ export default class Dashboard extends Component {
 
     handleClickPrev = (e) => {
         let pageNumber = this.state.activePage > 1 ? this.state.activePage - 1 : 1;
-        this.setCompaniesToShow(this.state.filteredCompanies, this.state.selectedOrder, pageNumber, this.state.itemsCountPerPage);
+        this.setCompaniesToShow(
+            this.state.filteredCompanies,
+            this.state.selectedOrder,
+            pageNumber,
+            this.state.itemsCountPerPage
+        );
         this.setState({ activePage: pageNumber });
     };
     handleClickNext = (e) => {
@@ -236,12 +252,22 @@ export default class Dashboard extends Component {
 
         let pageNumber = temp < 1 ? activePage + 1 : activePage;
 
-        this.setCompaniesToShow(this.state.filteredCompanies, this.state.selectedOrder, pageNumber, this.state.itemsCountPerPage);
+        this.setCompaniesToShow(
+            this.state.filteredCompanies,
+            this.state.selectedOrder,
+            pageNumber,
+            this.state.itemsCountPerPage
+        );
         this.setState({ activePage: pageNumber });
     };
 
     handleChangePage(pageNumber) {
-        this.setCompaniesToShow(this.state.filteredCompanies, this.state.selectedOrder, pageNumber, this.state.itemsCountPerPage);
+        this.setCompaniesToShow(
+            this.state.filteredCompanies,
+            this.state.selectedOrder,
+            pageNumber,
+            this.state.itemsCountPerPage
+        );
         this.setState({ activePage: pageNumber });
     }
 
@@ -287,11 +313,26 @@ export default class Dashboard extends Component {
         temp = temp.filter(
             (company) =>
                 (!filter.ateco || !filter.ateco.value || filter.ateco.label === company.ateco) &&
-                (!filter.type || !filter.type.value || filter.type.label === company.typeOfCompany || (filter.type.value === 3 && company.typeOfCompany)) &&
-                (!filter.employeeMin || !filter.employeeMin.value || numberFromStringWithUnit(filter.employeeMin.label) <= numberFromStringWithUnit(company.employees)) &&
-                (!filter.employeeMax || !filter.employeeMax.value || numberFromStringWithUnit(filter.employeeMax.label) >= numberFromStringWithUnit(company.employees)) &&
-                (!filter.revenueMin || !filter.revenueMin.value || numberFromStringWithUnit(filter.revenueMin.label) <= numberFromStringWithUnit(company.revenues)) &&
-                (!filter.revenueMax || !filter.revenueMax.value || numberFromStringWithUnit(filter.revenueMax.label) >= numberFromStringWithUnit(company.revenues))
+                (!filter.type ||
+                    !filter.type.value ||
+                    filter.type.label === company.typeOfCompany ||
+                    (filter.type.value === 3 && company.typeOfCompany)) &&
+                (!filter.employeeMin ||
+                    !filter.employeeMin.value ||
+                    numberFromStringWithUnit(filter.employeeMin.label) <=
+                        numberFromStringWithUnit(company.employees)) &&
+                (!filter.employeeMax ||
+                    !filter.employeeMax.value ||
+                    numberFromStringWithUnit(filter.employeeMax.label) >=
+                        numberFromStringWithUnit(company.employees)) &&
+                (!filter.revenueMin ||
+                    !filter.revenueMin.value ||
+                    numberFromStringWithUnit(filter.revenueMin.label) <=
+                        numberFromStringWithUnit(company.revenues)) &&
+                (!filter.revenueMax ||
+                    !filter.revenueMax.value ||
+                    numberFromStringWithUnit(filter.revenueMax.label) >=
+                        numberFromStringWithUnit(company.revenues))
         );
 
         temp = await this.getCompaniesInRadius(temp, filter.city, filter.region, filter.radius);
@@ -302,18 +343,41 @@ export default class Dashboard extends Component {
             for (let i in temp) {
                 let company = temp[i];
                 if (company.tags) {
-                    for (let j in company.tags) {
-                        let tag = company.tags[j];
-                        let found = false;
-                        for (let k in filter.tags) {
-                            if (filter.tags[k].name.toLowerCase() === tag.toLowerCase()) {
-                                temp2.push(company);
-                                found = true;
+                    if (stateContext === 2) {
+                        for (let j in company.tags) {
+                            let tag = company.tags[j];
+                            let found = false;
+                            for (let k in filter.tags) {
+                                if (
+                                    tag.toLowerCase().search(filter.tags[k].name.toLowerCase()) !==
+                                    -1
+                                ) {
+                                    temp2.push(company);
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (found) {
                                 break;
                             }
                         }
-                        if (found) {
-                            break;
+                    } else {
+                        for (let j in company.tagsIt) {
+                            let tag = company.tagsIt[j];
+                            let found = false;
+                            for (let k in filter.tags) {
+                                if (
+                                    tag.toLowerCase().search(filter.tags[k].name.toLowerCase()) !==
+                                    -1
+                                ) {
+                                    temp2.push(company);
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (found) {
+                                break;
+                            }
                         }
                     }
                 }
@@ -322,7 +386,11 @@ export default class Dashboard extends Component {
 
             for (let i in temp) {
                 let company = temp[i];
-                company.tags = orderTags(company.tags, filter.tags);
+                if (stateContext === 2) {
+                    company.tags = orderTags(company.tags, filter.tags);
+                } else {
+                    company.tagsIt = orderTags(company.tagsIt, filter.tags);
+                }
             }
         }
 
@@ -367,7 +435,12 @@ export default class Dashboard extends Component {
                 items.push(companies[i]);
                 continue;
             }
-            let distance = distanceFromCoords(latitude, longitude, companies[i].latitude, companies[i].longitude);
+            let distance = distanceFromCoords(
+                latitude,
+                longitude,
+                companies[i].latitude,
+                companies[i].longitude
+            );
             if (distance <= radius) {
                 items.push(companies[i]);
             }
@@ -384,7 +457,12 @@ export default class Dashboard extends Component {
 
         let modifiedCompanies = [];
         for (let i in companies) {
-            let distance = distanceFromCoords(myLocation.latitude, myLocation.longitude, companies[i].latitude, companies[i].longitude);
+            let distance = distanceFromCoords(
+                myLocation.latitude,
+                myLocation.longitude,
+                companies[i].latitude,
+                companies[i].longitude
+            );
 
             modifiedCompanies.push({
                 ...companies[i],
@@ -412,7 +490,11 @@ export default class Dashboard extends Component {
         const dropdown = (
             <Dropdown>
                 <Dropdown.Toggle>
-                    {selectedOrder.icon ? <i className={`fa fa-${selectedOrder.icon} pr-2`} /> : <div></div>}
+                    {selectedOrder.icon ? (
+                        <i className={`fa fa-${selectedOrder.icon} pr-2`} />
+                    ) : (
+                        <div></div>
+                    )}
                     {selectedOrder.title}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
@@ -436,16 +518,22 @@ export default class Dashboard extends Component {
                 </div>
                 <div className="result-xs">
                     <div>
-                        {`${(activePage - 1) * itemsCountPerPage + 1}-${(activePage - 1) * itemsCountPerPage + companiesToShow.length} / ${
-                            filteredCompanies.length
-                        } results`}
+                        {`${(activePage - 1) * itemsCountPerPage + 1}-${
+                            (activePage - 1) * itemsCountPerPage + companiesToShow.length
+                        } / ${filteredCompanies.length} results`}
                     </div>
                     <div>
-                        <button className="btn-prev secondary round mr-2" onClick={this.handleClickPrev}>
+                        <button
+                            className="btn-prev secondary round mr-2"
+                            onClick={this.handleClickPrev}
+                        >
                             <i className="fa fa-angle-left" />
                         </button>
                         {activePage}
-                        <button className="btn-next secondary round ml-2" onClick={this.handleClickNext}>
+                        <button
+                            className="btn-next secondary round ml-2"
+                            onClick={this.handleClickNext}
+                        >
                             <i className="fa fa-angle-right" />
                         </button>
                     </div>
@@ -456,14 +544,22 @@ export default class Dashboard extends Component {
         const filterBarMD = (
             <div className="filter-bar">
                 <span className="result-md">
-                    {`${(activePage - 1) * itemsCountPerPage + 1}-${(activePage - 1) * itemsCountPerPage + companiesToShow.length} / ${filteredCompanies.length} results`}
+                    {`${(activePage - 1) * itemsCountPerPage + 1}-${
+                        (activePage - 1) * itemsCountPerPage + companiesToShow.length
+                    } / ${filteredCompanies.length} results`}
                 </span>
                 <div className="d-flex">
                     {dropdown}
-                    <button className={`btn-view ${!viewMode ? "active" : ""}`} onClick={this.handleClickGrid}>
+                    <button
+                        className={`btn-view ${!viewMode ? "active" : ""}`}
+                        onClick={this.handleClickGrid}
+                    >
                         <i className="fa fa-th-large" />
                     </button>
-                    <button className={`btn-view ${viewMode ? "active" : ""}`} onClick={this.handleClickList}>
+                    <button
+                        className={`btn-view ${viewMode ? "active" : ""}`}
+                        onClick={this.handleClickList}
+                    >
                         <i className="fa fa-th-list" />
                     </button>
                 </div>
@@ -480,8 +576,15 @@ export default class Dashboard extends Component {
             <div className="list-panel">
                 <div className="row company-list">
                     {companiesToShow.map((company, index) => (
-                        <div key={index} className={`grid-cell ${viewMode ? "col-12" : "col-sm-6 col-12"} `}>
-                            <CompanyCell company={company} viewMode={viewMode} handleClickProfile={() => this.handleClickProfile(company.id)} />
+                        <div
+                            key={index}
+                            className={`grid-cell ${viewMode ? "col-12" : "col-sm-6 col-12"} `}
+                        >
+                            <CompanyCell
+                                company={company}
+                                viewMode={viewMode}
+                                handleClickProfile={() => this.handleClickProfile(company.id)}
+                            />
                         </div>
                     ))}
                 </div>
@@ -497,6 +600,11 @@ export default class Dashboard extends Component {
         );
         return (
             <div className="dashboard container" ref={this.fileterPanel}>
+                <LangConsumer>
+                    {(value) => {
+                        stateContext = value.lang;
+                    }}
+                </LangConsumer>
                 <div className={`left-panel ${isExpandedSidebar ? "xs" : ""}`}>
                     <button
                         onClick={() =>
@@ -507,12 +615,23 @@ export default class Dashboard extends Component {
                     >
                         <i className="fa fa-close" />
                     </button>
-                    <FilterForm isInDashboard handleSearch={this.handleClickSearch} initialFilter={filter} update={updateFilterForm} />
+                    <FilterForm
+                        isInDashboard
+                        handleSearch={this.handleClickSearch}
+                        initialFilter={filter}
+                        update={updateFilterForm}
+                    />
                 </div>
                 <div className={`right-panel ${isExpandedSidebar ? "xs" : ""}`}>
                     {filterBarMD}
                     {filterBarXS}
-                    {isProcessing ? <SpinnerView /> : filteredCompanies && filteredCompanies.length ? listPanel : <div className="no-result">No results</div>}
+                    {isProcessing ? (
+                        <SpinnerView />
+                    ) : filteredCompanies && filteredCompanies.length ? (
+                        listPanel
+                    ) : (
+                        <div className="no-result">No results</div>
+                    )}
                 </div>
             </div>
         );
