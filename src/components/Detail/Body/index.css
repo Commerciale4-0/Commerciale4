@@ -2,16 +2,8 @@
     display: flex;
 }
 
-/* .detail-body .left-panel,
-.detail-body .right-panel {
-    height: calc(100vh - 276px - 46px);
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-    overflow-y: scroll;
-} */
-
 .detail-body .left-panel {
-    width: 280px;
+    width: 300px;
 }
 @media (max-width: 1200px) and (min-width: 577px) {
     .detail-body .left-panel {
@@ -21,33 +13,29 @@
 
 .detail-body .right-panel {
     flex: 1;
-    margin-left: 20px;
     padding: 20px;
     background: white;
     min-height: calc(100vh - 316px - 46px);
 }
-/* .detail-body .left-panel::-webkit-scrollbar,
-.detail-body .right-panel::-webkit-scrollbar {
-    display: none;
-} */
 
 .detail-body .menu-panel {
-    padding: 20px 20px 0 0;
+    padding: 20px 0 0;
 }
 
 .detail-body .menu {
     min-height: 48px;
     padding: 10px;
-    /* border-bottom: 1px solid var(--colorBorder); */
     cursor: pointer;
+    font-size: 17px;
 }
 
 .detail-body .menu.active {
-    color: #495057;
+    color: var(--colorPrimary);
     font-weight: bold;
     border-left: 3px solid var(--colorPrimary);
     background: white;
-    box-shadow: 0.1em 0.1em 0.2em #ccc;
+    text-shadow: 0.05em 0.05em 0.15em #aaa;
+    /* box-shadow: 0.1em 0.1em 0.2em #ccc; */
 }
 
 .detail-body .menu i {
@@ -157,7 +145,7 @@
     }
     .detail-body .info-panel i,
     .detail-body .info-panel span {
-        width: 40px;
+        width: 50px;
     }
 
     .detail-body .info-panel .row-on-mobile {

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./index.css";
+import { STRINGS } from "../../utils/strings";
 
 export default class PostItemDetail extends Component {
     render() {
@@ -14,9 +15,13 @@ export default class PostItemDetail extends Component {
                         <div className="d-flex justify-content-between mb-3">
                             <h5>{post.title}</h5>
                         </div>
-                        <div className="px-4 d-flex justify-content-center">{post.photo && <img src={process.env.REACT_APP_AWS_PREFIX + post.photo} alt="" />}</div>
+                        <div className="px-4 d-flex justify-content-center">
+                            {post.photo && <img src={process.env.REACT_APP_AWS_PREFIX + post.photo} alt="" />}
+                        </div>
                         <p className="mt-3">{post.description}</p>
-                        <div className="published">Published on {new Date(post.published).toLocaleDateString()}</div>
+                        <div className="published">
+                            {STRINGS.publishedOn} {new Date(post.published).toLocaleDateString()}
+                        </div>
                     </div>
                 )}
             </div>

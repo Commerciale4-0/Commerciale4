@@ -2,48 +2,43 @@ import React, { Component } from "react";
 import "./index.css";
 
 const LANGUAGES = [
-	{
-		id: 1,
-		imgUrl: "/images/flag/italy1.png",
-	},
-	{
-		id: 2,
-		imgUrl: "/images/flag/uk1.png",
-	},
+    {
+        value: "it",
+        imgUrl: "/images/flag/italy1.png",
+    },
+    {
+        value: "en",
+        imgUrl: "/images/flag/uk1.png",
+    },
 ];
 
 export default class Lang extends Component {
-	constructor(props) {
-		super(props);
+    constructor(props) {
+        super(props);
 
-		this.state = {
-			selectedLang: 2,
-		};
-	}
+        let lang = sessionStorage.getItem("lang");
+        this.state = {
+            selectedLang: lang ? lang : "en",
+        };
+    }
 
-	handClickLang = (selectedLang) => {
-		const { onChange } = this.props;
+    handleChangeLang = (selectedLang) => {
+        const { onChange } = this.props;
 
-		this.setState({ selectedLang });
-		if (onChange) {
-			onChange(selectedLang);
-		}
-	};
+        this.setState({ selectedLang });
+        if (onChange) {
+            onChange(selectedLang);
+        }
+    };
 
-	render() {
-		const { selectedLang } = this.state;
-		return (
-			<div className="lang d-flex">
-				{LANGUAGES.map((lang) => (
-					<img
-						key={lang.id}
-						className={selectedLang === lang.id ? "active" : ""}
-						src={lang.imgUrl}
-						alt=""
-						onClick={() => this.handClickLang(lang.id)}
-					/>
-				))}
-			</div>
-		);
-	}
+    render() {
+        const { selectedLang } = this.state;
+        return (
+            <div className="lang d-flex">
+                {LANGUAGES.map((lang, index) => (
+                    <img key={index} className={selectedLang === lang.value ? "active" : ""} src={lang.imgUrl} alt="" onClick={() => this.handleChangeLang(lang.value)} />
+                ))}
+            </div>
+        );
+    }
 }

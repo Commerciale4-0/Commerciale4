@@ -8,6 +8,7 @@ import "./index.css";
 import { ATECO_CODES, N_EMPOYEES, REVENUES, COMPANY_TYPES, REGIONS, citiesInRegion, maxsFromMin, minsFromMax } from "../../utils";
 import MySelect from "../Custom/MySelect";
 // import SearchInput from "../SearchInput";
+import { STRINGS } from "../../utils/strings";
 
 const MAX_TAGS = 5;
 
@@ -20,23 +21,24 @@ export default class FilterForm extends Component {
             tags: [],
             suggestions: [],
             cities: [],
-            types: [{ value: 0, label: "-- Select --" }, ...COMPANY_TYPES],
-            regions: [{ value: 0, label: "-- Select --" }, ...REGIONS],
-            minEmployees: N_EMPOYEES,
-            maxEmployees: N_EMPOYEES,
-            minRevenues: REVENUES,
-            maxRevenues: REVENUES,
+            regions: [{ value: 0, label: STRINGS.select }, ...REGIONS],
+            types: [{ value: 0, label: STRINGS.select }, ...COMPANY_TYPES()],
+            minEmployees: N_EMPOYEES(),
+            maxEmployees: N_EMPOYEES(),
+            minRevenues: REVENUES(),
+            maxRevenues: REVENUES(),
+            atecoCodes: ATECO_CODES(),
+            tagsPlaceholder: STRINGS.searchWithTags,
 
             selectedRegion: null,
             selectedCity: null,
             selectedType: null,
-            selectedEmployeeMin: N_EMPOYEES[0],
-            selectedEmployeeMax: N_EMPOYEES[0],
-            selectedRevenueMin: REVENUES[0],
-            selectedRevenueMax: REVENUES[0],
+            selectedEmployeeMin: null,
+            selectedEmployeeMax: null,
+            selectedRevenueMin: null,
+            selectedRevenueMax: null,
             selectedCode: null,
 
-            tagsPlaceholder: "Search with #TAGS",
             isEnableRadius: false,
         };
 
@@ -57,6 +59,7 @@ export default class FilterForm extends Component {
                 selectedRevenueMin: props.initialFilter.revenueMin,
                 selectedRevenueMax: props.initialFilter.revenueMax,
                 tags: props.initialFilter.tags,
+                tagsPlaceholder: STRINGS.searchWithTags,
             });
 
             if (props.initialFilter.region) {
@@ -67,12 +70,72 @@ export default class FilterForm extends Component {
                 }
             }
         }
+        this.resetValuesWithLang();
+    };
+
+    resetValuesWithLang = () => {
+        const { selectedType, selectedEmployeeMin, selectedEmployeeMax, selectedRevenueMin, selectedRevenueMax, selectedRegion, selectedCity, selectedCode } = this.state;
+
+        const types = [{ value: 0, label: STRINGS.select }, ...COMPANY_TYPES()];
+        const minEmployees = N_EMPOYEES();
+        const maxEmployees = N_EMPOYEES();
+        const minRevenues = REVENUES();
+        const maxRevenues = REVENUES();
+        const atecoCodes = ATECO_CODES();
+
+        let noValue = { value: 0, label: STRINGS.select };
+
+        let regions = this.state.regions.slice(0);
+        let cities = this.state.cities.slice(0);
+        regions[0] = noValue;
+        cities[0] = noValue;
+
+        this.setState({ regions, cities, types, minEmployees, maxEmployees, minRevenues, maxRevenues, atecoCodes });
+        this.resetTagsPlaceholder(this.state.tags);
+
+        if (selectedRegion && selectedRegion.value === 0) {
+            this.setState({ selectedRegion: noValue });
+        }
+        if (selectedCity && selectedCity.value === 0) {
+            this.setState({ selectedCity: noValue });
+        }
+
+        types.forEach((elem) => {
+            if (selectedType && elem.value === selectedType.value) {
+                this.setState({ selectedType: elem });
+            }
+        });
+        minEmployees.forEach((elem) => {
+            if (selectedEmployeeMin && elem.value === selectedEmployeeMin.value) {
+                this.setState({ selectedEmployeeMin: elem });
+            }
+        });
+        maxEmployees.forEach((elem) => {
+            if (selectedEmployeeMax && elem.value === selectedEmployeeMax.value) {
+                this.setState({ selectedEmployeeMax: elem });
+            }
+        });
+        minRevenues.forEach((elem) => {
+            if (selectedRevenueMin && elem.value === selectedRevenueMin.value) {
+                this.setState({ selectedRevenueMin: elem });
+            }
+        });
+        maxRevenues.forEach((elem) => {
+            if (selectedRevenueMax && elem.value === selectedRevenueMax.value) {
+                this.setState({ selectedRevenueMax: elem });
+            }
+        });
+        atecoCodes.forEach((elem) => {
+            if (selectedCode && elem.value === selectedCode.value) {
+                this.setState({ selectedCode: elem });
+            }
+        });
     };
 
     getCitiesInRegion = (region) => {
-        let cities = [{ value: 0, label: "-- Select --" }];
+        let cities = [{ value: 0, label: STRINGS.select }];
         if (region.value) {
-            cities = [{ value: 0, label: "-- Select --" }, ...citiesInRegion(region.value)];
+            cities = [{ value: 0, label: STRINGS.select }, ...citiesInRegion(region.value)];
         }
 
         return cities;
@@ -103,6 +166,20 @@ export default class FilterForm extends Component {
         });
     };
 
+    resetTagsPlaceholder = (tags) => {
+        let elem = document.querySelector(".react-tags__search-input");
+        if (!elem) {
+            return;
+        }
+
+        let placeholder = STRINGS.searchWithTags;
+        if (tags && tags.length) {
+            placeholder = `${STRINGS.max}:${MAX_TAGS}(${STRINGS.left}:${MAX_TAGS - tags.length})`;
+        }
+        elem.style.width = placeholder.length * 7 + "px";
+        this.setState({ tagsPlaceholder: placeholder });
+    };
+
     handleTagDelete = (i) => {
         const tags = this.state.tags.slice(0);
         tags.splice(i, 1);
@@ -112,18 +189,7 @@ export default class FilterForm extends Component {
             elem.style.display = "block";
             elem.focus();
         }
-        if (!tags || !tags.length) {
-            this.setState({
-                tagsPlaceholder: "Search with #TAGS",
-            });
-            if (elem) {
-                elem.style.width = "16ch";
-            }
-        } else {
-            this.setState({
-                tagsPlaceholder: `Max:${MAX_TAGS}(Left:${MAX_TAGS - tags.length})`,
-            });
-        }
+        this.resetTagsPlaceholder(tags);
     };
 
     handleTagAddition = (tag) => {
@@ -137,20 +203,17 @@ export default class FilterForm extends Component {
             if (elem) {
                 elem.style.display = "none";
             }
-        } else {
-            this.setState({
-                tagsPlaceholder: `Max:${MAX_TAGS}(Left:${MAX_TAGS - tags.length - 1})`,
-            });
         }
 
         const newTags = [].concat(tags, tag);
         this.setState({ tags: newTags });
+        this.resetTagsPlaceholder(newTags);
     };
 
     handleEmployeeMinChange = (selectedEmployeeMin) => {
         this.setState({ selectedEmployeeMin });
 
-        let values = maxsFromMin(selectedEmployeeMin.value, N_EMPOYEES);
+        let values = maxsFromMin(selectedEmployeeMin.value, N_EMPOYEES());
         this.setState({
             maxEmployees: values,
         });
@@ -159,7 +222,7 @@ export default class FilterForm extends Component {
     handleEmployeeMaxChange = (selectedEmployeeMax) => {
         this.setState({ selectedEmployeeMax });
 
-        let values = minsFromMax(selectedEmployeeMax.value, N_EMPOYEES);
+        let values = minsFromMax(selectedEmployeeMax.value, N_EMPOYEES());
         this.setState({
             minEmployees: values,
         });
@@ -228,6 +291,7 @@ export default class FilterForm extends Component {
             maxEmployees,
             minRevenues,
             maxRevenues,
+            atecoCodes,
             selectedRegion,
             selectedCity,
             selectedType,
@@ -249,15 +313,15 @@ export default class FilterForm extends Component {
                 </div> */}
                 <Row className="mb-2">
                     <Col className="group-title">
-                        <i className="fa fa-map-marker pr-2" /> Area
+                        <i className="fa fa-map-marker pr-2" /> {STRINGS.area}
                     </Col>
                 </Row>
                 <Row className="px-2 mb-1">
                     <Col sm={isInDashboard ? 12 : 6} xs={12} className="mb-2">
-                        <MySelect value={selectedRegion} onChange={this.handleRegionChange} options={regions} placeholder="Region" />
+                        <MySelect value={selectedRegion} onChange={this.handleRegionChange} options={regions} placeholder={STRINGS.region} />
                     </Col>
                     <Col sm={isInDashboard ? 12 : 6} xs={12} className="mb-2">
-                        <MySelect value={selectedCity} onChange={this.handleCityChange} options={cities} placeholder="City" />
+                        <MySelect value={selectedCity} onChange={this.handleCityChange} options={cities} placeholder={STRINGS.city} />
                     </Col>
                 </Row>
                 <Row
@@ -266,7 +330,7 @@ export default class FilterForm extends Component {
                         opacity: isEnableRadius ? 1 : 0.5,
                     }}
                 >
-                    <Col xs={6}>Radius</Col>
+                    <Col xs={6}>{STRINGS.radius}</Col>
                     <Col xs={6}>{radius} km</Col>
                     <Col className="mt-1">
                         <Slider min={0} max={200} value={radius} onChange={isEnableRadius ? this.handleSliderChange : () => {}} />
@@ -274,12 +338,12 @@ export default class FilterForm extends Component {
                 </Row>
                 <Row className="mt-4">
                     <Col className="mb-2 group-title">
-                        <i className="fa fa-info-circle pr-2" /> Company info
+                        <i className="fa fa-info-circle pr-2" /> {STRINGS.companyInfo}
                     </Col>
                 </Row>
                 <Row className="px-2">
                     <Col>
-                        <MySelect value={selectedType} onChange={this.handleTypeChange} options={types} placeholder="Type of company" />
+                        <MySelect value={selectedType} onChange={this.handleTypeChange} options={types} placeholder={STRINGS.typeOfCompany} />
                     </Col>
                 </Row>
                 <Row className="mt-2 px-2">
@@ -296,7 +360,7 @@ export default class FilterForm extends Component {
                             />
                         </div>
                         <div className="tag-hint">
-                            Examples : <label>LASERCUT</label>
+                            {STRINGS.examples} : <label>LASERCUT</label>
                             <label>WELDING</label>
                             <label>CNC</label>
                             {/* <span style={{ float: "right" }}>(Max:7)</span>
@@ -306,35 +370,35 @@ export default class FilterForm extends Component {
                 </Row>
                 <Row className="mt-2 px-2 align-items-center">
                     <Col className="mb-1" xs={isInDashboard ? 12 : 4}>
-                        N° employees
+                        {STRINGS.nEmployees}
                     </Col>
                     <Col xs={isInDashboard ? 6 : 4}>
-                        <MySelect value={selectedEmployeeMin} onChange={this.handleEmployeeMinChange} options={minEmployees} placeholder="Min" />
+                        <MySelect value={selectedEmployeeMin} onChange={this.handleEmployeeMinChange} options={minEmployees} placeholder={STRINGS.min} />
                     </Col>
                     <Col xs={isInDashboard ? 6 : 4}>
-                        <MySelect value={selectedEmployeeMax} onChange={this.handleEmployeeMaxChange} options={maxEmployees} placeholder="Max" />
+                        <MySelect value={selectedEmployeeMax} onChange={this.handleEmployeeMaxChange} options={maxEmployees} placeholder={STRINGS.max} />
                     </Col>
                 </Row>
                 <Row className="mt-2 px-2 align-items-center">
                     <Col className="mb-1" xs={isInDashboard ? 12 : 4}>
-                        Revenues
+                        {STRINGS.revenues}
                     </Col>
                     <Col xs={isInDashboard ? 6 : 4}>
-                        <MySelect value={selectedRevenueMin} onChange={this.handleRevenueMinChange} options={minRevenues} placeholder="Min" />
+                        <MySelect value={selectedRevenueMin} onChange={this.handleRevenueMinChange} options={minRevenues} placeholder={STRINGS.min} />
                     </Col>
                     <Col xs={isInDashboard ? 6 : 4}>
-                        <MySelect value={selectedRevenueMax} onChange={this.handleRevenueMaxChange} options={maxRevenues} placeholder="Max" />
+                        <MySelect value={selectedRevenueMax} onChange={this.handleRevenueMaxChange} options={maxRevenues} placeholder={STRINGS.max} />
                     </Col>
                 </Row>
                 <Row className="mt-2 px-2 align-items-center">
                     <Col>
-                        <MySelect value={selectedCode} onChange={this.handleCodeChange} options={ATECO_CODES} placeholder="NACE CODE" />
+                        <MySelect value={selectedCode} onChange={this.handleCodeChange} options={atecoCodes} placeholder={STRINGS.atecoCode} />
                     </Col>
                 </Row>
                 <Row className="mt-3 px-2 justify-content-end">
                     <Col sm={isInDashboard ? 12 : 4} xs={12}>
                         <button className="txt-upper w-100" onClick={this.handleClickSearch}>
-                            Search
+                            {STRINGS.search}
                         </button>
                     </Col>
                 </Row>

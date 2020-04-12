@@ -1,10 +1,14 @@
+import { STRINGS } from "./strings";
+
 export const LOGGED_USER = "loggedUser";
 
-export const COMPANY_TYPES = [
-    { value: 1, label: "Product provider" },
-    { value: 2, label: "Service provider" },
-    { value: 3, label: "Product & Service provider" },
-];
+export const COMPANY_TYPES = () => {
+    return [
+        { value: 1, label: STRINGS.productProvider },
+        { value: 2, label: STRINGS.serviceProvider },
+        { value: 3, label: STRINGS.productServiceProvider },
+    ];
+};
 
 export const ISO = [
     { value: 1, label: "9001: 2015" },
@@ -15,88 +19,94 @@ export const ISO = [
     { value: 6, label: "3834: 2006" },
 ];
 
-export const N_EMPOYEES = [
-    { value: 0, label: "No limit" },
-    { value: 1, label: "3" },
-    { value: 2, label: "8" },
-    { value: 3, label: "15" },
-    { value: 4, label: "30" },
-    { value: 5, label: "50" },
-    { value: 6, label: "80" },
-    { value: 7, label: "120" },
-    { value: 8, label: "200" },
-    { value: 9, label: "400" },
-    { value: 10, label: "1000" },
-    { value: 11, label: "3000" },
-    { value: 12, label: "10000" },
-];
+export const N_EMPOYEES = () => {
+    return [
+        { value: 0, label: STRINGS.noLimit },
+        { value: 1, label: "3" },
+        { value: 2, label: "8" },
+        { value: 3, label: "15" },
+        { value: 4, label: "30" },
+        { value: 5, label: "50" },
+        { value: 6, label: "80" },
+        { value: 7, label: "120" },
+        { value: 8, label: "200" },
+        { value: 9, label: "400" },
+        { value: 10, label: "1000" },
+        { value: 11, label: "3000" },
+        { value: 12, label: "10000" },
+    ];
+};
 
-export const REVENUES = [
-    { value: 0, label: "No limit" },
-    { value: 1, label: "0" },
-    { value: 2, label: "500K" },
-    { value: 3, label: "1M" },
-    { value: 4, label: "2M" },
-    { value: 5, label: "4M" },
-    { value: 6, label: "8M" },
-    { value: 7, label: "15M" },
-    { value: 8, label: "30M" },
-    { value: 9, label: "60M" },
-    { value: 10, label: "100M" },
-    { value: 11, label: "150M" },
-    { value: 12, label: "300M" },
-];
+export const REVENUES = () => {
+    return [
+        { value: 0, label: STRINGS.noLimit },
+        { value: 1, label: "0" },
+        { value: 2, label: `500${STRINGS.k}` },
+        { value: 3, label: `1${STRINGS.m}` },
+        { value: 4, label: `2${STRINGS.m}` },
+        { value: 5, label: `4${STRINGS.m}` },
+        { value: 6, label: `8${STRINGS.m}` },
+        { value: 7, label: `15${STRINGS.m}` },
+        { value: 8, label: `30${STRINGS.m}` },
+        { value: 9, label: `60${STRINGS.m}` },
+        { value: 10, label: `100${STRINGS.m}` },
+        { value: 11, label: `150${STRINGS.m}` },
+        { value: 12, label: `300${STRINGS.m}` },
+    ];
+};
 
-export const ATECO_CODES = [
-    { value: 0, label: "No code" },
-    { value: 1, label: "22.1" },
-    { value: 2, label: "22.2" },
-    { value: 3, label: "24.1" },
-    { value: 4, label: "24.2" },
-    { value: 5, label: "24.31" },
-    { value: 6, label: "24.32" },
-    { value: 7, label: "24.33" },
-    { value: 8, label: "24.34" },
-    { value: 9, label: "24.41" },
-    { value: 10, label: "24.42" },
-    { value: 11, label: "24.43" },
-    { value: 12, label: "24.44" },
-    { value: 13, label: "24.45" },
-    { value: 14, label: "24.51" },
-    { value: 15, label: "24.52" },
-    { value: 16, label: "24.53" },
-    { value: 17, label: "24.54" },
-    { value: 18, label: "25.11" },
-    { value: 19, label: "25.12.1" },
-    { value: 20, label: "25.21" },
-    { value: 21, label: "25.29" },
-    { value: 22, label: "25.3" },
-    { value: 23, label: "25.5" },
-    { value: 24, label: "25.61" },
-    { value: 25, label: "25.62" },
-    { value: 26, label: "25.7" },
-    { value: 27, label: "25.9" },
-    { value: 28, label: "26.12" },
-    { value: 29, label: "26.2" },
-    { value: 30, label: "26.30.1" },
-    { value: 31, label: "26.51.10" },
-    { value: 32, label: "26.52" },
-    { value: 33, label: "26.70.11" },
-    { value: 34, label: "28 (tutti/all)" },
-    { value: 35, label: "29.1" },
-    { value: 36, label: "29.2" },
-    { value: 37, label: "29.3" },
-    { value: 38, label: "33.11" },
-    { value: 39, label: "33.2" },
-    { value: 40, label: "46.61" },
-    { value: 41, label: "46.62" },
-    { value: 42, label: "46.63" },
-    { value: 43, label: "46.64" },
-    { value: 44, label: "46.69.20" },
-    { value: 45, label: "46.69.91" },
-    { value: 46, label: "46.69.94" },
-    { value: 47, label: "46.69.99" },
-];
+export const ATECO_CODES = () => {
+    return [
+        { value: 0, label: STRINGS.noCode },
+        { value: 1, label: "22.1" },
+        { value: 2, label: "22.2" },
+        { value: 3, label: "24.1" },
+        { value: 4, label: "24.2" },
+        { value: 5, label: "24.31" },
+        { value: 6, label: "24.32" },
+        { value: 7, label: "24.33" },
+        { value: 8, label: "24.34" },
+        { value: 9, label: "24.41" },
+        { value: 10, label: "24.42" },
+        { value: 11, label: "24.43" },
+        { value: 12, label: "24.44" },
+        { value: 13, label: "24.45" },
+        { value: 14, label: "24.51" },
+        { value: 15, label: "24.52" },
+        { value: 16, label: "24.53" },
+        { value: 17, label: "24.54" },
+        { value: 18, label: "25.11" },
+        { value: 19, label: "25.12.1" },
+        { value: 20, label: "25.21" },
+        { value: 21, label: "25.29" },
+        { value: 22, label: "25.3" },
+        { value: 23, label: "25.5" },
+        { value: 24, label: "25.61" },
+        { value: 25, label: "25.62" },
+        { value: 26, label: "25.7" },
+        { value: 27, label: "25.9" },
+        { value: 28, label: "26.12" },
+        { value: 29, label: "26.2" },
+        { value: 30, label: "26.30.1" },
+        { value: 31, label: "26.51.10" },
+        { value: 32, label: "26.52" },
+        { value: 33, label: "26.70.11" },
+        { value: 34, label: "28 (tutti/all)" },
+        { value: 35, label: "29.1" },
+        { value: 36, label: "29.2" },
+        { value: 37, label: "29.3" },
+        { value: 38, label: "33.11" },
+        { value: 39, label: "33.2" },
+        { value: 40, label: "46.61" },
+        { value: 41, label: "46.62" },
+        { value: 42, label: "46.63" },
+        { value: 43, label: "46.64" },
+        { value: 44, label: "46.69.20" },
+        { value: 45, label: "46.69.91" },
+        { value: 46, label: "46.69.94" },
+        { value: 47, label: "46.69.99" },
+    ];
+};
 
 export const REGIONS = [
     { value: 1, label: "Abruzzo" },
@@ -277,9 +287,7 @@ export const distanceFromCoords = (lat1, lon1, lat2, lon2, unit = "K") => {
         let radlat2 = (Math.PI * lat2) / 180;
         let theta = lon1 - lon2;
         let radtheta = (Math.PI * theta) / 180;
-        let dist =
-            Math.sin(radlat1) * Math.sin(radlat2) +
-            Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+        let dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
         if (dist > 1) {
             dist = 1;
         }
@@ -305,17 +313,17 @@ export const numberFromStringWithUnit = (str) => {
         return 0;
     }
 
-    let index = str.search("K");
+    let index = str.search(STRINGS.k);
     if (index !== -1) {
         return parseInt(str.substr(0, index)) * 1000;
     }
 
-    index = str.search("M");
+    index = str.search(STRINGS.m);
     if (index !== -1) {
         return parseInt(str.substr(0, index)) * 1000000;
     }
 
-    index = str.search("B");
+    index = str.search(STRINGS.b);
     if (index !== -1) {
         return parseInt(str.substr(0, index)) * 1000000000;
     }
@@ -331,15 +339,15 @@ export const stringWithUnitFromNumber = (numberStr) => {
     }
 
     if (number >= 1000000000) {
-        return getStringWithUnit(number, 1000000000) + "B";
+        return getStringWithUnit(number, 1000000000) + STRINGS.b;
     }
 
     if (number >= 1000000) {
-        return getStringWithUnit(number, 1000000) + "M";
+        return getStringWithUnit(number, 1000000) + STRINGS.m;
     }
 
     if (number >= 1000) {
-        return getStringWithUnit(number, 1000) + "K";
+        return getStringWithUnit(number, 1000) + STRINGS.k;
     }
 
     return number;
@@ -384,4 +392,16 @@ export const orderTags = (srcTags, searchTags) => {
     });
 
     return tags;
+};
+
+export const getCompanyTypeText = (value) => {
+    let types = COMPANY_TYPES();
+    let text = "";
+    types.forEach((type) => {
+        if (type.value === value) {
+            text = type.label;
+        }
+    });
+
+    return text;
 };

@@ -13,7 +13,7 @@
 .post-item-detail .-content {
     margin-top: 80px;
     padding: 20px;
-    width: 800px;
+    width: 600px;
     max-height: calc(100vh - 160px);
     background: white;
     border-radius: 4px;
@@ -31,7 +31,7 @@
     height: 30px;
     margin-top: -5px;
     margin-right: -3px;
-    margin-left: 734px;
+    margin-left: 534px;
     position: absolute;
 }
 

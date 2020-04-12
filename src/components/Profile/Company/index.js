@@ -3,16 +3,18 @@ import "./index.css";
 import MySelect from "../../Custom/MySelect";
 import { ISO, COMPANY_TYPES, LOGGED_USER, stringWithUnitFromNumber } from "../../../utils";
 import ReactTags from "react-tag-autocomplete";
+import autosize from "autosize";
 import ImageCropper from "../../ImageCropper";
 import { requestAPI } from "../../../utils/api";
 import SpinnerView from "../../SpinnerView";
 import Lang from "../../Lang";
+import { STRINGS } from "../../../utils/strings";
 
 const IMAGE_COVER = { ratio: 1200 / 240, maxWidth: 1200, circle: false };
 const IMAGE_LOGO = { ratio: 1, maxWidth: 300, circle: true };
 const IMAGE_PRODUCT = { ratio: 2, maxWidth: 800, circle: false };
 
-const SUB_MENUS = ["About us", "Product & service", "Contacts"];
+// const SUB_MENUS = [STRINGS.aboutUs, STRINGS.productSearvice, STRINGS.contacts];
 
 const INTRO_MAX_LENGTH = 300;
 const WHATWEDO_MAX_LENGTH = 300;
@@ -46,7 +48,8 @@ export default class ProfileCompany extends Component {
             }
         }
 
-        let selectedType = COMPANY_TYPES.filter((type) => type.label === props.profile.typeOfCompany);
+        let selectedType = COMPANY_TYPES().filter((type) => type.value === props.profile.typeOfCompany);
+        selectedType = selectedType.length ? selectedType[0] : null;
 
         let productPhotos = [];
         props.profile.productPhotos &&
@@ -61,29 +64,27 @@ export default class ProfileCompany extends Component {
             productPhotos: productPhotos,
         };
 
+        let lang = sessionStorage.getItem("lang");
         this.state = {
-            selectedTab: 0,
             selectedISO: selectedISO,
             selectedType: selectedType,
             tags: tags,
             tagsIt: tagsIt,
-            suggestions: [],
-            tagsPlaceholder: "Type to add ",
-            tagsItPlaceholder: "Digita per aggiungere",
+            tagsPlaceholder: STRINGS.typeToAdd,
+            tagsItPlaceholder: STRINGS.typeToAdd,
             targetToCrop: null,
             originPhotos: originPhotos,
             coverImage: originPhotos.background,
             logoImage: originPhotos.logo,
             productImages: originPhotos.productPhotos.slice(0),
             isProcessing: false,
-            selectedIntroLang: 2,
-            selectedWhatDoLang: 2,
-            selectedTagsLang: 2,
+            selectedIntroLang: lang ? lang : "en",
+            selectedWhatDoLang: lang ? lang : "en",
 
-            introLength: 0,
-            introItLength: 0,
-            whatWeDoLength: 0,
-            whatWeDoItLength: 0,
+            introLength: null,
+            introItLength: null,
+            whatWeDoLength: null,
+            whatWeDoItLength: null,
 
             hintEmployees: props.profile && props.profile.employees ? stringWithUnitFromNumber(props.profile.employees) : "",
             hintRevenues: props.profile && props.profile.revenues ? stringWithUnitFromNumber(props.profile.revenues) : "",
@@ -110,6 +111,11 @@ export default class ProfileCompany extends Component {
     }
 
     componentDidMount = () => {
+        autosize(this.refIntro.current);
+        autosize(this.refIntroIt.current);
+        autosize(this.refWhatWeDo.current);
+        autosize(this.refWhatWeDoIt.current);
+        autosize(this.refProductDetail.current);
         if (this.state.tags.length >= MAX_TAGS) {
             let elem = document.querySelector(".tags-en .react-tags__search-input");
             if (elem) {
@@ -122,6 +128,33 @@ export default class ProfileCompany extends Component {
                 elem.style.display = "none";
             }
         }
+
+        document.querySelector(".tags-it").style.display = "none";
+
+        this.setState({ introLength: this.refIntro.current.value.length });
+        this.setState({ introItLength: this.refIntroIt.current.value.length });
+        this.setState({ whatWeDoLength: this.refWhatWeDo.current.value.length });
+        this.setState({ whatWeDoItLength: this.refWhatWeDoIt.current.value.length });
+    };
+
+    componentWillReceiveProps = (props) => {
+        if (this.props.tab !== props.tab) {
+            let maxHeight = this.aboutUsPanel.current.offsetHeight;
+            if (maxHeight > 0) {
+                this.productsPanel.current.style.height = this.contactsPanel.current.style.height = maxHeight + "px";
+            }
+        }
+
+        let types = COMPANY_TYPES();
+
+        types.forEach((elem) => {
+            if (this.state.selectedType && elem.value === this.state.selectedType.value) {
+                this.setState({ selectedType: elem });
+            }
+        });
+
+        this.resetTagsPlaceholder(this.state.tags, "en");
+        this.resetTagsPlaceholder(this.state.tagsIt, "it");
     };
 
     handleChangeTab = (index) => {
@@ -170,7 +203,7 @@ export default class ProfileCompany extends Component {
                 employees: employees,
                 revenues: revenues,
                 iso: selectedISO && arrayISO,
-                typeOfCompany: selectedType && selectedType.label,
+                typeOfCompany: selectedType && selectedType.value,
                 productName: this.refProductName.current.value,
                 productDetail: this.refProductDetail.current.value,
                 companyAddress: this.refAddress.current.value,
@@ -281,7 +314,7 @@ export default class ProfileCompany extends Component {
     };
 
     handleRemoveProductImage = (index) => {
-        if (window.confirm("Do you really want to remove?")) {
+        if (window.confirm(STRINGS.wantToRemove)) {
             let productImages = this.state.productImages.slice(0);
             productImages.splice(index, 1);
             this.setState({ productImages });
@@ -300,30 +333,39 @@ export default class ProfileCompany extends Component {
         this.setState({ selectedAteco });
     };
 
+    resetTagsPlaceholder = (tags, lang) => {
+        let elem = document.querySelector(`${lang === "en" ? ".tags-en" : ".tags-it"} .react-tags__search-input`);
+        console.log(lang);
+        if (!elem) {
+            return;
+        }
+
+        let placeholder = STRINGS.typeToAdd;
+        console.log(placeholder, lang);
+        if (tags && tags.length) {
+            placeholder = `${STRINGS.max}:${MAX_TAGS}(${STRINGS.left}:${MAX_TAGS - tags.length})`;
+        }
+        elem.style.width = placeholder.length * 7 + "px";
+        if (lang === "en") {
+            this.setState({ tagsPlaceholder: placeholder });
+        } else {
+            this.setState({ tagsItPlaceholder: placeholder });
+        }
+    };
+
     handleTagDelete = (i) => {
         const tags = this.state.tags.slice(0);
         tags.splice(i, 1);
         this.setState({ tags });
 
         let elem = document.querySelector(".tags-en .react-tags__search-input");
-        if (!elem) {
-            return;
+        if (elem) {
+            elem.style.display = "block";
+            elem.focus();
         }
-
-        elem.style.display = "block";
-        elem.focus();
-
-        if (!tags || !tags.length) {
-            this.setState({
-                tagsPlaceholder: "Type to add ",
-            });
-            elem.style.width = "16ch";
-        } else {
-            this.setState({
-                tagsPlaceholder: `Max:${MAX_TAGS}(Left:${MAX_TAGS - tags.length})`,
-            });
-        }
+        this.resetTagsPlaceholder(tags, "en");
     };
+
     handleTagAddition = (tag) => {
         const { tags } = this.state;
         if (tags.filter((elem) => elem.name === tag.name).length) {
@@ -335,13 +377,11 @@ export default class ProfileCompany extends Component {
             if (elem) {
                 elem.style.display = "none";
             }
-        } else {
-            this.setState({
-                tagsPlaceholder: `Max:${MAX_TAGS}(Left:${MAX_TAGS - tags.length - 1})`,
-            });
         }
+
         const newTags = [].concat(tags, tag);
         this.setState({ tags: newTags });
+        this.resetTagsPlaceholder(newTags, "en");
     };
 
     handleTagItDelete = (i) => {
@@ -350,23 +390,11 @@ export default class ProfileCompany extends Component {
         this.setState({ tagsIt });
 
         let elem = document.querySelector(".tags-it .react-tags__search-input");
-        if (!elem) {
-            return;
+        if (elem) {
+            elem.style.display = "block";
+            elem.focus();
         }
-
-        elem.style.display = "block";
-        elem.focus();
-
-        if (!tagsIt || !tagsIt.length) {
-            this.setState({
-                tagsItPlaceholder: "Digita per aggiungere",
-            });
-            elem.style.width = "20ch";
-        } else {
-            this.setState({
-                tagsItPlaceholder: `Max:${MAX_TAGS}(Left:${MAX_TAGS - tagsIt.length})`,
-            });
-        }
+        this.resetTagsPlaceholder(tagsIt, "it");
     };
 
     handleTagItAddition = (tagIt) => {
@@ -380,14 +408,11 @@ export default class ProfileCompany extends Component {
             if (elem) {
                 elem.style.display = "none";
             }
-        } else {
-            this.setState({
-                tagsItPlaceholder: `Max:${MAX_TAGS}(Left:${MAX_TAGS - tagsIt.length - 1})`,
-            });
         }
 
         const newTagsIt = [].concat(tagsIt, tagIt);
         this.setState({ tagsIt: newTagsIt });
+        this.resetTagsPlaceholder(newTagsIt, "it");
     };
 
     handleBrowseFile = (index, info) => {
@@ -454,17 +479,16 @@ export default class ProfileCompany extends Component {
         this.setState({ selectedWhatDoLang });
     };
 
-    handleChangeTagsLang = (selectedTagsLang) => {
-        let elem = document.querySelector(".tags-it .react-tags__search-input");
-
-        if (selectedTagsLang === 1) {
-            elem.style.width = "20ch";
+    handleChangeTagsLang = (lang) => {
+        if (lang === "en") {
+            document.querySelector(".tags-en").style.display = "block";
+            document.querySelector(".tags-it").style.display = "none";
+            this.resetTagsPlaceholder(this.state.tags, lang);
+        } else {
+            document.querySelector(".tags-en").style.display = "none";
+            document.querySelector(".tags-it").style.display = "block";
+            this.resetTagsPlaceholder(this.state.tagsIt, lang);
         }
-
-        this.setState({ selectedTagsLang });
-    };
-    getTextLength = (e) => {
-        return e && e.value.length;
     };
 
     handleChangeText = (e) => {
@@ -503,12 +527,10 @@ export default class ProfileCompany extends Component {
 
     render() {
         const {
-            selectedTab,
             selectedISO,
             selectedType,
             tags,
             tagsIt,
-            suggestions,
             tagsPlaceholder,
             tagsItPlaceholder,
             targetToCrop,
@@ -518,7 +540,6 @@ export default class ProfileCompany extends Component {
             isProcessing,
             selectedIntroLang,
             selectedWhatDoLang,
-            selectedTagsLang,
             introLength,
             introItLength,
             whatWeDoLength,
@@ -527,51 +548,70 @@ export default class ProfileCompany extends Component {
             hintRevenues,
         } = this.state;
 
-        const { profile } = this.props;
+        const { profile, tab } = this.props;
 
         const btnSave = (
             <div className="d-flex justify-content-end mt-4 pb-2">
                 <button style={{ minWidth: 140 }} onClick={this.handleClickSave}>
-                    Save
+                    {STRINGS.save}
                 </button>
             </div>
         );
 
         const aboutUsPanel = (
-            <div className={selectedTab === 0 ? "d-block" : "d-none"} ref={this.aboutUsPanel}>
+            <div className={tab === 0 ? "d-block" : "d-none"} ref={this.aboutUsPanel}>
                 <div className="py-2 d-flex align-items-center">
-                    Introduction
+                    {STRINGS.introduction}
                     <Lang onChange={this.handleChangeIntroLang} />
                 </div>
-                <div className={selectedIntroLang === 2 ? "d-block" : "d-none"}>
-                    <textarea maxLength={INTRO_MAX_LENGTH} ref={this.refIntro} defaultValue={profile && profile.introduction} onChange={this.handleChangeText}></textarea>
+                <div className={selectedIntroLang === "en" ? "d-block" : "d-none"}>
+                    <textarea
+                        maxLength={INTRO_MAX_LENGTH}
+                        ref={this.refIntro}
+                        defaultValue={profile && profile.introduction}
+                        onChange={this.handleChangeText}
+                        style={{ maxHeight: 200 }}
+                    ></textarea>
                     <div className="char-limit">
                         {introLength}/{INTRO_MAX_LENGTH}
                     </div>
                 </div>
-                <div className={selectedIntroLang === 1 ? "d-block" : "d-none"}>
-                    <textarea maxLength={INTRO_MAX_LENGTH} ref={this.refIntroIt} defaultValue={profile && profile.introductionIt} onChange={this.handleChangeText} />
+                <div className={selectedIntroLang === "it" ? "d-block" : "d-none"}>
+                    <textarea
+                        maxLength={INTRO_MAX_LENGTH}
+                        ref={this.refIntroIt}
+                        defaultValue={profile && profile.introductionIt}
+                        onChange={this.handleChangeText}
+                        style={{ maxHeight: 200 }}
+                    />
                     <div className="char-limit">
                         {introItLength}/{INTRO_MAX_LENGTH}
                     </div>
                 </div>
                 <div className="mt-4 mb-2 d-flex align-items-center">
-                    What we do
+                    {STRINGS.whatWeDo}
                     <Lang onChange={this.handleChangeWhatDoLang} />
                 </div>
                 <div>
-                    <div className={selectedWhatDoLang === 2 ? "d-block" : "d-none"}>
-                        <textarea maxLength={WHATWEDO_MAX_LENGTH} ref={this.refWhatWeDo} defaultValue={profile && profile.whatWeDo} onChange={this.handleChangeText} />
+                    <div className={selectedWhatDoLang === "en" ? "d-block" : "d-none"}>
+                        <textarea
+                            maxLength={WHATWEDO_MAX_LENGTH}
+                            ref={this.refWhatWeDo}
+                            defaultValue={profile && profile.whatWeDo}
+                            onChange={this.handleChangeText}
+                            style={{ maxHeight: 200 }}
+                        />
                         <div className="char-limit">
                             {whatWeDoLength}/{WHATWEDO_MAX_LENGTH}
                         </div>
                     </div>
-                    <div className={selectedWhatDoLang === 1 ? "d-block" : "d-none"}>
+                    <div className={selectedWhatDoLang === "it" ? "d-block" : "d-none"}>
                         <textarea
                             maxLength={WHATWEDO_MAX_LENGTH}
                             ref={this.refWhatWeDoIt}
                             defaultValue={profile && profile.whatWeDoIt}
                             onChange={this.handleChangeText}
+                            style={{ maxHeight: 200 }}
                         />
                         <div className="char-limit">
                             {whatWeDoItLength}/{WHATWEDO_MAX_LENGTH}
@@ -583,39 +623,33 @@ export default class ProfileCompany extends Component {
                     <div className="float-right">
                         <Lang onChange={this.handleChangeTagsLang} />
                     </div>
-                    TAGS
+                    {STRINGS.tags}
                     <br />
                     <div>
-                        <span className="text-small">Select the main keyword that represent your company.</span>
+                        <span className="text-small">{STRINGS.selectMainKeyword}</span>
                         <div className="info-row mt-3">
                             <div className="tags-en">
-                                <div className={selectedTagsLang === 2 ? "d-block" : "d-none"}>
-                                    <ReactTags
-                                        tags={tags}
-                                        suggestions={suggestions}
-                                        placeholderText={tagsPlaceholder}
-                                        onDelete={this.handleTagDelete.bind(this)}
-                                        onAddition={this.handleTagAddition.bind(this)}
-                                        allowNew
-                                    />
-                                </div>
+                                <ReactTags
+                                    tags={tags}
+                                    placeholderText={tagsPlaceholder}
+                                    onDelete={this.handleTagDelete.bind(this)}
+                                    onAddition={this.handleTagAddition.bind(this)}
+                                    allowNew
+                                />
                             </div>
                             <div className="tags-it">
-                                <div className={selectedTagsLang === 1 ? "d-block" : "d-none"}>
-                                    <ReactTags
-                                        tags={tagsIt}
-                                        suggestions={suggestions}
-                                        placeholderText={tagsItPlaceholder}
-                                        onDelete={this.handleTagItDelete.bind(this)}
-                                        onAddition={this.handleTagItAddition.bind(this)}
-                                        allowNew
-                                    />
-                                </div>
+                                <ReactTags
+                                    tags={tagsIt}
+                                    placeholderText={tagsItPlaceholder}
+                                    onDelete={this.handleTagItDelete.bind(this)}
+                                    onAddition={this.handleTagItAddition.bind(this)}
+                                    allowNew
+                                />
                             </div>
                         </div>
                         <div className="d-flex justify-content-center">
                             <div className="tag-hint">
-                                Examples: <label>lasercut</label>
+                                {STRINGS.examples}: <label>lasercut</label>
                                 <label>welding</label>
                                 <label>CNC</label>
                             </div>
@@ -625,17 +659,17 @@ export default class ProfileCompany extends Component {
                 <hr />
                 <div className="mt-3">
                     <div className="info-row">
-                        <span>N° employees:</span>
+                        <span>{STRINGS.nEmployees}:</span>
                         <input ref={this.refEmployee} type="number" defaultValue={profile && profile.employees} onChange={this.handleChangeEmployees} />
                         <div className="number-hint">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{hintEmployees}</div>
                     </div>
                     <div className="info-row">
-                        <span>Revenues:</span>
+                        <span>{STRINGS.revenues}:</span>
                         <input ref={this.refRevenue} type="number" defaultValue={profile && profile.revenues} onChange={this.handleChangeRevenues} />
                         <div className="number-hint">€&nbsp;&nbsp;&nbsp;{hintRevenues}</div>
                     </div>
                     <div className="info-row">
-                        <span>ISO:</span>
+                        <span>{STRINGS.iso}:</span>
                         <MySelect
                             value={selectedISO}
                             isMulti
@@ -644,17 +678,19 @@ export default class ProfileCompany extends Component {
                             width={300}
                             borderColor="var(--colorBorder)"
                             menuHeight={154}
+                            placeholder={STRINGS.select}
                         />
                     </div>
                     <div className="info-row">
-                        <span>Company type:</span>
+                        <span>{STRINGS.companyType}:</span>
                         <MySelect
                             value={selectedType}
                             onChange={this.handleTypeChange}
-                            options={COMPANY_TYPES}
+                            options={COMPANY_TYPES()}
                             width={300}
                             borderColor="var(--colorBorder)"
                             menuHeight={102}
+                            placeholder={STRINGS.select}
                         />
                     </div>
                 </div>
@@ -663,13 +699,13 @@ export default class ProfileCompany extends Component {
         );
 
         const productsPanel = (
-            <div className={`pt-4 ${selectedTab === 1 ? "d-block" : "d-none"}`} ref={this.productsPanel}>
+            <div className={`pt-4 ${tab === 1 ? "d-block" : "d-none"}`} ref={this.productsPanel}>
                 <div className="info-row">
-                    <span>Product name:</span>
+                    <span>{STRINGS.productName}:</span>
                     <input ref={this.refProductName} defaultValue={profile.productName} />
                 </div>
                 <div>
-                    <div className="my-2">Photos:</div>
+                    <div className="my-2">{STRINGS.photo}:</div>
                     <div className="photos-panel">
                         {productImages.map((image, index) => (
                             <div key={index} className="photo">
@@ -687,39 +723,39 @@ export default class ProfileCompany extends Component {
                                 onClick={() => this.handleBrowseFile(productImages.length + 2, IMAGE_PRODUCT)}
                             >
                                 <i className="fa fa-upload pr-2" />
-                                Upload photo
+                                {STRINGS.uploadPhoto}
                             </div>
                         )}
                     </div>
                 </div>
-                <div className="mt-4 mb-2">Details:</div>
+                <div className="mt-4 mb-2">{STRINGS.details}:</div>
                 <div>
-                    <textarea ref={this.refProductDetail} defaultValue={profile.productDetail} style={{ height: 160 }} />
+                    <textarea ref={this.refProductDetail} defaultValue={profile.productDetail} style={{ maxHeight: 400 }} />
                 </div>
                 {btnSave}
             </div>
         );
 
         const contactsPanel = (
-            <div className={`pt-4 ${selectedTab === 2 ? "d-block" : "d-none"}`} ref={this.contactsPanel}>
+            <div className={`pt-4 ${tab === 2 ? "d-block" : "d-none"}`} ref={this.contactsPanel}>
                 <div className="info-row">
-                    <span>Address:</span>
+                    <span>{STRINGS.address}:</span>
                     <input ref={this.refAddress} defaultValue={profile.companyAddress} />
                 </div>
                 <div className="info-row">
-                    <span>Phone:</span>
+                    <span>{STRINGS.phone}:</span>
                     <input ref={this.refPhone} defaultValue={profile.companyPhone} />
                 </div>
                 <div className="info-row">
-                    <span>Website:</span>
+                    <span>{STRINGS.website}:</span>
                     <input ref={this.refWebsite} defaultValue={profile.website} />
                 </div>
                 <div className="info-row">
-                    <span>Email:</span>
+                    <span>{STRINGS.email}:</span>
                     <input ref={this.refEmail} defaultValue={profile.companyEmail} />
                 </div>
                 <div className="info-row">
-                    <span>2nd email:</span>
+                    <span>{STRINGS.secondEmail}:</span>
                     <input ref={this.ref2ndEmail} defaultValue={profile.company2ndEmail} />
                 </div>
                 {btnSave}
@@ -736,17 +772,17 @@ export default class ProfileCompany extends Component {
                     </button>
                     <button className="secondary btn-change-cover" onClick={() => this.handleBrowseFile(0, IMAGE_COVER)}>
                         <i className="fa fa-upload pr-2" />
-                        Choose system photo
+                        {STRINGS.chooseSystemPhoto}
                     </button>
                 </div>
                 <div className="info-panel">
-                    <div className="tab-header">
+                    {/* <div className="tab-header">
                         {SUB_MENUS.map((menu, index) => (
-                            <button key={index} className={`tab-item ${selectedTab === index ? "active" : ""}`} onClick={() => this.handleChangeTab(index)}>
+                            <button key={index} className={`tab-item ${tab === index ? "active" : ""}`} onClick={() => this.handleChangeTab(index)}>
                                 {menu}
                             </button>
                         ))}
-                    </div>
+                    </div> */}
                     <div className="tab-body">
                         {aboutUsPanel}
                         {productsPanel}

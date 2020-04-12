@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./index.css";
 import { LangConsumer } from "../../../utils/LanguageContext";
+import { STRINGS } from "../../../utils/strings";
 
 export default class DetailContacts extends Component {
     render() {
@@ -10,7 +11,7 @@ export default class DetailContacts extends Component {
                 <div className="top-info">
                     <div className="pb-2">
                         <span className="pr-3">
-                            <b>ISO</b>
+                            <b>{STRINGS.iso}</b>
                         </span>
 
                         {profile &&
@@ -26,7 +27,7 @@ export default class DetailContacts extends Component {
                         <div>
                             <LangConsumer>
                                 {(value) =>
-                                    value.lang === 2
+                                    value.lang === "en"
                                         ? profile &&
                                           profile.user.tags &&
                                           profile.user.tags.map((tag, index) => (
@@ -47,21 +48,19 @@ export default class DetailContacts extends Component {
                     </div>
                 </div>
                 <hr />
-                <h5 className="pt-4 text-dark-light text-uppercase text-center">Contacts</h5>
+                <h5 className="pt-4 text-dark-light text-uppercase text-center">{STRINGS.contacts}</h5>
                 <div className="contact-info">
                     <div>
                         <div className="d-flex align-items-center py-2">
-                            <label className="text-dark-light">Address : </label>
-                            <span className="info" className="info">
-                                {profile && profile.user.companyAddress}
-                            </span>
+                            <label className="text-dark-light">{STRINGS.address} : </label>
+                            <span className="info">{profile && profile.user.companyAddress}</span>
                         </div>
                         <div className="d-flex align-items-center py-2">
-                            <label className="text-dark-light">Phone : </label>
+                            <label className="text-dark-light">{STRINGS.phone} : </label>
                             <span className="info">{profile && profile.user.companyPhone}</span>
                         </div>
                         <div className="d-flex align-items-center py-2">
-                            <label className="text-dark-light">Website : </label>
+                            <label className="text-dark-light">{STRINGS.website} : </label>
                             <span className="info">
                                 <a href={profile && profile.user.website} className="text-primary" target="blank">
                                     {profile && profile.user.website}
@@ -69,11 +68,11 @@ export default class DetailContacts extends Component {
                             </span>
                         </div>
                         <div className="d-flex align-items-center py-2">
-                            <label className="text-dark-light">Email : </label>
+                            <label className="text-dark-light">{STRINGS.email} : </label>
                             <span className="info">{profile && profile.user.companyEmail}</span>
                         </div>
                         <div className="d-flex align-items-center py-2">
-                            <label className="text-dark-light">2nd Email : </label>
+                            <label className="text-dark-light">{STRINGS.secondEmail} : </label>
                             <span className="info">{profile && profile.user.company2ndEmail}</span>
                         </div>
                     </div>

@@ -6,18 +6,9 @@ import Sidebar from "../Sidebar";
 import { requestAPI } from "../../utils/api";
 import { LOGGED_USER } from "../../utils";
 import Lang from "../Lang";
-
-const menusInNotLoggedin = [
-    { id: 1, title: "Log in", link: "/login" },
-    { id: 2, title: "Register", link: "/register" },
-];
-
-const menusInLoggedin = [
-    { id: 1, title: "Profile", link: "/user-edit" },
-    { id: 2, title: "Log out", link: "/" },
-];
-
-export default class Header extends Component {
+import { STRINGS } from "../../utils/strings";
+import { withRouter } from "react-router-dom";
+class Header extends Component {
     constructor(props) {
         super(props);
 
@@ -92,6 +83,9 @@ export default class Header extends Component {
             sessionStorage.removeItem(LOGGED_USER);
         }
         window.location.href = menu.link;
+        this.setState({
+            isExpanded: false,
+        });
     };
 
     handleClickLogout = () => {
@@ -193,10 +187,28 @@ export default class Header extends Component {
     handleChangeLang = (lang) => {
         this.props.onSelectedLang(lang);
     };
+    handleClickLogo = () => {
+        if (window.location.pathname.search("/company/") !== -1) {
+            this.props.history.goBack();
+        } else {
+            window.location.href = "/";
+        }
+    };
 
     render() {
         const { isExpanded, searchedCompanies, cursor, isMobile, visible } = this.state;
         const { needSearchBar, isTransparent } = this.props;
+        // console.log(isTransparent);
+
+        const menusInNotLoggedin = [
+            { id: 1, title: STRINGS.login, link: "/login" },
+            { id: 2, title: STRINGS.register, link: "/register" },
+        ];
+
+        const menusInLoggedin = [
+            { id: 1, title: STRINGS.profile, link: "/user-edit" },
+            { id: 2, title: STRINGS.logout, link: "/" },
+        ];
 
         let loggedUser = JSON.parse(sessionStorage.getItem(LOGGED_USER));
         let menus = loggedUser ? menusInLoggedin : menusInNotLoggedin;
@@ -215,7 +227,7 @@ export default class Header extends Component {
                 <div className="search-bar" ref={this.searchBar}>
                     <i className="fa fa-search"></i>
                     <input
-                        placeholder="Company search"
+                        placeholder={STRINGS.companySearch}
                         onKeyDown={this.handleKeyDown}
                         onChange={this.handleKeyChange}
                         ref={this.refKey}
@@ -252,9 +264,7 @@ export default class Header extends Component {
                 <div className={`header ${isTransparent ? "" : "bg-fill"}`}>
                     <Row>
                         <Col className="item title" sm={4}>
-                            <a href="/">
-                                <img src="/images/logo.svg" alt="" />
-                            </a>
+                            <img src="/images/logo.svg" className="cursor-pointer" alt="" onClick={this.handleClickLogo} />
                         </Col>
                         <Col className="item" sm={loggedUser ? 3 : 4}>
                             {!isMobile ? searchBar : <div />}
@@ -281,9 +291,7 @@ export default class Header extends Component {
                             <Lang onChange={this.handleChangeLang} />
                         </div>
                         <div className="title">
-                            <a href="/">
-                                <img src="/images/logo.svg" alt="" />
-                            </a>
+                            <img src="/images/logo.svg" alt="" onClick={this.handleClickLogo} />
                         </div>
                         <div>
                             <button className="expand" onClick={this.handleClickExpand}>
@@ -298,3 +306,4 @@ export default class Header extends Component {
         );
     }
 }
+export default withRouter(Header);

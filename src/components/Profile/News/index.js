@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import autosize from "autosize";
 import "./index.css";
 import PostItem from "../../PostItem";
 import { requestAPI } from "../../../utils/api";
@@ -8,6 +9,7 @@ import SpinnerView from "../../SpinnerView";
 import * as Validate from "../../../utils/Validate";
 import { Alert } from "react-bootstrap";
 import ImageCropper from "../../ImageCropper";
+import { STRINGS } from "../../../utils/strings";
 
 const MAX_LENGTH = 140;
 
@@ -16,7 +18,7 @@ export default class ProfileNews extends Component {
         super(props);
 
         this.state = {
-            photoFileName: "No image choosed",
+            photoFileName: STRINGS.noImageChoosed,
             photoData: null,
             posts: props.posts,
             isProcessing: false,
@@ -29,6 +31,10 @@ export default class ProfileNews extends Component {
         this.refTitle = React.createRef();
         this.refDescription = React.createRef();
     }
+
+    componentDidMount = () => {
+        autosize(this.refDescription.current);
+    };
 
     setAlertData = (success, text) => {
         this.setState({
@@ -59,14 +65,14 @@ export default class ProfileNews extends Component {
         let valid = Validate.checkEmpty(this.refTitle.current.value);
         Validate.applyToInput(this.refTitle.current, valid.code);
         if (valid.code !== Validate.VALID) {
-            this.setAlertData(0, "Title" + valid.msg);
+            this.setAlertData(0, STRINGS.title + valid.msg);
             return false;
         }
 
         valid = Validate.checkEmpty(this.refDescription.current.value);
         Validate.applyToInput(this.refDescription.current, valid.code);
         if (valid.code !== Validate.VALID) {
-            this.setAlertData(0, "Description" + valid.msg);
+            this.setAlertData(0, STRINGS.description + valid.msg);
             return false;
         }
 
@@ -98,7 +104,7 @@ export default class ProfileNews extends Component {
     };
 
     handleDeleteNews = async (post) => {
-        if (window.confirm("Do you really want to remove?")) {
+        if (window.confirm(STRINGS.wantToDelete)) {
             let data = {
                 id: post.id,
                 photo: post.photo,
@@ -114,7 +120,7 @@ export default class ProfileNews extends Component {
                     );
                     this.updatePosts(posts);
                 } else {
-                    alert("An error occured due to delete.");
+                    alert(STRINGS.errorOccuredDelete);
                 }
                 this.setState({ isProcessing: false });
             });
@@ -172,14 +178,20 @@ export default class ProfileNews extends Component {
         return (
             <div className="news-view">
                 {alertData ? <Alert variant={alertData.variant}>{alertData.text}</Alert> : <div></div>}
-                <div className="mb-2 text-bold text-uppercase text-large">Make a post</div>
-                <div className="mt-3 mb-1">Title</div>
+                <div className="mb-2 text-bold text-uppercase text-large">{STRINGS.makePost}</div>
+                <div className="mt-3 mb-1">{STRINGS.title}</div>
                 <div>
                     <input className="w-100" ref={this.refTitle} onFocus={this.handleFocusInput} />
                 </div>
-                <div className="mt-3 mb-1">What is new</div>
+                <div className="mt-3 mb-1">{STRINGS.whatIsNew}</div>
                 <div className="mb-2">
-                    <textarea ref={this.refDescription} onFocus={this.handleFocusInput} maxLength={MAX_LENGTH} onChange={this.handleChangeDescription} />
+                    <textarea
+                        ref={this.refDescription}
+                        onFocus={this.handleFocusInput}
+                        maxLength={MAX_LENGTH}
+                        onChange={this.handleChangeDescription}
+                        style={{ maxHeight: 200 }}
+                    />
                     <div className="char-limit">
                         {lengthOfDescription}/{MAX_LENGTH}
                     </div>
@@ -188,21 +200,23 @@ export default class ProfileNews extends Component {
                     <button className="secondary btn-photo" onClick={this.handleClickPhoto}>
                         <input type="file" onChange={this.handleChangeImage} style={{ display: "none" }} ref={this.refBrowse} accept="image/*" />
                         <i className="fa fa-upload pr-2" />
-                        Upload a photo
+                        {STRINGS.uploadPhoto}
                     </button>
                     <span className="pl-2">{photoFileName}</span>
                     <button className="float-right" style={{ minWidth: 160 }} onClick={this.handleClickPublish}>
-                        Publish
+                        {STRINGS.publish}
                     </button>
                 </div>
-                <div className="mt-5 text-bold text-uppercase text-large">Previous posts</div>
+                <div className="mt-5 text-bold text-uppercase text-large">{STRINGS.previousPosts}</div>
                 <hr className="mt-2 mb-3" />
                 <div>
                     {posts.map((post, index) => (
                         <PostItem key={index} data={post} handleDelete={() => this.handleDeleteNews(post)} />
                     ))}
                 </div>
-                {imageToCrop && imageToCrop.image && <ImageCropper options={imageToCrop} onSave={this.handleImageCropped} onCancel={this.handleCropCancelled} />}
+                {imageToCrop && imageToCrop.image && (
+                    <ImageCropper options={imageToCrop} onSave={this.handleImageCropped} onCancel={this.handleCropCancelled} />
+                )}
                 {isProcessing && <SpinnerView />}
             </div>
         );

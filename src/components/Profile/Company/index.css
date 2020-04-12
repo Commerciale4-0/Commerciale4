@@ -68,7 +68,7 @@
     align-items: flex-start;
 }
 .user-profile .info-panel .info-row span {
-    min-width: 120px;
+    min-width: 125px;
 }
 
 .user-profile .info-panel .info-row > input {
@@ -127,7 +127,7 @@
 .user-profile .company-view .react-tags {
     width: 420px;
     background: #f9f9f9;
-    min-height: 36px;
+    min-height: 38px;
     border: 1px solid var(--colorBorder);
 }
 .user-profile .company-view .react-tags__selected-tag {
@@ -136,9 +136,6 @@
 
 .user-profile .company-view .react-tags__selected-tag:hover {
     background: #ccc;
-}
-.user-profile .company-view .react-tags__search {
-    padding: 4px 2px;
 }
 
 .user-profile .lang {

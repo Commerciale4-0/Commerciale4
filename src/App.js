@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "font-awesome/css/font-awesome.min.css";
 import "./App.css";
 
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import LoginPage from "./pages/Login";
 import Header from "./components/Header";
@@ -19,12 +19,13 @@ import CompanyDetail from "./pages/CompanyDetail";
 import Profile from "./pages/Profile";
 import Except from "./pages/Except";
 import { LangProvider } from "./utils/LanguageContext";
+import { STRINGS } from "./utils/strings";
 
 class App extends Component {
     state = {
         headerTransparent: false,
         headerAutoHide: true,
-        selectedLang: 2,
+        selectedLang: sessionStorage.getItem("lang"),
         needSearchBar: true,
         needFooter: true,
     };
@@ -39,40 +40,33 @@ class App extends Component {
         if (window.location.pathname === "/user-edit") {
             this.setState({ needFooter: false });
         }
-        if (
-            window.location.pathname === "/login" ||
-            window.location.pathname === "/register" ||
-            window.location.pathname === "/forgot-password"
-        ) {
+        if (window.location.pathname === "/login" || window.location.pathname === "/register" || window.location.pathname === "/forgot-password") {
             this.setState({ needSearchBar: false, needFooter: false, headerTransparent: true });
         }
+
+        this.setLocalization();
     };
 
+    setLocalization() {
+        let lang = sessionStorage.getItem("lang");
+        STRINGS.setLanguage(lang ? lang : "en");
+    }
     selectLang = (lang) => {
         this.setState({
             selectedLang: lang,
         });
+        sessionStorage.setItem("lang", lang);
+        this.setLocalization();
     };
 
     render() {
-        const {
-            headerTransparent,
-            headerAutoHide,
-            selectedLang,
-            needSearchBar,
-            needFooter,
-        } = this.state;
+        const { headerTransparent, headerAutoHide, selectedLang, needSearchBar, needFooter } = this.state;
 
         return (
             <div>
                 <LangProvider value={{ lang: selectedLang }}>
-                    <BrowserRouter>
-                        <Header
-                            needSearchBar={needSearchBar}
-                            isTransparent={headerTransparent}
-                            autoHide={headerAutoHide}
-                            onSelectedLang={this.selectLang}
-                        />
+                    <Router>
+                        <Header needSearchBar={needSearchBar} isTransparent={headerTransparent} autoHide={headerAutoHide} onSelectedLang={this.selectLang} />
                         <div className="body">
                             <Switch>
                                 <Route exact path="/" component={LandingPage} />
@@ -89,7 +83,7 @@ class App extends Component {
                             </Switch>
                         </div>
                         {needFooter && <Footer />}
-                    </BrowserRouter>
+                    </Router>
                 </LangProvider>
             </div>
         );

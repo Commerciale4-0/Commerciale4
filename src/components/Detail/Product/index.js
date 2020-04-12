@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./index.css";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
+import { STRINGS } from "../../../utils/strings";
 
 export default class CompanyDetailProduct extends Component {
     render() {
@@ -32,7 +33,7 @@ export default class CompanyDetailProduct extends Component {
                     <div />
                 )}
 
-                <p className="text-uppercase text-dark-light text-bold mt-4 mb-2">Details</p>
+                <p className="text-uppercase text-dark-light text-bold mt-4 mb-2">{STRINGS.details}</p>
                 <p className="font-15">{profile && profile.user.productDetail}</p>
             </div>
         );

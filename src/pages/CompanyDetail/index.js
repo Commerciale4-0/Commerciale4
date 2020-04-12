@@ -6,7 +6,10 @@ import { requestAPI } from "../../utils/api";
 import SpinnerView from "../../components/SpinnerView";
 import { orderTags } from "../../utils";
 import { LangConsumer } from "../../utils/LanguageContext";
-let stateContext = null;
+import { STRINGS } from "../../utils/strings";
+
+let lang = null;
+
 export default class CompanyDetail extends Component {
     constructor(props) {
         super(props);
@@ -31,7 +34,7 @@ export default class CompanyDetail extends Component {
                     if (profile.user) {
                         let filter = JSON.parse(sessionStorage.getItem("filter"));
                         if (filter) {
-                            if (stateContext === 2) {
+                            if (lang === "en") {
                                 profile.user.tags = orderTags(profile.user.tags, filter.tags);
                             } else {
                                 profile.user.tagsIt = orderTags(profile.user.tagsIt, filter.tags);
@@ -40,12 +43,12 @@ export default class CompanyDetail extends Component {
                     }
                     this.setState({ profile: res.data });
                 } else {
-                    console.log("Connection failed!");
+                    console.log(STRINGS.connectionFailed);
                 }
                 this.setState({ isProcessing: false });
             })
             .catch((e) => {
-                console.log("Connection failed!!");
+                console.log(STRINGS.connectionFailed);
                 this.setState({ isProcessing: false });
             });
     };
@@ -56,7 +59,7 @@ export default class CompanyDetail extends Component {
             <div>
                 <LangConsumer>
                     {(value) => {
-                        stateContext = value.lang;
+                        lang = value.lang;
                     }}
                 </LangConsumer>
                 <div className="company-detail container">

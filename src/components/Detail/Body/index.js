@@ -3,14 +3,9 @@ import "./index.css";
 import DetailOverview from "../Overview";
 import DetailProduct from "../Product";
 import DetailContacts from "../Contacts";
-import { stringWithUnitFromNumber } from "../../../utils";
+import { stringWithUnitFromNumber, getCompanyTypeText } from "../../../utils";
 import { LangConsumer } from "../../../utils/LanguageContext";
-
-const MENUS = [
-    { id: 0, title: "About us", icon: "fa-user" },
-    { id: 1, title: "Product & Service", icon: "fa-cogs" },
-    { id: 2, title: "Contacts", icon: "fa-info-circle" },
-];
+import { STRINGS } from "../../../utils/strings";
 
 export default class DetailBody extends Component {
     constructor(props) {
@@ -91,6 +86,11 @@ export default class DetailBody extends Component {
         const { profile } = this.props;
         const { selectedMenu, isMobile } = this.state;
 
+        const MENUS = [
+            { id: 0, title: STRINGS.aboutUs, icon: "fa-user" },
+            { id: 1, title: STRINGS.productSearvice, icon: "fa-cogs" },
+            { id: 2, title: STRINGS.contacts, icon: "fa-info-circle" },
+        ];
         const menuPanel = (
             <div className="menu-panel" ref={this.menuPanel}>
                 {MENUS.map((menu) => (
@@ -108,7 +108,7 @@ export default class DetailBody extends Component {
                 <div>
                     <LangConsumer>
                         {(value) =>
-                            value.lang === 2
+                            value.lang === "en"
                                 ? profile && profile.user.tags && profile.user.tags.map((tag, index) => <label key={index}>{tag}</label>)
                                 : profile && profile.user.tagsIt && profile.user.tagsIt.map((tagIt, index) => <label key={index}>{tagIt}</label>)
                         }
@@ -119,7 +119,7 @@ export default class DetailBody extends Component {
 
         const isoPanel = !isMobile && (
             <div className="multi-values">
-                <span>ISO</span>
+                <span>{STRINGS.iso}</span>
                 <div>
                     {profile &&
                         profile.user.iso &&
@@ -145,13 +145,13 @@ export default class DetailBody extends Component {
                     </p>
                     {isoPanel}
                     <p className="-ateco">
-                        <span>NACE</span>
+                        <span>{STRINGS.ateco}</span>
                         {profile && profile.user.ateco}
                     </p>
                 </div>
                 <p className="-type mb-0">
-                    <span>TYPE</span>
-                    {profile && profile.user.typeOfCompany}
+                    <span className="text-uppercase">{STRINGS.type}</span>
+                    {profile && getCompanyTypeText(profile.user.typeOfCompany)}
                 </p>
                 {tagsPanel}
             </div>
