@@ -135,7 +135,7 @@ export default class ProfileAccount extends Component {
             password: this.refNewPassword.current.value,
         }).then((res) => {
             if (res.status !== 1) {
-                this.setPasswordAlertData(0, res.data);
+                this.setPasswordAlertData(0, STRINGS.databaseFailed);
             } else {
                 userData.user.password = res.data;
                 sessionStorage.setItem(LOGGED_USER, JSON.stringify(userData));
@@ -165,7 +165,7 @@ export default class ProfileAccount extends Component {
                     sessionStorage.setItem(LOGGED_USER, JSON.stringify(userData));
                     this.setEmailAlertData(1, STRINGS.emailChanged);
                 } else {
-                    this.setEmailAlertData(0, res.message);
+                    this.setEmailAlertData(0, STRINGS.databaseFailed);
                 }
             })
             .catch((err) => {
@@ -196,7 +196,7 @@ export default class ProfileAccount extends Component {
                         sessionStorage.clear();
                         window.location.href = "/";
                     } else {
-                        alert(res.message);
+                        alert(STRINGS.errorOccuredDelete);
                     }
                     this.setState({ isProcessing: false });
                 })

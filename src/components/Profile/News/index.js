@@ -71,13 +71,13 @@ export default class ProfileNews extends Component {
         if (this.state.selectedNewsLang === "en") {
             Validate.applyToInput(this.refTitle.current, valid.code);
             if (valid.code !== Validate.VALID) {
-                this.setAlertData(0, STRINGS.title + "\u00a0" + valid.msg);
+                this.setAlertData(0, STRINGS.title + valid.msg);
                 return false;
             }
             valid = Validate.checkEmpty(this.refDescription.current.value);
             Validate.applyToInput(this.refDescription.current, valid.code);
             if (valid.code !== Validate.VALID) {
-                this.setAlertData(0, STRINGS.description + "\u00a0" + valid.msg);
+                this.setAlertData(0, STRINGS.description + valid.msg);
                 return false;
             }
             return true;
@@ -85,13 +85,13 @@ export default class ProfileNews extends Component {
         ///valid italian
         Validate.applyToInput(this.refTitleIt.current, validIt.code);
         if (validIt.code !== Validate.VALID) {
-            this.setAlertData(0, STRINGS.title + "\u00a0" + validIt.msg);
+            this.setAlertData(0, STRINGS.title + validIt.msg);
             return false;
         }
         validIt = Validate.checkEmpty(this.refDescriptionIt.current.value);
         Validate.applyToInput(this.refDescriptionIt.current, validIt.code);
         if (validIt.code !== Validate.VALID) {
-            this.setAlertData(0, STRINGS.description + "\u00a0" + validIt.msg);
+            this.setAlertData(0, STRINGS.description + validIt.msg);
             return false;
         }
 
@@ -117,6 +117,7 @@ export default class ProfileNews extends Component {
                     this.updatePosts(posts);
                     console.log(res.data);
                 } else {
+                    alert(STRINGS.connectionFailed);
                     console.log("Error occured!");
                 }
                 this.setState({ isProcessing: false });

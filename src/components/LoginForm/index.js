@@ -51,11 +51,13 @@ class LoginForm extends Component {
             email: this.refEmail.current.value,
             password: this.refPassword.current.value,
         }).then((res) => {
-            if (res.status !== 1) {
-                alert(res.message);
-            } else {
+            if (res.status === 0) {
+                alert(STRINGS.emailOrPasswordIncorrect);
+            } else if (res.status === 1) {
                 sessionStorage.setItem(LOGGED_USER, JSON.stringify(res.data));
                 window.location.href = "/";
+            } else {
+                alert(STRINGS.connectionFailed);
             }
             this.setState({ isProcessing: false });
         });

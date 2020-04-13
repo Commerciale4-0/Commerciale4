@@ -10,14 +10,14 @@ export const INVALID_VAT = -6;
 
 export const PASSWORD_NOT_MATCH = -7;
 
-export const MSG_VALID = STRINGS.isValid;
-export const MSG_EMPTY = STRINGS.shouldNotBeEmpty;
-export const MSG_INVALID_EMAIL = STRINGS.isNotValid;
-export const MSG_INVALID_PASSWORD = STRINGS.shouldBe7;
-export const MSG_INVALID_PHONE = STRINGS.isNotValid;
-export const MSG_INVALID_NUMBER = STRINGS.isNotValid;
-export const MSG_INVALID_VAT = STRINGS.shouldBe11;
-export const MSG_PASSWORD_NOT_MATCH = STRINGS.passswordNotMatch;
+export const MSG_VALID = " " + STRINGS.isValid;
+export const MSG_EMPTY = " " + STRINGS.shouldNotBeEmpty;
+export const MSG_INVALID_EMAIL = " " + STRINGS.isNotValid;
+export const MSG_INVALID_PASSWORD = " " + STRINGS.shouldBe7;
+export const MSG_INVALID_PHONE = " " + STRINGS.isNotValid;
+export const MSG_INVALID_NUMBER = " " + STRINGS.isNotValid;
+export const MSG_INVALID_VAT = " " + STRINGS.shouldBe11;
+export const MSG_PASSWORD_NOT_MATCH = " " + STRINGS.passswordNotMatch;
 
 export const checkEmpty = (value) => {
     if (!value.trim().length) {

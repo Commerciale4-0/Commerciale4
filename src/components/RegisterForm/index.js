@@ -209,8 +209,12 @@ export default class RegisterForm extends Component {
             let res = await requestAPI("/user/register", "POST", data);
             this.setState({ isProcessing: false });
 
-            if (res.status !== 1) {
-                this.setAlertData(0, res.message);
+            if (res.status === 0) {
+                this.setAlertData(0, STRINGS.theEmailExist);
+                return;
+            }
+            if (res.status === -1) {
+                this.setAlertData(0, STRINGS.databaseFailed);
                 return;
             }
 

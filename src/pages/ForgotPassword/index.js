@@ -34,7 +34,7 @@ export default class ForgotPasswordPage extends Component {
         }).then((res) => {
             if (res.status !== 1) {
                 this.setState({
-                    alertData: { variant: "danger", text: res.message },
+                    alertData: { variant: "danger", text: STRINGS.theEmailNotExist },
                 });
             } else {
                 this.setState({

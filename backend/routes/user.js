@@ -83,7 +83,7 @@ router.post("/login", async (req, res) => {
             });
         }
     } catch (error) {
-        res.send({ status: 0, message: "Connection failed!" });
+        res.send({ status: -1, message: "Connection failed!" });
     }
 });
 // register route
@@ -121,10 +121,10 @@ router.post("/register", async (req, res) => {
             //     res.send({ status: 0, message: "Email has not been sent" });
             // }
         } catch (e) {
-            res.send({ status: 0, message: "A document creation failed!" });
+            res.send({ status: -1, message: "A document creation failed!" });
         }
     } catch (e) {
-        res.send({ status: 0, message: "Database connection failed!" });
+        res.send({ status: -1, message: "Database connection failed!" });
     }
 });
 
