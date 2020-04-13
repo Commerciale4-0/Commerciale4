@@ -10,7 +10,6 @@
 
 # production
 /build
-/functions
 
 # misc
 .DS_Store
@@ -29,3 +28,4 @@ yarn.lock
 
 # Local Netlify folder
 .netlify
+/functions

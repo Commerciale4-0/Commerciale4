@@ -339,15 +339,15 @@ export const stringWithUnitFromNumber = (numberStr) => {
     }
 
     if (number >= 1000000000) {
-        return getStringWithUnit(number, 1000000000) + STRINGS.b;
+        return getStringWithUnit(number, 1000000000) + " " + STRINGS.b;
     }
 
     if (number >= 1000000) {
-        return getStringWithUnit(number, 1000000) + STRINGS.m;
+        return getStringWithUnit(number, 1000000) + " " + STRINGS.m;
     }
 
     if (number >= 1000) {
-        return getStringWithUnit(number, 1000) + STRINGS.k;
+        return getStringWithUnit(number, 1000) + " " + STRINGS.k;
     }
 
     return number;

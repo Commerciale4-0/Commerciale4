@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./index.css";
 import { STRINGS } from "../../utils/strings";
+import { LangConsumer } from "../../utils/LanguageContext";
 
 export default class PostItem extends Component {
     constructor(props) {
@@ -55,10 +56,28 @@ export default class PostItem extends Component {
 
                 <div className="d-flex align-items-center">
                     {imagePanel}
-
-                    <p className="text-uppercase text-bold text-dark-light">{data.title}</p>
+                    <LangConsumer>
+                        {(context) => (
+                            <p className="text-uppercase text-bold text-dark-light">
+                                {context.lang === "en" ? (data.title ? data.title : data.titleIt) : data.titleIt ? data.titleIt : data.title}
+                            </p>
+                        )}
+                    </LangConsumer>
                 </div>
-                <p className="mt-2 text-gray">{data.description}</p>
+                <LangConsumer>
+                    {(context) => (
+                        <p className="mt-2 text-gray">
+                            {context.lang === "en"
+                                ? data.description
+                                    ? data.description
+                                    : data.descriptionIt
+                                : data.descriptionIt
+                                ? data.descriptionIt
+                                : data.description}
+                        </p>
+                    )}
+                </LangConsumer>
+
                 <p className="publish-date">
                     {STRINGS.publishedOn} {this.getPublished(data.published)}
                 </p>
@@ -66,8 +85,24 @@ export default class PostItem extends Component {
         ) : (
             <div className="content-panel">
                 {btnDelete}
-                <p className="text-uppercase text-bold text-dark-light">{data.title}</p>
-                <p className="text-gray">{data.description}</p>
+                <LangConsumer>
+                    {(context) => (
+                        <div>
+                            <p className="text-uppercase text-bold text-dark-light">
+                                {context.lang === "en" ? (data.title ? data.title : data.titleIt) : data.titleIt ? data.titleIt : data.title}
+                            </p>
+                            <p className="text-gray">
+                                {context.lang === "en"
+                                    ? data.description
+                                        ? data.description
+                                        : data.descriptionIt
+                                    : data.descriptionIt
+                                    ? data.descriptionIt
+                                    : data.description}
+                            </p>
+                        </div>
+                    )}
+                </LangConsumer>
                 <p className="publish-date">
                     {STRINGS.publishedOn} {this.getPublished(data.published)}
                 </p>

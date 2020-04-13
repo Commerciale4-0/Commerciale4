@@ -7,7 +7,7 @@ import { requestAPI } from "../../utils/api";
 import { LOGGED_USER } from "../../utils";
 import Lang from "../Lang";
 import { STRINGS } from "../../utils/strings";
-import { withRouter } from "react-router-dom";
+
 class Header extends Component {
     constructor(props) {
         super(props);
@@ -189,7 +189,7 @@ class Header extends Component {
     };
     handleClickLogo = () => {
         if (window.location.pathname.search("/company/") !== -1) {
-            this.props.history.goBack();
+            window.location.href = "/dashboard";
         } else {
             window.location.href = "/";
         }
@@ -306,4 +306,4 @@ class Header extends Component {
         );
     }
 }
-export default withRouter(Header);
+export default Header;

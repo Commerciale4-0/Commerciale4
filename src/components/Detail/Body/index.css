@@ -34,7 +34,7 @@
     font-weight: bold;
     border-left: 3px solid var(--colorPrimary);
     background: white;
-    text-shadow: 0.05em 0.05em 0.15em #aaa;
+    text-shadow: 0.03em 0.03em #aaa;
     /* box-shadow: 0.1em 0.1em 0.2em #ccc; */
 }
 

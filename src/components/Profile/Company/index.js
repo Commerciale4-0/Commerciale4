@@ -16,8 +16,8 @@ const IMAGE_PRODUCT = { ratio: 2, maxWidth: 800, circle: false };
 
 // const SUB_MENUS = [STRINGS.aboutUs, STRINGS.productSearvice, STRINGS.contacts];
 
-const INTRO_MAX_LENGTH = 300;
-const WHATWEDO_MAX_LENGTH = 300;
+const INTRO_MAX_LENGTH = 1200;
+const WHATWEDO_MAX_LENGTH = 1200;
 
 const MAX_TAGS = 7;
 
@@ -81,6 +81,8 @@ export default class ProfileCompany extends Component {
             selectedIntroLang: lang ? lang : "en",
             selectedWhatDoLang: lang ? lang : "en",
 
+            selectedProductLang: lang ? lang : "en",
+
             introLength: null,
             introItLength: null,
             whatWeDoLength: null,
@@ -102,7 +104,9 @@ export default class ProfileCompany extends Component {
         this.refEmployee = React.createRef();
         this.refRevenue = React.createRef();
         this.refProductName = React.createRef();
+        this.refProductNameIt = React.createRef();
         this.refProductDetail = React.createRef();
+        this.refProductDetailIt = React.createRef();
         this.refAddress = React.createRef();
         this.refPhone = React.createRef();
         this.refWebsite = React.createRef();
@@ -205,7 +209,9 @@ export default class ProfileCompany extends Component {
                 iso: selectedISO && arrayISO,
                 typeOfCompany: selectedType && selectedType.value,
                 productName: this.refProductName.current.value,
+                productNameIt: this.refProductNameIt.current.value,
                 productDetail: this.refProductDetail.current.value,
+                productDetailIt: this.refProductDetailIt.current.value,
                 companyAddress: this.refAddress.current.value,
                 companyPhone: this.refPhone.current.value,
                 website: this.refWebsite.current.value,
@@ -308,7 +314,6 @@ export default class ProfileCompany extends Component {
 
     requestRemovePhotos = async (photos) => {
         await requestAPI("/user/profile/remove-photos", "POST", photos).then((res) => {
-            console.log(res.status);
             this.setState({ isProcessing: false });
         });
     };
@@ -335,13 +340,11 @@ export default class ProfileCompany extends Component {
 
     resetTagsPlaceholder = (tags, lang) => {
         let elem = document.querySelector(`${lang === "en" ? ".tags-en" : ".tags-it"} .react-tags__search-input`);
-        console.log(lang);
         if (!elem) {
             return;
         }
 
         let placeholder = STRINGS.typeToAdd;
-        console.log(placeholder, lang);
         if (tags && tags.length) {
             placeholder = `${STRINGS.max}:${MAX_TAGS}(${STRINGS.left}:${MAX_TAGS - tags.length})`;
         }
@@ -524,6 +527,9 @@ export default class ProfileCompany extends Component {
         }
         this.setState({ hintRevenues: revenues });
     };
+    handleChangeProduct = (selectedProductLang) => {
+        this.setState({ selectedProductLang });
+    };
 
     render() {
         const {
@@ -546,6 +552,7 @@ export default class ProfileCompany extends Component {
             whatWeDoItLength,
             hintEmployees,
             hintRevenues,
+            selectedProductLang,
         } = this.state;
 
         const { profile, tab } = this.props;
@@ -700,9 +707,17 @@ export default class ProfileCompany extends Component {
 
         const productsPanel = (
             <div className={`pt-4 ${tab === 1 ? "d-block" : "d-none"}`} ref={this.productsPanel}>
+                <div className="float-right">
+                    <Lang onChange={this.handleChangeProduct} />
+                </div>
                 <div className="info-row">
-                    <span>{STRINGS.productName}:</span>
-                    <input ref={this.refProductName} defaultValue={profile.productName} />
+                    <span className="pr-1">{STRINGS.productName}: </span>
+                    <div className={selectedProductLang === "en" ? "d-block" : "d-none"}>
+                        <input ref={this.refProductName} defaultValue={profile.productName} style={{ width: 300 }} />
+                    </div>
+                    <div className={selectedProductLang === "it" ? "d-block" : "d-none"}>
+                        <input ref={this.refProductNameIt} defaultValue={profile.productNameIt} style={{ width: 300 }} />
+                    </div>
                 </div>
                 <div>
                     <div className="my-2">{STRINGS.photo}:</div>
@@ -729,8 +744,11 @@ export default class ProfileCompany extends Component {
                     </div>
                 </div>
                 <div className="mt-4 mb-2">{STRINGS.details}:</div>
-                <div>
+                <div className={selectedProductLang === "en" ? "d-block" : "d-none"}>
                     <textarea ref={this.refProductDetail} defaultValue={profile.productDetail} style={{ maxHeight: 400 }} />
+                </div>
+                <div className={selectedProductLang === "it" ? "d-block" : "d-none"}>
+                    <textarea ref={this.refProductDetailIt} defaultValue={profile.productDetailIt} style={{ maxHeight: 400 }} />
                 </div>
                 {btnSave}
             </div>

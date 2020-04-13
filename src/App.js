@@ -40,7 +40,11 @@ class App extends Component {
         if (window.location.pathname === "/user-edit") {
             this.setState({ needFooter: false });
         }
-        if (window.location.pathname === "/login" || window.location.pathname === "/register" || window.location.pathname === "/forgot-password") {
+        if (
+            window.location.pathname === "/login" ||
+            window.location.pathname === "/register" ||
+            window.location.pathname === "/forgot-password"
+        ) {
             this.setState({ needSearchBar: false, needFooter: false, headerTransparent: true });
         }
 
@@ -49,6 +53,9 @@ class App extends Component {
 
     setLocalization() {
         let lang = sessionStorage.getItem("lang");
+        if (!lang) {
+            sessionStorage.setItem("lang", "en");
+        }
         STRINGS.setLanguage(lang ? lang : "en");
     }
     selectLang = (lang) => {
@@ -66,7 +73,12 @@ class App extends Component {
             <div>
                 <LangProvider value={{ lang: selectedLang }}>
                     <Router>
-                        <Header needSearchBar={needSearchBar} isTransparent={headerTransparent} autoHide={headerAutoHide} onSelectedLang={this.selectLang} />
+                        <Header
+                            needSearchBar={needSearchBar}
+                            isTransparent={headerTransparent}
+                            autoHide={headerAutoHide}
+                            onSelectedLang={this.selectLang}
+                        />
                         <div className="body">
                             <Switch>
                                 <Route exact path="/" component={LandingPage} />

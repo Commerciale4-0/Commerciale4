@@ -6,7 +6,6 @@ import * as Validate from "../../utils/Validate";
 import { Alert } from "react-bootstrap";
 import SpinnerView from "../SpinnerView";
 import { STRINGS } from "../../utils/strings";
-import { withRouter } from "react-router-dom";
 
 class LoginForm extends Component {
     constructor(props) {
@@ -125,4 +124,4 @@ class LoginForm extends Component {
         );
     }
 }
-export default withRouter(LoginForm);
+export default LoginForm;

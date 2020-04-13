@@ -10,30 +10,34 @@ import * as Validate from "../../../utils/Validate";
 import { Alert } from "react-bootstrap";
 import ImageCropper from "../../ImageCropper";
 import { STRINGS } from "../../../utils/strings";
-
-const MAX_LENGTH = 140;
+import Lang from "../../Lang";
+const MAX_LENGTH = 300;
 
 export default class ProfileNews extends Component {
     constructor(props) {
         super(props);
-
+        let lang = sessionStorage.getItem("lang");
         this.state = {
-            photoFileName: STRINGS.noImageChoosed,
+            photoFileName: null,
             photoData: null,
             posts: props.posts,
             isProcessing: false,
             alertData: null,
             imageToCrop: null,
             lengthOfDescription: 0,
+            selectedNewsLang: lang ? lang : "en",
         };
 
         this.refBrowse = React.createRef();
         this.refTitle = React.createRef();
+        this.refTitleIt = React.createRef();
         this.refDescription = React.createRef();
+        this.refDescriptionIt = React.createRef();
     }
 
     componentDidMount = () => {
         autosize(this.refDescription.current);
+        autosize(this.refDescriptionIt.current);
     };
 
     setAlertData = (success, text) => {
@@ -63,16 +67,31 @@ export default class ProfileNews extends Component {
 
     validate = () => {
         let valid = Validate.checkEmpty(this.refTitle.current.value);
-        Validate.applyToInput(this.refTitle.current, valid.code);
-        if (valid.code !== Validate.VALID) {
-            this.setAlertData(0, STRINGS.title + valid.msg);
+        let validIt = Validate.checkEmpty(this.refTitleIt.current.value);
+        if (this.state.selectedNewsLang === "en") {
+            Validate.applyToInput(this.refTitle.current, valid.code);
+            if (valid.code !== Validate.VALID) {
+                this.setAlertData(0, STRINGS.title + "\u00a0" + valid.msg);
+                return false;
+            }
+            valid = Validate.checkEmpty(this.refDescription.current.value);
+            Validate.applyToInput(this.refDescription.current, valid.code);
+            if (valid.code !== Validate.VALID) {
+                this.setAlertData(0, STRINGS.description + "\u00a0" + valid.msg);
+                return false;
+            }
+            return true;
+        }
+        ///valid italian
+        Validate.applyToInput(this.refTitleIt.current, validIt.code);
+        if (validIt.code !== Validate.VALID) {
+            this.setAlertData(0, STRINGS.title + "\u00a0" + validIt.msg);
             return false;
         }
-
-        valid = Validate.checkEmpty(this.refDescription.current.value);
-        Validate.applyToInput(this.refDescription.current, valid.code);
-        if (valid.code !== Validate.VALID) {
-            this.setAlertData(0, STRINGS.description + valid.msg);
+        validIt = Validate.checkEmpty(this.refDescriptionIt.current.value);
+        Validate.applyToInput(this.refDescriptionIt.current, validIt.code);
+        if (validIt.code !== Validate.VALID) {
+            this.setAlertData(0, STRINGS.description + "\u00a0" + validIt.msg);
             return false;
         }
 
@@ -84,7 +103,9 @@ export default class ProfileNews extends Component {
             let dataToSave = {
                 userId: this.props.userId,
                 title: this.refTitle.current.value,
+                titleIt: this.refTitleIt.current.value,
                 description: this.refDescription.current.value,
+                descriptionIt: this.refDescriptionIt.current.value,
                 photo: this.state.photoData,
             };
 
@@ -165,7 +186,12 @@ export default class ProfileNews extends Component {
     };
 
     handleFocusInput = () => {
-        this.refTitle.current.style.border = this.refDescription.current.style.border = "1px solid var(--colorBorder)";
+        if (this.state.selectedNewsLang === "en") {
+            this.refTitle.current.style.border = this.refDescription.current.style.border = "1px solid var(--colorBorder)";
+            this.setState({ alertData: null });
+            return;
+        }
+        this.refTitleIt.current.style.border = this.refDescriptionIt.current.style.border = "1px solid var(--colorBorder)";
         this.setState({ alertData: null });
     };
 
@@ -173,36 +199,60 @@ export default class ProfileNews extends Component {
         this.setState({ lengthOfDescription: e.target.value.length });
     };
 
+    handleChangeNews = (selectedNewsLang) => {
+        this.setState({ selectedNewsLang });
+    };
     render() {
-        const { photoFileName, posts, isProcessing, alertData, imageToCrop, lengthOfDescription } = this.state;
+        const { photoFileName, posts, isProcessing, alertData, imageToCrop, lengthOfDescription, selectedNewsLang } = this.state;
         return (
             <div className="news-view">
                 {alertData ? <Alert variant={alertData.variant}>{alertData.text}</Alert> : <div></div>}
+                <div className="float-right">
+                    <Lang onChange={this.handleChangeNews} />
+                </div>
                 <div className="mb-2 text-bold text-uppercase text-large">{STRINGS.makePost}</div>
                 <div className="mt-3 mb-1">{STRINGS.title}</div>
-                <div>
+                <div className={selectedNewsLang === "en" ? "d-block" : "d-none"}>
                     <input className="w-100" ref={this.refTitle} onFocus={this.handleFocusInput} />
+                </div>
+                <div className={selectedNewsLang === "it" ? "d-block" : "d-none"}>
+                    <input className="w-100" ref={this.refTitleIt} onFocus={this.handleFocusInput} />
                 </div>
                 <div className="mt-3 mb-1">{STRINGS.whatIsNew}</div>
                 <div className="mb-2">
-                    <textarea
-                        ref={this.refDescription}
-                        onFocus={this.handleFocusInput}
-                        maxLength={MAX_LENGTH}
-                        onChange={this.handleChangeDescription}
-                        style={{ maxHeight: 200 }}
-                    />
-                    <div className="char-limit">
-                        {lengthOfDescription}/{MAX_LENGTH}
+                    <div className={selectedNewsLang === "en" ? "d-block" : "d-none"}>
+                        <textarea
+                            ref={this.refDescription}
+                            onFocus={this.handleFocusInput}
+                            maxLength={MAX_LENGTH}
+                            onChange={this.handleChangeDescription}
+                            style={{ maxHeight: 200 }}
+                        />
+                        <div className="char-limit">
+                            {lengthOfDescription}/{MAX_LENGTH}
+                        </div>
+                    </div>
+                    <div className={selectedNewsLang === "it" ? "d-block" : "d-none"}>
+                        <textarea
+                            ref={this.refDescriptionIt}
+                            onFocus={this.handleFocusInput}
+                            maxLength={MAX_LENGTH}
+                            onChange={this.handleChangeDescription}
+                            style={{ maxHeight: 200 }}
+                        />
+                        <div className="char-limit">
+                            {lengthOfDescription}/{MAX_LENGTH}
+                        </div>
                     </div>
                 </div>
+
                 <div>
                     <button className="secondary btn-photo" onClick={this.handleClickPhoto}>
                         <input type="file" onChange={this.handleChangeImage} style={{ display: "none" }} ref={this.refBrowse} accept="image/*" />
                         <i className="fa fa-upload pr-2" />
                         {STRINGS.uploadPhoto}
                     </button>
-                    <span className="pl-2">{photoFileName}</span>
+                    <span className="pl-2">{photoFileName ? photoFileName : STRINGS.noImageChoosed}</span>
                     <button className="float-right" style={{ minWidth: 160 }} onClick={this.handleClickPublish}>
                         {STRINGS.publish}
                     </button>
@@ -214,9 +264,7 @@ export default class ProfileNews extends Component {
                         <PostItem key={index} data={post} handleDelete={() => this.handleDeleteNews(post)} />
                     ))}
                 </div>
-                {imageToCrop && imageToCrop.image && (
-                    <ImageCropper options={imageToCrop} onSave={this.handleImageCropped} onCancel={this.handleCropCancelled} />
-                )}
+                {imageToCrop && imageToCrop.image && <ImageCropper options={imageToCrop} onSave={this.handleImageCropped} onCancel={this.handleCropCancelled} />}
                 {isProcessing && <SpinnerView />}
             </div>
         );

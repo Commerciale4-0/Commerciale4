@@ -41,6 +41,34 @@ export default class DetailBody extends Component {
         }
     }
 
+    // componentWillReceiveProps = (props) => {
+    //     let panels = [this.aboutUsPanel.current, this.productsPanel.current, this.contactsPanel.current];
+    //     panels.forEach((panel) => {
+    //         if (panel) {
+    //             panel.style.width = "auto";
+    //             console.log(panel.clientHeight);
+    //         }
+    //     });
+    // };
+
+    componentDidUpdate = () => {
+        let maxHeight = 0;
+        let panels = [this.aboutUsPanel.current, this.productsPanel.current, this.contactsPanel.current];
+        panels.forEach((panel) => {
+            panel.style.display = "block";
+            panel.style.height = "auto";
+        });
+        maxHeight = Math.max(panels[0].clientHeight, panels[1].clientHeight, panels[2].clientHeight);
+        panels.forEach((panel, index) => {
+            if (window.innerWidth > 576) {
+                panel.style.height = maxHeight + "px";
+            }
+            if (this.state.selectedMenu !== index) {
+                panel.style.display = "none";
+            }
+        });
+    };
+
     handleWindowResize = () => {
         this.setState({ isMobile: window.innerWidth <= 576 });
     };
@@ -63,21 +91,21 @@ export default class DetailBody extends Component {
     };
 
     handleChangeMenu = (selectedMenu) => {
-        let panels = [this.aboutUsPanel.current, this.productsPanel.current, this.contactsPanel.current];
-        let currentHeight = panels[this.state.selectedMenu].clientHeight;
+        // let panels = [this.aboutUsPanel.current, this.productsPanel.current, this.contactsPanel.current];
+        // let currentHeight = panels[this.state.selectedMenu].clientHeight;
 
-        panels[selectedMenu].style.display = "block";
-        if (window.innerWidth > 576) {
-            let maxHeight = Math.max(this.state.panelHeightMax, currentHeight, panels[selectedMenu].clientHeight);
-            panels.forEach((panel) => {
-                panel.style.height = maxHeight + "px";
-            });
-        }
-        panels.forEach((panel, index) => {
-            if (index !== selectedMenu) {
-                panel.style.display = "none";
-            }
-        });
+        // panels[selectedMenu].style.display = "block";
+        // if (window.innerWidth > 576) {
+        //     let maxHeight = Math.max(this.state.panelHeightMax, currentHeight, panels[selectedMenu].clientHeight);
+        //     panels.forEach((panel) => {
+        //         panel.style.height = maxHeight + "px";
+        //     });
+        // }
+        // panels.forEach((panel, index) => {
+        //     if (index !== selectedMenu) {
+        //         panel.style.display = "none";
+        //     }
+        // });
 
         this.setState({ selectedMenu });
     };

@@ -36,21 +36,36 @@ export default class DetailOverView extends Component {
                 </button>
                 {/* </div> */}
                 <LangConsumer>
-                    {(value) => (
+                    {(context) => (
                         <div>
                             <div className="text-uppercase text-bold text-dark-light mb-2 d-flex align-items-center">
                                 <i className="fa fa-address-card-o font-22 pr-3" />
                                 {STRINGS.introduction}
                             </div>
                             <p className="font-15 text-gray">
-                                {/* {profile && profile.user.introduction} */}
-                                {value.lang === "en" ? profile && profile.user.introduction : profile && profile.user.introductionIt}
+                                {profile &&
+                                    (context.lang === "en"
+                                        ? profile.user.introduction
+                                            ? profile.user.introduction
+                                            : profile.user.introductionIt
+                                        : profile.user.introductionIt
+                                        ? profile.user.introductionIt
+                                        : profile.user.introduction)}
                             </p>
                             <div className="text-uppercase text-bold text-dark-light mb-2 pt-2 d-flex align-items-center">
                                 <i className="fa fa-industry font-22 pr-3" />
                                 {STRINGS.whatWeDo}
                             </div>
-                            <p className="font-15 text-gray">{value.lang === "en" ? profile && profile.user.whatWeDo : profile && profile.user.whatWeDoIt}</p>
+                            <p className="font-15 text-gray">
+                                {profile &&
+                                    (context.lang === "en"
+                                        ? profile.user.whatWeDo
+                                            ? profile.user.whatWeDo
+                                            : profile.user.whatWeDoIt
+                                        : profile.user.whatWeDoIt
+                                        ? profile.user.whatWeDoIt
+                                        : profile.user.whatWeDo)}
+                            </p>
                         </div>
                     )}
                 </LangConsumer>

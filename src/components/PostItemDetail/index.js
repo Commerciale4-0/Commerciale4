@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./index.css";
 import { STRINGS } from "../../utils/strings";
+import { LangConsumer } from "../../utils/LanguageContext";
 
 export default class PostItemDetail extends Component {
     render() {
@@ -13,12 +14,24 @@ export default class PostItemDetail extends Component {
                             <i className="fa fa-close" />
                         </button>
                         <div className="d-flex justify-content-between mb-3">
-                            <h5>{post.title}</h5>
+                            <LangConsumer>
+                                {(context) => <h5>{context.lang === "en" ? (post.title ? post.title : post.titleIt) : post.titleIt ? post.titleIt : post.title}</h5>}
+                            </LangConsumer>
                         </div>
-                        <div className="px-4 d-flex justify-content-center">
-                            {post.photo && <img src={process.env.REACT_APP_AWS_PREFIX + post.photo} alt="" />}
-                        </div>
-                        <p className="mt-3">{post.description}</p>
+                        <div className="px-4 d-flex justify-content-center">{post.photo && <img src={process.env.REACT_APP_AWS_PREFIX + post.photo} alt="" />}</div>
+                        <LangConsumer>
+                            {(context) => (
+                                <p className="mt-3">
+                                    {context.lang === "en"
+                                        ? post.description
+                                            ? post.description
+                                            : post.descriptionIt
+                                        : post.descriptionIt
+                                        ? post.descriptionIt
+                                        : post.description}
+                                </p>
+                            )}
+                        </LangConsumer>
                         <div className="published">
                             {STRINGS.publishedOn} {new Date(post.published).toLocaleDateString()}
                         </div>
