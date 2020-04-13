@@ -11,7 +11,6 @@ export default class Profile extends Component {
         super(props);
 
         this.state = {
-            selectedCategory: 0,
             userData: null,
             selectedMenu: { root: 0, sub: 0 },
         };

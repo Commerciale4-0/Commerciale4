@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import autosize from "autosize";
+import TextareaAutosize from "react-autosize-textarea";
 import "./index.css";
 import PostItem from "../../PostItem";
 import { requestAPI } from "../../../utils/api";
@@ -34,11 +34,6 @@ export default class ProfileNews extends Component {
         this.refDescription = React.createRef();
         this.refDescriptionIt = React.createRef();
     }
-
-    componentDidMount = () => {
-        autosize(this.refDescription.current);
-        autosize(this.refDescriptionIt.current);
-    };
 
     setAlertData = (success, text) => {
         this.setState({
@@ -222,7 +217,7 @@ export default class ProfileNews extends Component {
                 <div className="mt-3 mb-1">{STRINGS.whatIsNew}</div>
                 <div className="mb-2">
                     <div className={selectedNewsLang === "en" ? "d-block" : "d-none"}>
-                        <textarea
+                        <TextareaAutosize
                             ref={this.refDescription}
                             onFocus={this.handleFocusInput}
                             maxLength={MAX_LENGTH}
@@ -234,7 +229,7 @@ export default class ProfileNews extends Component {
                         </div>
                     </div>
                     <div className={selectedNewsLang === "it" ? "d-block" : "d-none"}>
-                        <textarea
+                        <TextareaAutosize
                             ref={this.refDescriptionIt}
                             onFocus={this.handleFocusInput}
                             maxLength={MAX_LENGTH}
@@ -258,7 +253,7 @@ export default class ProfileNews extends Component {
                         {STRINGS.publish}
                     </button>
                 </div>
-                <div className="mt-5 text-bold text-uppercase text-large">{STRINGS.previousPosts}</div>
+                <div className="mt-5 text-bold text-uppercase text-large">{STRINGS.previousNews}</div>
                 <hr className="mt-2 mb-3" />
                 <div>
                     {posts.map((post, index) => (

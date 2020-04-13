@@ -1,9 +1,9 @@
 import React, { Component } from "react";
+import TextareaAutosize from "react-autosize-textarea";
+import ReactTags from "react-tag-autocomplete";
 import "./index.css";
 import MySelect from "../../Custom/MySelect";
 import { ISO, COMPANY_TYPES, LOGGED_USER, stringWithUnitFromNumber } from "../../../utils";
-import ReactTags from "react-tag-autocomplete";
-import autosize from "autosize";
 import ImageCropper from "../../ImageCropper";
 import { requestAPI } from "../../../utils/api";
 import SpinnerView from "../../SpinnerView";
@@ -78,9 +78,7 @@ export default class ProfileCompany extends Component {
             logoImage: originPhotos.logo,
             productImages: originPhotos.productPhotos.slice(0),
             isProcessing: false,
-            selectedIntroLang: lang ? lang : "en",
-            selectedWhatDoLang: lang ? lang : "en",
-
+            selectedAboutUsLang: lang ? lang : "en",
             selectedProductLang: lang ? lang : "en",
 
             introLength: null,
@@ -115,11 +113,6 @@ export default class ProfileCompany extends Component {
     }
 
     componentDidMount = () => {
-        autosize(this.refIntro.current);
-        autosize(this.refIntroIt.current);
-        autosize(this.refWhatWeDo.current);
-        autosize(this.refWhatWeDoIt.current);
-        autosize(this.refProductDetail.current);
         if (this.state.tags.length >= MAX_TAGS) {
             let elem = document.querySelector(".tags-en .react-tags__search-input");
             if (elem) {
@@ -474,23 +467,16 @@ export default class ProfileCompany extends Component {
         this.setState({ targetToCrop: null });
     };
 
-    handleChangeIntroLang = (selectedIntroLang) => {
-        this.setState({ selectedIntroLang });
-    };
-
-    handleChangeWhatDoLang = (selectedWhatDoLang) => {
-        this.setState({ selectedWhatDoLang });
-    };
-
-    handleChangeTagsLang = (lang) => {
-        if (lang === "en") {
+    handleChangeAboutUsLang = (selectedAboutUsLang) => {
+        this.setState({ selectedAboutUsLang });
+        if (selectedAboutUsLang === "en") {
             document.querySelector(".tags-en").style.display = "block";
             document.querySelector(".tags-it").style.display = "none";
-            this.resetTagsPlaceholder(this.state.tags, lang);
+            this.resetTagsPlaceholder(this.state.tags, selectedAboutUsLang);
         } else {
             document.querySelector(".tags-en").style.display = "none";
             document.querySelector(".tags-it").style.display = "block";
-            this.resetTagsPlaceholder(this.state.tagsIt, lang);
+            this.resetTagsPlaceholder(this.state.tagsIt, selectedAboutUsLang);
         }
     };
 
@@ -544,14 +530,13 @@ export default class ProfileCompany extends Component {
             logoImage,
             productImages,
             isProcessing,
-            selectedIntroLang,
-            selectedWhatDoLang,
             introLength,
             introItLength,
             whatWeDoLength,
             whatWeDoItLength,
             hintEmployees,
             hintRevenues,
+            selectedAboutUsLang,
             selectedProductLang,
         } = this.state;
 
@@ -569,22 +554,22 @@ export default class ProfileCompany extends Component {
             <div className={tab === 0 ? "d-block" : "d-none"} ref={this.aboutUsPanel}>
                 <div className="py-2 d-flex align-items-center">
                     {STRINGS.introduction}
-                    <Lang onChange={this.handleChangeIntroLang} />
+                    <Lang onChange={this.handleChangeAboutUsLang} />
                 </div>
-                <div className={selectedIntroLang === "en" ? "d-block" : "d-none"}>
-                    <textarea
+                <div className={selectedAboutUsLang === "en" ? "d-block" : "d-none"}>
+                    <TextareaAutosize
                         maxLength={INTRO_MAX_LENGTH}
                         ref={this.refIntro}
                         defaultValue={profile && profile.introduction}
                         onChange={this.handleChangeText}
                         style={{ maxHeight: 200 }}
-                    ></textarea>
+                    />
                     <div className="char-limit">
                         {introLength}/{INTRO_MAX_LENGTH}
                     </div>
                 </div>
-                <div className={selectedIntroLang === "it" ? "d-block" : "d-none"}>
-                    <textarea
+                <div className={selectedAboutUsLang === "it" ? "d-block" : "d-none"}>
+                    <TextareaAutosize
                         maxLength={INTRO_MAX_LENGTH}
                         ref={this.refIntroIt}
                         defaultValue={profile && profile.introductionIt}
@@ -595,13 +580,10 @@ export default class ProfileCompany extends Component {
                         {introItLength}/{INTRO_MAX_LENGTH}
                     </div>
                 </div>
-                <div className="mt-4 mb-2 d-flex align-items-center">
-                    {STRINGS.whatWeDo}
-                    <Lang onChange={this.handleChangeWhatDoLang} />
-                </div>
+                <div className="mt-4 mb-2 d-flex align-items-center">{STRINGS.whatWeDo}</div>
                 <div>
-                    <div className={selectedWhatDoLang === "en" ? "d-block" : "d-none"}>
-                        <textarea
+                    <div className={selectedAboutUsLang === "en" ? "d-block" : "d-none"}>
+                        <TextareaAutosize
                             maxLength={WHATWEDO_MAX_LENGTH}
                             ref={this.refWhatWeDo}
                             defaultValue={profile && profile.whatWeDo}
@@ -612,8 +594,8 @@ export default class ProfileCompany extends Component {
                             {whatWeDoLength}/{WHATWEDO_MAX_LENGTH}
                         </div>
                     </div>
-                    <div className={selectedWhatDoLang === "it" ? "d-block" : "d-none"}>
-                        <textarea
+                    <div className={selectedAboutUsLang === "it" ? "d-block" : "d-none"}>
+                        <TextareaAutosize
                             maxLength={WHATWEDO_MAX_LENGTH}
                             ref={this.refWhatWeDoIt}
                             defaultValue={profile && profile.whatWeDoIt}
@@ -627,9 +609,6 @@ export default class ProfileCompany extends Component {
                 </div>
                 <hr />
                 <div>
-                    <div className="float-right">
-                        <Lang onChange={this.handleChangeTagsLang} />
-                    </div>
                     {STRINGS.tags}
                     <br />
                     <div>
@@ -745,10 +724,10 @@ export default class ProfileCompany extends Component {
                 </div>
                 <div className="mt-4 mb-2">{STRINGS.details}:</div>
                 <div className={selectedProductLang === "en" ? "d-block" : "d-none"}>
-                    <textarea ref={this.refProductDetail} defaultValue={profile.productDetail} style={{ maxHeight: 400 }} />
+                    <TextareaAutosize ref={this.refProductDetail} defaultValue={profile.productDetail} style={{ maxHeight: 400 }} />
                 </div>
                 <div className={selectedProductLang === "it" ? "d-block" : "d-none"}>
-                    <textarea ref={this.refProductDetailIt} defaultValue={profile.productDetailIt} style={{ maxHeight: 400 }} />
+                    <TextareaAutosize ref={this.refProductDetailIt} defaultValue={profile.productDetailIt} style={{ maxHeight: 400 }} />
                 </div>
                 {btnSave}
             </div>

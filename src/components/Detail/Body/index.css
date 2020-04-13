@@ -34,7 +34,7 @@
     font-weight: bold;
     border-left: 3px solid var(--colorPrimary);
     background: white;
-    text-shadow: 0.03em 0.03em #aaa;
+    text-shadow: 0 0 0.03em #222;
     /* box-shadow: 0.1em 0.1em 0.2em #ccc; */
 }
 
@@ -106,7 +106,7 @@
         margin: 0;
         padding: 12px;
         box-shadow: none !important;
-        margin-top: 41px;
+        /* margin-top: 41px; */
         min-height: 0;
     }
 
@@ -121,7 +121,7 @@
         align-items: center;
         background: white;
         box-shadow: 0 -0.05em 0.2em #ddd;
-        position: fixed;
+        position: relative;
         width: 100%;
         z-index: 10;
     }

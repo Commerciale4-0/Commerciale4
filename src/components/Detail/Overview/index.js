@@ -26,6 +26,12 @@ export default class DetailOverView extends Component {
     render() {
         const { profile } = this.props;
         const { selectedPost } = this.state;
+        let posts = profile && profile.posts.slice(0);
+        if (posts) {
+            posts = posts.sort((a, b) => {
+                return b.published - a.published;
+            });
+        }
 
         return (
             <div className="detail-overview">
@@ -73,9 +79,9 @@ export default class DetailOverView extends Component {
                     <i className="fa fa-newspaper-o font-22 pr-3" />
                     <span>{STRINGS.news}</span>
                 </div>
-                {profile && profile.posts && profile.posts.length ? (
+                {posts && posts.length ? (
                     <div className="post-list">
-                        {profile.posts.map((post) => (
+                        {posts.map((post) => (
                             <div key={post.id} onClick={() => this.setState({ selectedPost: post })}>
                                 <PostItem data={post} />
                             </div>

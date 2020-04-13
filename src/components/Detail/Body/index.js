@@ -75,38 +75,23 @@ export default class DetailBody extends Component {
 
     handleWindowScroll = () => {
         const currentScrollPos = window.pageYOffset;
-        let topBarHeight = 0;
-        topBarHeight = 46;
 
         let leftPanel = document.querySelector(".detail-body .left-panel");
-        let offsetY = leftPanel.offsetHeight - 104;
 
-        if (currentScrollPos > 334 + offsetY - topBarHeight) {
-            this.menuPanel.current.style.top = 41 + topBarHeight + "px";
+        if (currentScrollPos > 259) {
+            this.menuPanel.current.style.position = "fixed";
+            this.menuPanel.current.style.top = "87px";
+            leftPanel.style.marginBottom = "41px";
         } else {
-            this.menuPanel.current.style.top = `${377 + offsetY - currentScrollPos}px`;
+            this.menuPanel.current.style.position = "relative";
+            this.menuPanel.current.style.top = 0;
+            leftPanel.style.marginBottom = 0;
         }
 
         this.setState({ prevScrollpos: currentScrollPos });
     };
 
     handleChangeMenu = (selectedMenu) => {
-        // let panels = [this.aboutUsPanel.current, this.productsPanel.current, this.contactsPanel.current];
-        // let currentHeight = panels[this.state.selectedMenu].clientHeight;
-
-        // panels[selectedMenu].style.display = "block";
-        // if (window.innerWidth > 576) {
-        //     let maxHeight = Math.max(this.state.panelHeightMax, currentHeight, panels[selectedMenu].clientHeight);
-        //     panels.forEach((panel) => {
-        //         panel.style.height = maxHeight + "px";
-        //     });
-        // }
-        // panels.forEach((panel, index) => {
-        //     if (index !== selectedMenu) {
-        //         panel.style.display = "none";
-        //     }
-        // });
-
         this.setState({ selectedMenu });
     };
 
@@ -117,13 +102,13 @@ export default class DetailBody extends Component {
         const MENUS = [
             { id: 0, title: STRINGS.aboutUs, icon: "fa-user" },
             { id: 1, title: STRINGS.productSearvice, icon: "fa-cogs" },
-            { id: 2, title: STRINGS.contacts, icon: "fa-info-circle" },
+            { id: 2, title: isMobile ? STRINGS.contactsInfo : STRINGS.contacts, icon: "fa-info-circle" },
         ];
         const menuPanel = (
             <div className="menu-panel" ref={this.menuPanel}>
                 {MENUS.map((menu) => (
                     <div key={menu.id} className={`menu ${selectedMenu === menu.id ? "active" : ""}`} onClick={() => this.handleChangeMenu(menu.id)}>
-                        {!isMobile && <i className={`fa ${menu.icon} pr-3`} />}
+                        {!isMobile && <i className={`fa ${menu.icon} pr-3`} style={{ color: "#333" }} />}
                         {menu.title}
                     </div>
                 ))}

@@ -53,6 +53,7 @@
     "aboutUs": "About us",
     "productSearvice": "Product & Service",
     "contacts": "Contacts",
+    "contactsInfo": "Contacts & info",
     "iso": "ISO",
     "ateco": "NACE",
     "type": "TYPE",
@@ -74,11 +75,11 @@
     "companyType": "Company type",
     "makePost": "make a post",
     "title": "Title",
-    "whatIsNew": "What is new",
+    "whatIsNew": "What is new?",
     "uploadPhoto": "Upload a photo",
     "noImageChoosed": "No image choosed",
     "publish": "Publish",
-    "previousPosts": "previous posts",
+    "previousNews": "previous news",
     "actions": "Actions",
     "info": "Info",
     "changePassword": "change password",
@@ -153,5 +154,6 @@
     "productServiceProvider": "Product & Service Provider",
     "goToHome": "Go to home",
     "intro1": "is THE community of mechanical companies. We revolutionize the way companies connect with each other, building the networking of the future!",
-    "joinUs": "Join us! No fees or hidden costs."
+    "joinUs": "Join us! No fees or hidden costs.",
+    "contactUs": "Contact us"
 }

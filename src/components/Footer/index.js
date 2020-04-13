@@ -6,11 +6,18 @@ export default class Footer extends Component {
     render() {
         return (
             <div className="footer row">
-                <div className="col-md-3">
-                    <a href="/terms">{STRINGS.terms}</a>
+                <div className="col-md-4">
+                    <a className="normal" href="/terms">
+                        {STRINGS.terms}
+                    </a>
                 </div>
-                <div className="col-md-3">
-                    <a href="policy">{STRINGS.policy}</a>
+                <div className="col-md-4">
+                    <a className="normal" href="policy">
+                        {STRINGS.policy}
+                    </a>
+                </div>
+                <div className="col-md-4">
+                    {STRINGS.contactUs}: <a href="mailto:info@commerciale.it">info@commerciale.it</a>
                 </div>
             </div>
         );

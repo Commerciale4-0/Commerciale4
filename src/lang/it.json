@@ -53,6 +53,7 @@
     "aboutUs": "Su di noi",
     "productSearvice": "Prodotti & Servizi",
     "contacts": "Contatti",
+    "contactsInfo": "Contatti & info",
     "iso": "ISO",
     "ateco": "ATECO",
     "type": "Tipo",
@@ -74,11 +75,11 @@
     "companyType": "Tipo di attività",
     "makePost": "Pubblica una novità",
     "title": "Titolo",
-    "whatIsNew": "Cosa c'è di nuovo",
+    "whatIsNew": "Cosa c'è di nuovo?",
     "uploadPhoto": "Carica foto",
     "noImageChoosed": "Nessuna immagine selezionata",
     "publish": "Pubblica",
-    "previousPosts": "Notizie pubblicate",
+    "previousNews": "Notizie pubblicate",
     "actions": "Azioni",
     "info": "Info",
     "changePassword": "Cambio password",
@@ -153,5 +154,6 @@
     "productServiceProvider": "Fornitura di servizi e prodotti",
     "goToHome": "Vai alla homepage",
     "intro1": "è una comunità di aziende del settore manifatturiero. Digitaliziamo il modo in cui le aziende entrano in contatto tra di loro, costruendo il network del futuro!",
-    "joinUs": "Iscriviti! Servizio gratuito!"
+    "joinUs": "Iscriviti! Servizio gratuito!",
+    "contactUs": "Contattaci "
 }
