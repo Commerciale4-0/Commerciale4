@@ -155,5 +155,8 @@
     "goToHome": "Go to home",
     "intro1": "is THE community of mechanical companies. We revolutionize the way companies connect with each other, building the networking of the future!",
     "joinUs": "Join us! No fees or hidden costs.",
-    "contactUs": "Contact us"
+    "contactUs": "Contact us",
+    "resetYourPassword": "Reset your password",
+    "createPassword": "You can create your password here.",
+    "passwordReset": "Password has just been reseted"
 }

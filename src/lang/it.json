@@ -90,8 +90,8 @@
     "newEmail": "Nuova email",
     "confirmEmail": "Conferma email",
     "insertPassword": "Inserisca password",
-    "deleteProfile": "Cancellazione profilo",
-    "clickingDelete": "Cliccando il tasto \"Cancellazione Profilo\", il suo profilo sarà rimosso. Commerciale4.0, come da termini e condizioni, si tratterrà nel mantenere i dati inseriti per scopi interni.",
+    "deleteProfile": "Elimina profilo",
+    "clickingDelete": "Cliccando il tasto \"Elimina Profilo\", il suo profilo sarà rimosso. Commerciale4.0, come da termini e condizioni, si tratterrà nel mantenere i dati inseriti per scopi interni.",
     "infoNotEditable": "Le seguenti informazioni non sono modificabili",
     "passwordNotCorrect": "Password sbagliata",
     "passwordNotMatch": "La password non coincide",
@@ -155,5 +155,8 @@
     "goToHome": "Vai alla homepage",
     "intro1": "è una comunità di aziende del settore manifatturiero. Digitaliziamo il modo in cui le aziende entrano in contatto tra di loro, costruendo il network del futuro!",
     "joinUs": "Iscriviti! Servizio gratuito!",
-    "contactUs": "Contattaci "
+    "contactUs": "Contattaci",
+    "resetYourPassword": "Reimposta la tua password",
+    "createPassword": "Puoi creare qui la tua password.",
+    "passwordReseted": "La password é stata reimpostata"
 }

@@ -4,6 +4,7 @@ import * as Validate from "../../utils/Validate";
 import { Alert } from "react-bootstrap";
 import { requestAPI } from "../../utils/api";
 import { STRINGS } from "../../utils/strings";
+import SpinnerView from "../../components/SpinnerView";
 
 export default class ForgotPasswordPage extends Component {
     constructor(props) {
@@ -11,6 +12,7 @@ export default class ForgotPasswordPage extends Component {
 
         this.state = {
             alertData: null,
+            isProgressing: false,
         };
 
         this.refEmail = React.createRef();
@@ -29,9 +31,11 @@ export default class ForgotPasswordPage extends Component {
             return false;
         }
 
+        this.setState({ isProgressing: true });
         requestAPI("/user/forgot-password", "POST", {
             email: this.refEmail.current.value,
         }).then((res) => {
+            this.setState({ isProgressing: false });
             if (res.status !== 1) {
                 this.setState({
                     alertData: { variant: "danger", text: STRINGS.theEmailNotExist },
@@ -45,9 +49,10 @@ export default class ForgotPasswordPage extends Component {
     }
 
     render() {
+        const { alertData, isProcessing } = this.state;
         return (
             <div className="forgot-password">
-                {this.state.alertData ? <Alert variant={this.state.alertData.variant}>{this.state.alertData.text}</Alert> : <div></div>}
+                {alertData ? <Alert variant={alertData.variant}>{alertData.text}</Alert> : <div></div>}
                 <div className="text-center">
                     <i className="fa fa-lock" />
                 </div>
@@ -59,6 +64,7 @@ export default class ForgotPasswordPage extends Component {
                 <div className="d-flex justify-content-center">
                     <button onClick={this.handleClickDone.bind(this)}>{STRINGS.sendEmail}</button>
                 </div>
+                {isProcessing && <SpinnerView />}
             </div>
         );
     }

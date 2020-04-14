@@ -2,6 +2,18 @@ import { STRINGS } from "./strings";
 
 export const LOGGED_USER = "loggedUser";
 
+export const ORDERS = () => {
+    return [
+        { id: 0, title: STRINGS.relevance, icon: "sort-amount-desc" },
+        { id: 1, title: `↑ ${STRINGS.revenues}`, icon: null },
+        { id: 2, title: `↓ ${STRINGS.revenues}`, icon: null },
+        { id: 3, title: `↑ ${STRINGS.employees}`, icon: null },
+        { id: 4, title: `↓ ${STRINGS.employees}`, icon: null },
+        { id: 5, title: `↑ ${STRINGS.nearest}`, icon: null },
+        { id: 6, title: `↓ ${STRINGS.farthest}`, icon: null },
+    ];
+};
+
 export const COMPANY_TYPES = () => {
     return [
         { value: 1, label: STRINGS.productProvider },

@@ -188,8 +188,8 @@ export default class ProfileAccount extends Component {
             removePhotos: removePhotos,
         };
 
-        this.setState({ isProcessing: true });
         if (window.confirm(STRINGS.wantToDelete)) {
+            this.setState({ isProcessing: true });
             await requestAPI("/user/delete", "POST", deleteData)
                 .then((res) => {
                     if (res.status === 1) {

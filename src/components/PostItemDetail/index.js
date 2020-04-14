@@ -15,7 +15,11 @@ export default class PostItemDetail extends Component {
                         </button>
                         <div className="d-flex justify-content-between mb-3">
                             <LangConsumer>
-                                {(context) => <h5>{context.lang === "en" ? (post.title ? post.title : post.titleIt) : post.titleIt ? post.titleIt : post.title}</h5>}
+                                {(context) => (
+                                    <h5 className="pr-4">
+                                        {context.lang === "en" ? (post.title ? post.title : post.titleIt) : post.titleIt ? post.titleIt : post.title}
+                                    </h5>
+                                )}
                             </LangConsumer>
                         </div>
                         <div className="px-4 d-flex justify-content-center">{post.photo && <img src={process.env.REACT_APP_AWS_PREFIX + post.photo} alt="" />}</div>

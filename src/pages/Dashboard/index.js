@@ -6,22 +6,12 @@ import CompanyCell from "../../components/CompanyCell";
 import { Dropdown } from "react-bootstrap";
 // import Sidebar from "../../components/Sidebar";
 import Pagination from "react-js-pagination";
-import { distanceFromCoords, numberFromStringWithUnit, orderTags, LOGGED_USER } from "../../utils";
+import { distanceFromCoords, numberFromStringWithUnit, orderTags, LOGGED_USER, ORDERS } from "../../utils";
 import SpinnerView from "../../components/SpinnerView";
 import { LangConsumer } from "../../utils/LanguageContext";
 import { STRINGS } from "../../utils/strings";
 
 let lang = null;
-
-const orders = [
-    { id: 0, title: STRINGS.relevance, icon: "sort-amount-desc" },
-    { id: 1, title: `↑ ${STRINGS.revenues}`, icon: null },
-    { id: 2, title: `↓ ${STRINGS.revenues}`, icon: null },
-    { id: 3, title: `↑ ${STRINGS.employees}`, icon: null },
-    { id: 4, title: `↓ ${STRINGS.employees}`, icon: null },
-    { id: 5, title: `↑ ${STRINGS.nearest}`, icon: null },
-    { id: 6, title: `↓ ${STRINGS.farthest}`, icon: null },
-];
 
 export default class Dashboard extends Component {
     constructor(props) {
@@ -31,7 +21,7 @@ export default class Dashboard extends Component {
             totalCompanies: [],
             filteredCompanies: [],
             companiesToShow: [],
-            selectedOrder: orders[0],
+            selectedOrder: ORDERS()[0],
             isExpandedSidebar: false,
             activePage: 1,
             filter: null,
@@ -65,6 +55,15 @@ export default class Dashboard extends Component {
             window.removeEventListener("scroll", this.handleWindowScroll);
         }
     }
+
+    componentWillReceiveProps = (props) => {
+        let orders = ORDERS();
+        orders.forEach((elem) => {
+            if (this.state.selectedOrder && elem.id === this.state.selectedOrder.id) {
+                this.setState({ selectedOrder: elem });
+            }
+        });
+    };
 
     handleWindowScroll = () => {
         const { filterBarXSScrollPos } = this.state;
@@ -106,7 +105,7 @@ export default class Dashboard extends Component {
     };
 
     pullAllCompanies = async () => {
-        const { failCount } = this.state;
+        const { failCount, selectedOrder, activePage, itemsCountPerPage } = this.state;
         try {
             await requestAPI("/user/all", "POST").then((res) => {
                 if (res.status === 1) {
@@ -126,7 +125,7 @@ export default class Dashboard extends Component {
                         this.setState({
                             filteredCompanies: companies,
                         });
-                        this.setCompaniesToShow(companies, this.state.selectedOrder, this.state.activePage, this.state.itemsCountPerPage);
+                        this.setCompaniesToShow(companies, selectedOrder, activePage, itemsCountPerPage);
                     }
 
                     this.setState({ isProcessing: false });
@@ -231,7 +230,7 @@ export default class Dashboard extends Component {
         this.setState({ activePage: pageNumber });
     };
     handleClickNext = (e) => {
-        const { activePage, filteredCompanies, itemsCountPerPage } = this.state;
+        const { activePage, filteredCompanies, itemsCountPerPage, selectedOrder } = this.state;
         if (!filteredCompanies || !filteredCompanies.length) {
             return;
         }
@@ -240,7 +239,7 @@ export default class Dashboard extends Component {
 
         let pageNumber = temp < 1 ? activePage + 1 : activePage;
 
-        this.setCompaniesToShow(this.state.filteredCompanies, this.state.selectedOrder, pageNumber, this.state.itemsCountPerPage);
+        this.setCompaniesToShow(filteredCompanies, selectedOrder, pageNumber, itemsCountPerPage);
         this.setState({ activePage: pageNumber });
     };
 
@@ -440,7 +439,7 @@ export default class Dashboard extends Component {
                     {selectedOrder.title}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                    {orders.map((item) => (
+                    {ORDERS().map((item) => (
                         <Dropdown.Item key={item.id} onClick={() => this.handleClickOrder(item)}>
                             {item.title}
                         </Dropdown.Item>

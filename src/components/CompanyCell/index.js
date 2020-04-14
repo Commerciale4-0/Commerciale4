@@ -76,7 +76,17 @@ export default class CompanyCell extends Component {
                     <div className="d-flex">
                         <i className="fa fa-id-card-o pt-1" />
                         <div className="intro">
-                            <LangConsumer>{(value) => (value.lang === "en" ? company.introduction : company.introductionIt)}</LangConsumer>
+                            <LangConsumer>
+                                {(value) =>
+                                    value.lang === "en"
+                                        ? company.introduction
+                                            ? company.introduction
+                                            : company.introductionIt
+                                        : company.introductionIt
+                                        ? company.introductionIt
+                                        : company.introduction
+                                }
+                            </LangConsumer>
                         </div>
                     </div>
                     <hr />

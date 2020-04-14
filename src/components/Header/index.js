@@ -272,8 +272,8 @@ class Header extends Component {
                         {loggedUser ? (
                             <Col className="item user" sm={3}>
                                 <DropdownButton id="dropdown-basic-button" title={loggedUser ? loggedUser.user.email : "User email address "}>
-                                    <Dropdown.Item onClick={() => this.handleClickProfile()}>Profile</Dropdown.Item>
-                                    <Dropdown.Item onClick={() => this.handleClickLogout()}>Log Out</Dropdown.Item>
+                                    <Dropdown.Item onClick={() => this.handleClickProfile()}>{STRINGS.profile}</Dropdown.Item>
+                                    <Dropdown.Item onClick={() => this.handleClickLogout()}>{STRINGS.logout}</Dropdown.Item>
                                 </DropdownButton>
                             </Col>
                         ) : (

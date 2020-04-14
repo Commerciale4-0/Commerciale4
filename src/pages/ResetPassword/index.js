@@ -45,7 +45,7 @@ export default class ResetPasswordPage extends Component {
             console.log(res);
             this.setState({
                 isSuccess: true,
-                alertText: "Password has just been reseted",
+                alertText: STRINGS.passwordReset,
             });
             setTimeout(function () {
                 window.location.href = "/";
@@ -67,8 +67,8 @@ export default class ResetPasswordPage extends Component {
                     <div className="text-center">
                         <i className="fa fa-lock" />
                     </div>
-                    <div className="title text-center">Reset your password</div>
-                    <div className="text">You can create your password here.</div>
+                    <div className="title text-center">{STRINGS.resetYourPassword}</div>
+                    <div className="text">{STRINGS.createPassword}</div>
                     <div className="my-3 d-flex justify-content-center">
                         <input type="password" placeholder="New password" ref={this.refPassword} />
                     </div>
@@ -81,7 +81,6 @@ export default class ResetPasswordPage extends Component {
                 </div>
             </div>
         );
-        console.log(alertText);
         return <div className="reset-password">{isSuccess ? successDiv : failDiv}</div>;
     }
 }
