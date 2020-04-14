@@ -69,7 +69,7 @@ export const REVENUES = () => {
 
 export const ATECO_CODES = () => {
     return [
-        { value: 0, label: STRINGS.noCode },
+        { value: 0, label: STRINGS.otherCode },
         { value: 1, label: "22.1" },
         { value: 2, label: "22.2" },
         { value: 3, label: "24.1" },
