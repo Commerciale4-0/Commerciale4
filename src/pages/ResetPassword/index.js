@@ -70,13 +70,13 @@ export default class ResetPasswordPage extends Component {
                     <div className="title text-center">{STRINGS.resetYourPassword}</div>
                     <div className="text">{STRINGS.createPassword}</div>
                     <div className="my-3 d-flex justify-content-center">
-                        <input type="password" placeholder="New password" ref={this.refPassword} />
+                        <input type="password" placeholder={STRINGS.newPassword} ref={this.refPassword} />
                     </div>
                     <div className="my-3 d-flex justify-content-center">
-                        <input type="password" placeholder="Confirm password" ref={this.refConfirm} />
+                        <input type="password" placeholder={STRINGS.confirmPassword} ref={this.refConfirm} />
                     </div>
                     <div className="d-flex justify-content-center">
-                        <button onClick={this.handleClickSave.bind(this)}>Save</button>
+                        <button onClick={this.handleClickSave.bind(this)}>{STRINGS.save}</button>
                     </div>
                 </div>
             </div>
