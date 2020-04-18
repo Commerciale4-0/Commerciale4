@@ -23,7 +23,7 @@ export default class ResetPasswordPage extends Component {
         Validate.applyToInput(this.refPassword.current, valid.code);
         if (valid.code !== Validate.VALID) {
             this.setState({
-                alertText: STRINGS.password + valid.msg,
+                alertText: [{ langKey: "password" }, { validCode: valid.code }],
             });
             return;
         }
@@ -33,7 +33,7 @@ export default class ResetPasswordPage extends Component {
         Validate.applyToInput(this.refConfirm.current, valid.code);
         if (valid.code !== Validate.VALID) {
             this.setState({
-                alertText: valid.msg,
+                alertText: [{ validCode: valid.code }],
             });
             return;
         }
@@ -45,7 +45,7 @@ export default class ResetPasswordPage extends Component {
             console.log(res);
             this.setState({
                 isSuccess: true,
-                alertText: STRINGS.passwordReset,
+                alertText: [{ langKey: "passwordReset" }],
             });
             setTimeout(function () {
                 window.location.href = "/";
@@ -57,12 +57,12 @@ export default class ResetPasswordPage extends Component {
         const { isSuccess, alertText } = this.state;
         const successDiv = (
             <div>
-                <Alert variant="success">{alertText}</Alert>
+                <Alert variant="success">{Validate.getAlertMsg(alertText)}</Alert>
             </div>
         );
         const failDiv = (
             <div>
-                {alertText ? <Alert variant="danger">{alertText}</Alert> : <div></div>}
+                {alertText ? <Alert variant="danger">{Validate.getAlertMsg(alertText)}</Alert> : <div></div>}
                 <div>
                     <div className="text-center">
                         <i className="fa fa-lock" />

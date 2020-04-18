@@ -16,7 +16,7 @@ export default class DetailHeader extends Component {
                         <h5>{profile && profile.officialName}</h5>
                         <span>
                             <i className="fa fa-map-marker pr-2" />
-                            {profile && profile.city}, {profile && profile.region}
+                            {profile && (profile.companyAddress && profile.companyAddress.length ? profile.companyAddress : profile.city + ", " + profile.region)}
                         </span>
                     </div>
                     <button>

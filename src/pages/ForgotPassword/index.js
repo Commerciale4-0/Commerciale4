@@ -23,10 +23,7 @@ export default class ForgotPasswordPage extends Component {
         Validate.applyToInput(this.refEmail.current, valid.code);
         if (valid.code !== Validate.VALID) {
             this.setState({
-                alertData: {
-                    variant: "danger",
-                    text: STRINGS.emailAddress + valid.msg,
-                },
+                alertData: { variant: "danger", messages: [{ langKey: "emailAddress" }, { validCode: valid.code }] },
             });
             return false;
         }
@@ -38,11 +35,11 @@ export default class ForgotPasswordPage extends Component {
             this.setState({ isProgressing: false });
             if (res.status !== 1) {
                 this.setState({
-                    alertData: { variant: "danger", text: STRINGS.theEmailNotExist },
+                    alertData: { variant: "danger", messages: [{ langKey: "theEmailNotExist" }] },
                 });
             } else {
                 this.setState({
-                    alertData: { variant: "success", text: res.message },
+                    alertData: { variant: "success", messages: [{ langKey: "sentResetPassword" }] },
                 });
             }
         });
@@ -52,7 +49,7 @@ export default class ForgotPasswordPage extends Component {
         const { alertData, isProcessing } = this.state;
         return (
             <div className="forgot-password">
-                {alertData ? <Alert variant={alertData.variant}>{alertData.text}</Alert> : <div></div>}
+                {alertData ? <Alert variant={alertData.variant}>{Validate.getAlertMsg(alertData.messages)}</Alert> : <div></div>}
                 <div className="text-center">
                     <i className="fa fa-lock" />
                 </div>

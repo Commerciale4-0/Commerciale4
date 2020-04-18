@@ -25,7 +25,7 @@ export default class ProfileNews extends Component {
             alertData: null,
             imageToCrop: null,
             lengthOfDescription: 0,
-            selectedNewsLang: lang ? lang : "en",
+            selectedLang: lang ? lang : "en",
         };
 
         this.refBrowse = React.createRef();
@@ -35,12 +35,12 @@ export default class ProfileNews extends Component {
         this.refDescriptionIt = React.createRef();
     }
 
-    setAlertData = (success, text) => {
+    setAlertData = (success, messages) => {
         this.setState({
             showAlert: true,
             alertData: {
                 variant: success ? "success" : "danger",
-                text: text,
+                messages: messages,
             },
         });
     };
@@ -61,32 +61,19 @@ export default class ProfileNews extends Component {
     };
 
     validate = () => {
-        let valid = Validate.checkEmpty(this.refTitle.current.value);
-        let validIt = Validate.checkEmpty(this.refTitleIt.current.value);
-        if (this.state.selectedNewsLang === "en") {
-            Validate.applyToInput(this.refTitle.current, valid.code);
-            if (valid.code !== Validate.VALID) {
-                this.setAlertData(0, STRINGS.title + valid.msg);
-                return false;
-            }
-            valid = Validate.checkEmpty(this.refDescription.current.value);
-            Validate.applyToInput(this.refDescription.current, valid.code);
-            if (valid.code !== Validate.VALID) {
-                this.setAlertData(0, STRINGS.description + valid.msg);
-                return false;
-            }
-            return true;
-        }
-        ///valid italian
-        Validate.applyToInput(this.refTitleIt.current, validIt.code);
-        if (validIt.code !== Validate.VALID) {
-            this.setAlertData(0, STRINGS.title + validIt.msg);
+        let inputTitle = this.state.selectedLang === "en" ? this.refTitle.current : this.refTitleIt.current;
+        let inputDescription = this.state.selectedLang === "en" ? this.refDescription.current : this.refDescriptionIt.current;
+
+        let valid = Validate.checkEmpty(inputTitle.value);
+        Validate.applyToInput(inputTitle, valid.code);
+        if (valid.code !== Validate.VALID) {
+            this.setAlertData(0, [{ langKey: "title" }, { validCode: valid.code }]);
             return false;
         }
-        validIt = Validate.checkEmpty(this.refDescriptionIt.current.value);
-        Validate.applyToInput(this.refDescriptionIt.current, validIt.code);
-        if (validIt.code !== Validate.VALID) {
-            this.setAlertData(0, STRINGS.description + validIt.msg);
+        valid = Validate.checkEmpty(inputDescription.value);
+        Validate.applyToInput(inputDescription, valid.code);
+        if (valid.code !== Validate.VALID) {
+            this.setAlertData(0, [{ langKey: "description" }, { validCode: valid.code }]);
             return false;
         }
 
@@ -104,13 +91,11 @@ export default class ProfileNews extends Component {
                 photo: this.state.photoData,
             };
 
-            console.log(dataToSave);
             this.setState({ isProcessing: true });
             await requestAPI("/user/news/create", "POST", dataToSave).then((res) => {
                 if (res.status === 1) {
                     let posts = [...this.state.posts, res.data];
                     this.updatePosts(posts);
-                    console.log(res.data);
                 } else {
                     alert(STRINGS.connectionFailed);
                     console.log("Error occured!");
@@ -182,12 +167,11 @@ export default class ProfileNews extends Component {
     };
 
     handleFocusInput = () => {
-        if (this.state.selectedNewsLang === "en") {
+        if (this.state.selectedLang === "en") {
             this.refTitle.current.style.border = this.refDescription.current.style.border = "1px solid var(--colorBorder)";
-            this.setState({ alertData: null });
-            return;
+        } else {
+            this.refTitleIt.current.style.border = this.refDescriptionIt.current.style.border = "1px solid var(--colorBorder)";
         }
-        this.refTitleIt.current.style.border = this.refDescriptionIt.current.style.border = "1px solid var(--colorBorder)";
         this.setState({ alertData: null });
     };
 
@@ -195,28 +179,29 @@ export default class ProfileNews extends Component {
         this.setState({ lengthOfDescription: e.target.value.length });
     };
 
-    handleChangeNews = (selectedNewsLang) => {
-        this.setState({ selectedNewsLang });
+    handleChangeLang = (selectedLang) => {
+        this.setState({ selectedLang });
+        this.handleFocusInput();
     };
     render() {
-        const { photoFileName, posts, isProcessing, alertData, imageToCrop, lengthOfDescription, selectedNewsLang } = this.state;
+        const { photoFileName, posts, isProcessing, alertData, imageToCrop, lengthOfDescription, selectedLang } = this.state;
         return (
             <div className="news-view">
-                {alertData ? <Alert variant={alertData.variant}>{alertData.text}</Alert> : <div></div>}
+                {alertData ? <Alert variant={alertData.variant}>{Validate.getAlertMsg(alertData.messages)}</Alert> : <div></div>}
                 <div className="float-right">
-                    <Lang onChange={this.handleChangeNews} />
+                    <Lang onChange={this.handleChangeLang} />
                 </div>
                 <div className="mb-2 text-bold text-uppercase text-large">{STRINGS.makePost}</div>
                 <div className="mt-3 mb-1">{STRINGS.title}</div>
-                <div className={selectedNewsLang === "en" ? "d-block" : "d-none"}>
+                <div className={selectedLang === "en" ? "d-block" : "d-none"}>
                     <input className="w-100" ref={this.refTitle} onFocus={this.handleFocusInput} />
                 </div>
-                <div className={selectedNewsLang === "it" ? "d-block" : "d-none"}>
+                <div className={selectedLang === "it" ? "d-block" : "d-none"}>
                     <input className="w-100" ref={this.refTitleIt} onFocus={this.handleFocusInput} />
                 </div>
                 <div className="mt-3 mb-1">{STRINGS.whatIsNew}</div>
                 <div className="mb-2">
-                    <div className={selectedNewsLang === "en" ? "d-block" : "d-none"}>
+                    <div className={selectedLang === "en" ? "d-block" : "d-none"}>
                         <TextareaAutosize
                             ref={this.refDescription}
                             onFocus={this.handleFocusInput}
@@ -228,7 +213,7 @@ export default class ProfileNews extends Component {
                             {lengthOfDescription}/{MAX_LENGTH}
                         </div>
                     </div>
-                    <div className={selectedNewsLang === "it" ? "d-block" : "d-none"}>
+                    <div className={selectedLang === "it" ? "d-block" : "d-none"}>
                         <TextareaAutosize
                             ref={this.refDescriptionIt}
                             onFocus={this.handleFocusInput}

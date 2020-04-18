@@ -3,7 +3,7 @@ import Select from "react-select";
 
 export default class MySelect extends Component {
     render() {
-        const { value, onChange, options, placeholder, checkValid, width, borderColor, menuHeight, isMulti } = this.props;
+        const { value, onChange, options, placeholder, checkValid, width, borderColor, menuHeight, isMulti, valueBg } = this.props;
 
         const styles = {
             control: (provided, state) => ({
@@ -16,6 +16,19 @@ export default class MySelect extends Component {
                     borderColor: state.isFocused ? "var(--colorPrimary)" : checkValid !== true || value ? (borderColor ? borderColor : "transparent") : "red",
                 },
             }),
+            multiValueLabel: (provided) => ({
+                ...provided,
+                background: valueBg ? valueBg : provided.background,
+                borderTopRightRadius: valueBg ? 0 : provided.borderTopRightRadius,
+                borderBottomRightRadius: valueBg ? 0 : provided.borderBottomRightRadius,
+            }),
+            multiValueRemove: (provided) => ({
+                ...provided,
+                background: valueBg ? valueBg : provided.background,
+                borderTopLeftRadius: valueBg ? 0 : provided.borderTopLeftRadius,
+                borderBottomLeftRadius: valueBg ? 0 : provided.borderBottomLeftRadius,
+            }),
+
             indicatorSeparator: () => ({
                 display: "none",
             }),

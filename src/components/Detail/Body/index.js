@@ -159,7 +159,7 @@ export default class DetailBody extends Component {
                     {isoPanel}
                     <p className="-ateco">
                         <span>{STRINGS.ateco}</span>
-                        {profile && profile.user.ateco}
+                        {profile && (profile.user.ateco === "Other code" || profile.user.ateco === "Altro codice" ? STRINGS.otherCode : profile.user.ateco)}
                     </p>
                 </div>
                 <p className="-type mb-0">

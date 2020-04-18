@@ -37,7 +37,7 @@
     "nEmployees": "N° employees",
     "revenues": "Revenues",
     "noLimit": "No limit",
-    "otherCode": "Other Code",
+    "otherCode": "Other code",
     "search": "Search",
     "companyProfile": "Company Profile",
     "createCompanyProfile": "Create your company profile including photos, description, info, contacts and much more.",
@@ -158,5 +158,6 @@
     "contactUs": "Contact us",
     "resetYourPassword": "Reset your password",
     "createPassword": "You can create your password here.",
-    "passwordReset": "Password has just been reseted"
+    "passwordReset": "Password has just been reseted",
+    "upTo": "Up to"
 }

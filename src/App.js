@@ -91,7 +91,7 @@ class App extends Component {
                                 <Route exact path="/dashboard" component={Dashboard} />
                                 <Route exact path="/company/:id" component={CompanyDetail} />
                                 <Route exact path="/user-edit" component={Profile} />
-                                <Route component={Except} />
+                                {/* <Route component={Except} /> */}
                             </Switch>
                         </div>
                         {needFooter && <Footer />}

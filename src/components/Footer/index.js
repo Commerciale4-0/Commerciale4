@@ -17,7 +17,7 @@ export default class Footer extends Component {
                     </a>
                 </div>
                 <div className="col-md-4">
-                    {STRINGS.contactUs}: <a href="mailto:info@commerciale.it">info@commerciale.it</a>
+                    {STRINGS.contactUs}: <a href="mailto:info@commerciale.it">info@commerciale40.it</a>
                 </div>
             </div>
         );

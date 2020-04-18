@@ -32,20 +32,20 @@ export default class ProfileAccount extends Component {
         this.refPec = React.createRef();
     }
 
-    setPasswordAlertData = (success, text) => {
+    setPasswordAlertData = (success, messages) => {
         this.setState({
             passwordAlertData: {
                 variant: success ? "success" : "danger",
-                text: text,
+                messages: messages,
             },
         });
     };
 
-    setEmailAlertData = (success, text) => {
+    setEmailAlertData = (success, messages) => {
         this.setState({
             emailAlertData: {
                 variant: success ? "success" : "danger",
-                text: text,
+                messages: messages,
             },
         });
     };
@@ -61,7 +61,7 @@ export default class ProfileAccount extends Component {
         const oldPassword = this.encrypt(this.refOldPassword.current.value);
         if (oldPassword !== this.state.userData.user.password) {
             Validate.applyToInput(this.refOldPassword.current, -1);
-            this.setPasswordAlertData(0, STRINGS.passwordNotCorrect);
+            this.setPasswordAlertData(0, [{ langKey: "passwordNotCorrect" }]);
             return false;
         } else {
             Validate.applyToInput(this.refOldPassword.current, Validate.VALID);
@@ -70,19 +70,19 @@ export default class ProfileAccount extends Component {
         let valid = Validate.checkPassword(this.refNewPassword.current.value);
         Validate.applyToInput(this.refNewPassword.current, valid.code);
         if (valid.code !== Validate.VALID) {
-            this.setPasswordAlertData(0, STRINGS.newPassword + valid.msg);
+            this.setPasswordAlertData(0, [{ langKey: "newPassword" }, { validCode: valid.code }]);
             return false;
         }
 
         valid = Validate.checkPassword(this.refConfirmPassword.current.value);
         Validate.applyToInput(this.refConfirmPassword.current, valid.code);
         if (valid.code !== Validate.VALID) {
-            this.setPasswordAlertData(0, STRINGS.confirmPassword + valid.msg);
+            this.setPasswordAlertData(0, [{ langKey: "confirmPassword" }, { validCode: valid.code }]);
             return false;
         }
 
         if (this.refNewPassword.current.value !== this.refConfirmPassword.current.value) {
-            this.setPasswordAlertData(0, STRINGS.passwordNotMatch);
+            this.setPasswordAlertData(0, [{ langKey: "passwordNotMatch" }]);
             return false;
         }
 
@@ -93,29 +93,27 @@ export default class ProfileAccount extends Component {
         let valid = Validate.checkEmail(this.refNewEmail.current.value);
         Validate.applyToInput(this.refNewEmail.current, valid.code);
         if (valid.code !== Validate.VALID) {
-            this.setEmailAlertData(0, STRINGS.newEmail + valid.msg);
+            this.setEmailAlertData(0, [{ langKey: "newEmail" }, { validCode: valid.code }]);
             return false;
         }
 
         valid = Validate.checkEmail(this.refConfirmEmail.current.value);
         Validate.applyToInput(this.refConfirmEmail.current, valid.code);
         if (valid.code !== Validate.VALID) {
-            this.setEmailAlertData(0, STRINGS.confirmEmail + valid.msg);
+            this.setEmailAlertData(0, [{ langKey: "confirmEmail" }, { validCode: valid.code }]);
             return false;
         }
 
         if (this.refNewEmail.current.value !== this.refConfirmEmail.current.value) {
-            this.setEmailAlertData(0, STRINGS.emailNotMatch);
-            return;
+            this.setEmailAlertData(0, [{ langKey: "emailNotMatch" }]);
+            return false;
         }
 
         let password = this.encrypt(this.refInsertPassword.current.value);
         if (this.state.userData.user.password !== password) {
             Validate.applyToInput(this.refInsertPassword.current, -1);
-            this.setEmailAlertData(0, STRINGS.passwordNotMatch);
-            return;
-        } else {
-            Validate.applyToInput(this.refInsertPassword.current, Validate.VALID);
+            this.setEmailAlertData(0, [{ langKey: "passwordNotMatch" }]);
+            return false;
         }
 
         return true;
@@ -135,11 +133,11 @@ export default class ProfileAccount extends Component {
             password: this.refNewPassword.current.value,
         }).then((res) => {
             if (res.status !== 1) {
-                this.setPasswordAlertData(0, STRINGS.databaseFailed);
+                this.setPasswordAlertData(0, [{ langKey: "databaseFailed" }]);
             } else {
                 userData.user.password = res.data;
                 sessionStorage.setItem(LOGGED_USER, JSON.stringify(userData));
-                this.setPasswordAlertData(1, res.message);
+                this.setPasswordAlertData(1, [{ langKey: "passwordChanged" }]);
             }
             this.setState({ isProcessing: false });
         });
@@ -163,9 +161,9 @@ export default class ProfileAccount extends Component {
                 if (res.status === 1) {
                     userData.user.email = res.data;
                     sessionStorage.setItem(LOGGED_USER, JSON.stringify(userData));
-                    this.setEmailAlertData(1, STRINGS.emailChanged);
+                    this.setEmailAlertData(1, [{ langKey: "emailChanged" }]);
                 } else {
-                    this.setEmailAlertData(0, STRINGS.databaseFailed);
+                    this.setEmailAlertData(0, [{ langKey: "databaseFailed" }]);
                 }
             })
             .catch((err) => {
@@ -224,7 +222,7 @@ export default class ProfileAccount extends Component {
         const actionsPanel = (
             <div className={tab === 0 ? "d-block" : "d-none"}>
                 <div>
-                    {passwordAlertData && <Alert variant={passwordAlertData.variant}>{passwordAlertData.text}</Alert>}
+                    {passwordAlertData && <Alert variant={passwordAlertData.variant}>{Validate.getAlertMsg(passwordAlertData.messages)}</Alert>}
                     <h6 className="text-uppercase p-3">{STRINGS.changePassword}</h6>
                     <div className="info-row">
                         <input type="password" placeholder={STRINGS.oldPassword} ref={this.refOldPassword} onFocus={this.handleFocusPasswordInput} />
@@ -249,7 +247,7 @@ export default class ProfileAccount extends Component {
                 </div>
                 <hr />
                 <div>
-                    {emailAlertData && <Alert variant={emailAlertData.variant}>{emailAlertData.text}</Alert>}
+                    {emailAlertData && <Alert variant={emailAlertData.variant}>{Validate.getAlertMsg(emailAlertData.messages)}</Alert>}
                     <h6 className="text-uppercase p-3">{STRINGS.changeAccountEmail}</h6>
                     <div className="info-row">
                         <input placeholder={STRINGS.newEmail} ref={this.refNewEmail} onFocus={this.handleFocusEmailInput} />

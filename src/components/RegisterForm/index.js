@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./index.css";
 import { Row, Col, Alert } from "react-bootstrap";
 
-import { ATECO_CODES, CITIES, REGIONS } from "../../utils";
+import { ATECO_CODES, REGIONS, citiesByAsc } from "../../utils";
 
 import * as Validate from "../../utils/Validate";
 
@@ -24,6 +24,7 @@ export default class RegisterForm extends Component {
             alertData: null,
             policyChecked: false,
             isProcessing: false,
+            cities: citiesByAsc(),
         };
 
         this.refName = React.createRef();
@@ -43,20 +44,30 @@ export default class RegisterForm extends Component {
         });
     };
 
-    setAlertData = (success, text) => {
+    setAlertData = (success, messages) => {
         this.setState({
             alertData: {
                 variant: success ? "success" : "danger",
-                text: text,
+                messages: messages,
             },
         });
     };
+
+    // setAlertData = (success, text) => {
+    //     this.setState({
+    //         alertData: {
+    //             variant: success ? "success" : "danger",
+    //             text: text,
+    //         },
+    //     });
+    // };
 
     validateStepOne = () => {
         let valid = Validate.checkEmpty(this.refName.current.value);
         Validate.applyToInput(this.refName.current, valid.code);
         if (valid.code !== Validate.VALID) {
-            this.setAlertData(0, STRINGS.officialName + valid.msg);
+            // this.setAlertData(0, STRINGS.officialName + valid.msg);
+            this.setAlertData(0, [{ langKey: "officialName" }, { validCode: valid.code }]);
             return false;
         }
 
@@ -64,14 +75,16 @@ export default class RegisterForm extends Component {
             this.setState({
                 checkValidCity: true,
             });
-            this.setAlertData(0, STRINGS.pleaseSelectCity);
+            // this.setAlertData(0, STRINGS.pleaseSelectCity);
+            this.setAlertData(0, [{ langKey: "pleaseSelectCity" }]);
             return false;
         }
 
         valid = Validate.checkVAT(this.refVAT.current.value);
         Validate.applyToInput(this.refVAT.current, valid.code);
         if (valid.code !== Validate.VALID) {
-            this.setAlertData(0, STRINGS.vatNumber + valid.msg);
+            // this.setAlertData(0, STRINGS.vatNumber + valid.msg);
+            this.setAlertData(0, [{ langKey: "vatNumber" }, { validCode: valid.code }]);
             return false;
         }
 
@@ -79,14 +92,16 @@ export default class RegisterForm extends Component {
             this.setState({
                 checkValidCode: true,
             });
-            this.setAlertData(0, STRINGS.pleaseSelectAteco);
+            // this.setAlertData(0, STRINGS.pleaseSelectAteco);
+            this.setAlertData(0, [{ langKey: "pleaseSelectAteco" }]);
             return false;
         }
 
         valid = Validate.checkEmail(this.refPEC.current.value);
         Validate.applyToInput(this.refPEC.current, valid.code);
         if (valid.code !== Validate.VALID) {
-            this.setAlertData(0, STRINGS.pec + valid.msg);
+            // this.setAlertData(0, STRINGS.pec + valid.msg);
+            this.setAlertData(0, [{ langKey: "pec" }, { validCode: valid.code }]);
             return false;
         }
 
@@ -97,26 +112,30 @@ export default class RegisterForm extends Component {
         let valid = Validate.checkEmail(this.refEmail.current.value);
         Validate.applyToInput(this.refEmail.current, valid.code);
         if (valid.code !== Validate.VALID) {
-            this.setAlertData(0, STRINGS.emailAddress + valid.msg);
+            // this.setAlertData(0, STRINGS.emailAddress + valid.msg);
+            this.setAlertData(0, [{ langKey: "emailAddress" }, { validCode: valid.code }]);
             return false;
         }
 
         valid = Validate.checkPassword(this.refPassword.current.value);
         Validate.applyToInput(this.refPassword.current, valid.code);
         if (valid.code !== Validate.VALID) {
-            this.setAlertData(0, STRINGS.password + valid.msg);
+            // this.setAlertData(0, STRINGS.password + valid.msg);
+            this.setAlertData(0, [{ langKey: "password" }, { validCode: valid.code }]);
             return false;
         }
 
         valid = Validate.checkConfirmPassword(this.refPassword.current.value, this.refConfirm.current.value);
         Validate.applyToInput(this.refConfirm.current, valid.code);
         if (valid.code !== Validate.VALID) {
-            this.setAlertData(0, valid.msg);
+            // this.setAlertData(0, valid.msg);
+            this.setAlertData(0, [{ validCode: valid.code }]);
             return false;
         }
 
         if (!this.state.policyChecked) {
-            this.setAlertData(0, STRINGS.pleaseCheckPrivacy);
+            // this.setAlertData(0, STRINGS.pleaseCheckPrivacy);
+            this.setAlertData(0, [{ langKey: "pleaseCheckPrivacy" }]);
             return false;
         }
 
@@ -210,17 +229,20 @@ export default class RegisterForm extends Component {
             this.setState({ isProcessing: false });
 
             if (res.status === 0) {
-                this.setAlertData(0, STRINGS.theEmailExist);
+                // this.setAlertData(0, STRINGS.theEmailExist);
+                this.setAlertData(0, [{ langKey: "theEmailExist" }]);
                 return;
             }
             if (res.status === -1) {
-                this.setAlertData(0, STRINGS.databaseFailed);
+                // this.setAlertData(0, STRINGS.databaseFailed);
+                this.setAlertData(0, [{ langKey: "databaseFailed" }]);
                 return;
             }
 
             /* it's for just test */
             this.setState({ step: 3 });
-            this.setAlertData(1, `${STRINGS.sentEmail} ${data.pec} ${STRINGS.toVerifyYourAccount}`);
+            // this.setAlertData(1, `${STRINGS.sentEmail} ${data.pec} ${STRINGS.toVerifyYourAccount}`);
+            this.setAlertData(1, [{ langKey: "sentEmail" }, ` ${data.pec}`, { langKey: "toVerifyYourAccount" }]);
             /**********************/
 
             // try {
@@ -257,7 +279,7 @@ export default class RegisterForm extends Component {
     }
 
     render() {
-        const { step, selectedCity, selectedCode, checkValidCity, checkValidCode, alertData, isProcessing } = this.state;
+        const { step, selectedCity, selectedCode, checkValidCity, checkValidCode, alertData, isProcessing, cities } = this.state;
 
         const stepOne = (
             <div
@@ -273,7 +295,7 @@ export default class RegisterForm extends Component {
                 </Row>
                 <Row className="justify-content-center mb-3">
                     <Col md={6}>
-                        <MySelect value={selectedCity} onChange={this.handleCityChange} options={CITIES} placeholder={STRINGS.city} checkValid={checkValidCity} />
+                        <MySelect value={selectedCity} onChange={this.handleCityChange} options={cities} placeholder={STRINGS.city} checkValid={checkValidCity} />
                     </Col>
                 </Row>
                 <Row className="justify-content-center mb-3">
@@ -367,7 +389,7 @@ export default class RegisterForm extends Component {
 
         return (
             <div className="my-form register-form">
-                {alertData && <Alert variant={alertData.variant}>{alertData.text}</Alert>}
+                {alertData && <Alert variant={alertData.variant}>{Validate.getAlertMsg(alertData.messages)}</Alert>}
 
                 {step < 3 ? (
                     <div>

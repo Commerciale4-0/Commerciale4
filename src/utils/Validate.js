@@ -1,14 +1,21 @@
 import { STRINGS } from "./strings";
 
 export const VALID = 0;
-export const EMPTY = -1;
-export const INVALID_EMAIL = -2;
-export const INVALID_PASSWORD = -3;
-export const INVALID_PHONE = -4;
-export const INVALID_NUMBER = -5;
-export const INVALID_VAT = -6;
-
-export const PASSWORD_NOT_MATCH = -7;
+export const EMPTY = 1;
+export const INVALID_EMAIL = 2;
+export const INVALID_PASSWORD = 3;
+export const INVALID_PHONE = 4;
+export const INVALID_NUMBER = 5;
+export const INVALID_VAT = 6;
+export const PASSWORD_NOT_MATCH = 7;
+// export const VALID = 0;
+// export const EMPTY = -1;
+// export const INVALID_EMAIL = -2;
+// export const INVALID_PASSWORD = -3;
+// export const INVALID_PHONE = -4;
+// export const INVALID_NUMBER = -5;
+// export const INVALID_VAT = -6;
+// export const PASSWORD_NOT_MATCH = -7;
 
 export const MSG_VALID = " " + STRINGS.isValid;
 export const MSG_EMPTY = " " + STRINGS.shouldNotBeEmpty;
@@ -83,4 +90,29 @@ export const stringCalc = (value, maxCount) => {
         charCount = maxCount - value;
         return charCount;
     }
+};
+
+export const getAlertMsg = (values) => {
+    let string = "";
+    const VALIDATE_MSGS = [
+        " " + STRINGS.isValid,
+        " " + STRINGS.shouldNotBeEmpty,
+        " " + STRINGS.isNotValid,
+        " " + STRINGS.shouldBe7,
+        " " + STRINGS.isNotValid,
+        " " + STRINGS.isNotValid,
+        " " + STRINGS.shouldBe11,
+        " " + STRINGS.passswordNotMatch,
+    ];
+
+    for (let i in values) {
+        if (values[i].langKey) {
+            string += STRINGS[values[i].langKey];
+        } else if (values[i].validCode) {
+            string += VALIDATE_MSGS[values[i].validCode];
+        } else {
+            string += values[i];
+        }
+    }
+    return string;
 };

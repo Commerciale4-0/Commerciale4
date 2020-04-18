@@ -54,7 +54,9 @@ export default class LandingPage extends Component {
                 </div>
                 <div className="about">
                     <div className="d-flex py-3">
-                        <img src="images/profile.png" className="avatar" alt="" />
+                        <div>
+                            <img src="images/profile.png" alt="" />
+                        </div>
                         <div className="pl-4 pt-3">
                             <p className="title">{STRINGS.companyProfile}</p>
                             <p>{STRINGS.createCompanyProfile}</p>
@@ -62,7 +64,9 @@ export default class LandingPage extends Component {
                     </div>
                     <hr />
                     <div className="d-flex py-3">
-                        <img src="images/earth.png" className="avatar" alt="" />
+                        <div>
+                            <img src="images/earth.png" alt="" />
+                        </div>
                         <div className="pl-4 pt-3">
                             <p className="title">{STRINGS.advancedSearchSystem}</p>
                             <p>{STRINGS.makeDetailResearch}</p>

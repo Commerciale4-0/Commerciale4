@@ -80,11 +80,11 @@ export default class Dashboard extends Component {
 
     getCurrentLocation = () => {
         let loggedUser = JSON.parse(sessionStorage.getItem(LOGGED_USER));
-        if (loggedUser && loggedUser.latitude && loggedUser.longitude) {
+        if (loggedUser && loggedUser.user && loggedUser.user.latitude && loggedUser.user.longitude) {
             this.setState({
                 myLocation: {
-                    latitude: loggedUser.latitude,
-                    longitude: loggedUser.longitude,
+                    latitude: loggedUser.user.latitude,
+                    longitude: loggedUser.user.longitude,
                 },
             });
             return;

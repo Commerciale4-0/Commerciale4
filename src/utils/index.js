@@ -1,4 +1,5 @@
 import { STRINGS } from "./strings";
+import { VALIDATE_MSGS } from "./Validate";
 
 export const LOGGED_USER = "loggedUser";
 
@@ -265,6 +266,18 @@ export const citiesInRegion = (regionId) => {
         }
     }
     return cities;
+};
+
+export const citiesByAsc = () => {
+    return CITIES.sort((a, b) => {
+        return a.label.localeCompare(b.label);
+    });
+};
+
+export const regionsByAsc = () => {
+    return REGIONS.sort((a, b) => {
+        return a.label.localeCompare(b.label);
+    });
 };
 
 export const maxsFromMin = (minId, items) => {

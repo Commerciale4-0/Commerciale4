@@ -105,10 +105,10 @@
     "toVerifyYourAccount": "per verificare il suo account. La preghiamo di controllare la casella PEC per continuare la registrazione",
     "connectionFailed": "Connessione fallita!",
     "isValid": "è valido!",
-    "shouldNotBeEmpty": "Il campo non deve essere vuoto!",
-    "isNotValid": "Non valido!",
-    "shouldBe7": "Deve essere di almeno 7 caratteri!",
-    "shouldBe11": "Deve essere di 11 caratteri!",
+    "shouldNotBeEmpty": "il campo non deve essere vuoto!",
+    "isNotValid": "non valido!",
+    "shouldBe7": "deve essere di almeno 7 caratteri!",
+    "shouldBe11": "deve essere di 11 caratteri!",
     "passswordNotMatch": "La password non coincide",
     "errorOccuredDelete": "Si è verificato un errore a causa della eliminazione",
     "wantToDelete": "Vuole procedere con la eliminazione?",
@@ -158,5 +158,6 @@
     "contactUs": "Contattaci",
     "resetYourPassword": "Reimposta la tua password",
     "createPassword": "Puoi creare qui la tua password.",
-    "passwordReseted": "La password é stata reimpostata"
+    "passwordReset": "La password é stata reimpostata",
+    "upTo": "Up to"
 }
