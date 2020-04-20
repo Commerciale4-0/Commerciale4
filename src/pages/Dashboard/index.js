@@ -137,6 +137,7 @@ export default class Dashboard extends Component {
                         this.pullAllCompanies();
                     } else {
                         alert(STRINGS.connectionFailed);
+                        this.setState({ isProcessing: false });
                     }
                 }
             });
@@ -147,6 +148,7 @@ export default class Dashboard extends Component {
                 this.pullAllCompanies();
             } else {
                 alert(STRINGS.connectionFailed);
+                this.setState({ isProcessing: false });
             }
         }
     };
