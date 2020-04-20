@@ -1,8 +1,5 @@
 const router = require("express").Router();
-
 const nodemailer = require("nodemailer");
-const smtpTransport = require("nodemailer-smtp-transport");
-
 const { Utils } = require("../utils");
 const { client, query } = require("../db");
 const q = query;
@@ -11,24 +8,15 @@ const crypto = require("crypto");
 const AWS = require("aws-sdk");
 
 function sendMailer(emailData) {
-    // const transporter = nodemailer.createTransport({
-    //     host: "smtp.gmail.com",
-    //     port: 587,
-    //     secure: false,
-    //     auth: {
-    //         user: Utils.NODEMAILER_ACCOUNT,
-    //         pass: Utils.NODEMAILER_PASSWORD,
-    //     },
-    // });
-    let transport = nodemailer.createTransport(
-        smtpTransport({
-            service: "gmail",
-            auth: {
-                user: Utils.NODEMAILER_ACCOUNT, // my mail
-                pass: Utils.NODEMAILER_PASSWORD,
-            },
-        })
-    );
+    const transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true,
+        auth: {
+            user: Utils.NODEMAILER_ACCOUNT,
+            pass: Utils.NODEMAILER_PASSWORD,
+        },
+    });
 
     const mailOption = {
         from: Utils.SENDER_EMAIL,
@@ -37,7 +25,7 @@ function sendMailer(emailData) {
         html: emailData.html,
     };
 
-    return transport.sendMail(mailOption);
+    return transporter.sendMail(mailOption);
 }
 const encrypt = (password) => {
     let mykey = crypto.createCipher("aes-128-cbc", password);
