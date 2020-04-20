@@ -13,13 +13,16 @@ function sendMailer(emailData) {
         port: 465,
         secure: true,
         auth: {
-            user: Utils.NODEMAILER_ACCOUNT,
-            pass: Utils.NODEMAILER_PASSWORD,
+            user: "daxing999@gmail.com",
+            pass: "Eightyfour526",
+            // user: Utils.NODEMAILER_ACCOUNT,
+            // pass: Utils.NODEMAILER_PASSWORD,
         },
     });
 
     const mailOption = {
-        from: Utils.SENDER_EMAIL,
+        // from: Utils.SENDER_EMAIL,
+        from: "daxing999@gmail.com",
         to: emailData.address,
         subject: emailData.subject,
         html: emailData.html,
