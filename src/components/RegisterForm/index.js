@@ -231,11 +231,13 @@ export default class RegisterForm extends Component {
             if (res.status === 0) {
                 // this.setAlertData(0, STRINGS.theEmailExist);
                 this.setAlertData(0, [{ langKey: "theEmailExist" }]);
+                this.setState({ isProcessing: false });
                 return;
             }
             if (res.status === -1) {
                 // this.setAlertData(0, STRINGS.databaseFailed);
                 this.setAlertData(0, [{ langKey: "databaseFailed" }]);
+                this.setState({ isProcessing: false });
                 return;
             }
 
