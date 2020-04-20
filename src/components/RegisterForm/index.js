@@ -241,7 +241,7 @@ export default class RegisterForm extends Component {
 
             /* it's for just test */
             // this.setState({ step: 3 });
-            // this.setAlertData(1, [{ langKey: "sentEmail" }, ` ${data.pec}`, { langKey: "toVerifyYourAccount" }]);
+            // this.setAlertData(1, [{ langKey: "sentEmail" }, ` ${data.pec} `, { langKey: "toVerifyYourAccount" }]);
             /**********************/
 
             try {
@@ -256,7 +256,7 @@ export default class RegisterForm extends Component {
                     // this.setAlertData(0, [{ langKey: "connectionFailed" }]);
                 } else {
                     this.setState({ step: 3 });
-                    this.setAlertData(1, [{ langKey: "sentEmail" }, ` ${data.pec}`, { langKey: "toVerifyYourAccount" }]);
+                    this.setAlertData(1, [{ langKey: "sentEmail" }, ` ${data.pec} `, { langKey: "toVerifyYourAccount" }]);
                 }
             } catch (e) {
                 this.setAlertData(0, [{ langKey: "connectionFailed" }]);
