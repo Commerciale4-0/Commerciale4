@@ -13,15 +13,15 @@ function Pending() {
     const [isProcessing, setProcessing] = useState(false);
 
     useEffect(() => {
-        getPendingUser();
+        getPendingUsers();
     }, []);
-    const getPendingUser = async () => {
+
+    const getPendingUsers = async () => {
         setProcessing(true);
         await requestAPI("/admin/users/pending", "POST")
             .then((res) => {
                 if (res.status === 1) {
-                    setPendingUsers(res.data);
-                    setItemsToShow(res.data.slice(0, itemsPerPage));
+                    refreshPendingUsers(res.data);
                 } else {
                     console.log(res.data);
                 }
@@ -31,6 +31,13 @@ function Pending() {
             });
         setProcessing(false);
     };
+
+    const refreshPendingUsers = (users) => {
+        setPendingUsers(users);
+        setItemsToShow(users.slice(0, itemsPerPage));
+        setActivePage(1);
+    };
+
     const handlePageChange = (pageNumber) => {
         let startIndex = (pageNumber - 1) * itemsPerPage;
         let endIndex = startIndex + itemsPerPage;
@@ -38,12 +45,16 @@ function Pending() {
         setActivePage(pageNumber);
     };
 
-    const handleClickAccept = async (e) => {
+    const handleClickAccept = async (id) => {
         setProcessing(true);
-        await requestAPI("/admin/users/pending/active", "POST", { id: e.currentTarget.name })
+        await requestAPI("/admin/users/pending/active", "POST", { id: id })
             .then((res) => {
                 if (res.status === 1) {
-                    console.log(res.data);
+                    pendingUsers.splice(
+                        pendingUsers.findIndex((user) => user.id === id),
+                        1
+                    );
+                    refreshPendingUsers(pendingUsers);
                 } else {
                     console.log(res.data);
                     return;
@@ -52,25 +63,27 @@ function Pending() {
             .catch((err) => {
                 console.log(err);
             });
-        getPendingUser();
         setProcessing(false);
     };
-    const handleClickDelete = async (e) => {
+
+    const handleClickDelete = async (id) => {
         if (window.confirm("Are you really delete?")) {
             setProcessing(true);
-            await requestAPI("/admin/users/pending/delete", "POST", { id: e.currentTarget.name })
+            await requestAPI("/admin/users/pending/delete", "POST", { id: id })
                 .then((res) => {
                     if (res.status === 1) {
-                        console.log(res.data);
+                        pendingUsers.splice(
+                            pendingUsers.findIndex((user) => user.id === id),
+                            1
+                        );
+                        refreshPendingUsers(pendingUsers);
                     } else {
                         console.log(res.data);
-                        return;
                     }
                 })
                 .catch((err) => {
                     console.log(err);
                 });
-            getPendingUser();
             setProcessing(false);
         }
     };
@@ -132,10 +145,10 @@ function Pending() {
                                     <td>{user.pec}</td>
                                     <td>{user.email}</td>
                                     <td>
-                                        <button type="button" className="btn btn-outline-success btn-sm btn-size mr-2" name={user.id} onClick={handleClickAccept}>
+                                        <button type="button" className="btn btn-outline-success btn-sm btn-size mr-2" onClick={() => handleClickAccept(user.id)}>
                                             Accept
                                         </button>
-                                        <button type="button" className="btn btn-outline-danger btn-sm btn-size" name={user.id} onClick={handleClickDelete}>
+                                        <button type="button" className="btn btn-outline-danger btn-sm btn-size" onClick={() => handleClickDelete(user.id)}>
                                             Delete
                                         </button>
                                     </td>

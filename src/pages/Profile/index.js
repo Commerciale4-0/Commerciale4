@@ -3,7 +3,7 @@ import "./index.css";
 import ProfileCompany from "../../components/Profile/Company";
 import ProfileNews from "../../components/Profile/News";
 import ProfileAccount from "../../components/Profile/Account";
-import { LOGGED_USER } from "../../utils";
+import { SESSION_LOGGED_USER } from "../../utils";
 import { STRINGS } from "../../utils/strings";
 
 export default class Profile extends Component {
@@ -17,7 +17,7 @@ export default class Profile extends Component {
     }
 
     componentDidMount = async () => {
-        let loggedUser = JSON.parse(sessionStorage.getItem(LOGGED_USER));
+        let loggedUser = JSON.parse(sessionStorage.getItem(SESSION_LOGGED_USER));
         if (!loggedUser) {
             window.location.href = "/";
             return;

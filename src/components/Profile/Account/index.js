@@ -3,7 +3,7 @@ import "./index.css";
 import * as Validate from "../../../utils/Validate";
 import { Alert } from "react-bootstrap";
 import { requestAPI } from "../../../utils/api";
-import { LOGGED_USER } from "../../../utils";
+import { SESSION_LOGGED_USER } from "../../../utils";
 import SpinnerView from "../../SpinnerView";
 import crypto from "crypto";
 import { STRINGS } from "../../../utils/strings";
@@ -136,7 +136,7 @@ export default class ProfileAccount extends Component {
                 this.setPasswordAlertData(0, [{ langKey: "databaseFailed" }]);
             } else {
                 userData.user.password = res.data;
-                sessionStorage.setItem(LOGGED_USER, JSON.stringify(userData));
+                sessionStorage.setItem(SESSION_LOGGED_USER, JSON.stringify(userData));
                 this.setPasswordAlertData(1, [{ langKey: "passwordChanged" }]);
             }
             this.setState({ isProcessing: false });
@@ -160,7 +160,7 @@ export default class ProfileAccount extends Component {
             .then((res) => {
                 if (res.status === 1) {
                     userData.user.email = res.data;
-                    sessionStorage.setItem(LOGGED_USER, JSON.stringify(userData));
+                    sessionStorage.setItem(SESSION_LOGGED_USER, JSON.stringify(userData));
                     this.setEmailAlertData(1, [{ langKey: "emailChanged" }]);
                 } else {
                     this.setEmailAlertData(0, [{ langKey: "databaseFailed" }]);

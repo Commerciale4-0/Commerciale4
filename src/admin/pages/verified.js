@@ -26,8 +26,7 @@ function Verified() {
         await requestAPI("/user/all", "POST")
             .then((res) => {
                 if (res.status === 1) {
-                    setActivatedUsers(res.data);
-                    setItemsToShow(res.data.slice(0, itemsPerPage));
+                    refreshActivatedUsers(res.data);
                 } else {
                     console.log(res.data);
                 }
@@ -37,15 +36,23 @@ function Verified() {
             });
         setProcessing(false);
     };
+
+    const refreshActivatedUsers = (users) => {
+        setActivatedUsers(users);
+        setItemsToShow(users.slice(0, itemsPerPage));
+        setActivePage(1);
+    };
+
     const handlePageChange = (pageNumber) => {
         let startIndex = (pageNumber - 1) * itemsPerPage;
         let endIndex = startIndex + itemsPerPage;
         setItemsToShow(activatedUsers.slice(startIndex, endIndex));
         setActivePage(pageNumber);
     };
-    const handleClickReject = async (e) => {
+
+    const handleClickReject = async (id) => {
         setProcessing(true);
-        await requestAPI("/admin/users/reject", "POST", { id: e.currentTarget.name })
+        await requestAPI("/admin/users/reject", "POST", { id: id })
             .then((res) => {
                 if (res.status === 1) {
                     console.log(res.data);
@@ -57,7 +64,6 @@ function Verified() {
             .catch((err) => {
                 console.log(err);
             });
-        getActivatedUsers();
         setProcessing(false);
     };
 
@@ -66,13 +72,17 @@ function Verified() {
         setSelectedUser(user);
     };
 
-    const handleClickDelete = async (e) => {
+    const handleClickDelete = async (id) => {
         if (window.confirm("Are you really delete?")) {
             setProcessing(true);
-            await requestAPI("/admin/users/pending/delete", "POST", { id: e.currentTarget.name })
+            await requestAPI("/admin/users/pending/delete", "POST", { id: id })
                 .then((res) => {
                     if (res.status === 1) {
-                        console.log(res.data);
+                        activatedUsers.splice(
+                            activatedUsers.findIndex((user) => user.id === id),
+                            1
+                        );
+                        refreshActivatedUsers(activatedUsers);
                     } else {
                         console.log(res.data);
                         return;
@@ -81,7 +91,6 @@ function Verified() {
                 .catch((err) => {
                     console.log(err);
                 });
-            getActivatedUsers();
             setProcessing(false);
         }
     };
@@ -146,7 +155,7 @@ function Verified() {
                                         <td>{stringWithUnitFromNumber(user.employees)}</td>
                                         <td>{stringWithUnitFromNumber(user.revenues)}</td>
                                         <td>
-                                            <button type="button" className="btn btn-outline-danger btn-sm btn-size" name={user.id} onClick={handleClickDelete}>
+                                            <button type="button" className="btn btn-outline-danger btn-sm btn-size" onClick={() => handleClickDelete(user.id)}>
                                                 Delete
                                             </button>
                                         </td>

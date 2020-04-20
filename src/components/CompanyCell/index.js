@@ -3,34 +3,37 @@ import "./index.css";
 import { stringWithUnitFromNumber } from "../../utils";
 import { LangConsumer } from "../../utils/LanguageContext";
 import { STRINGS } from "../../utils/strings";
+import CompanyReadMore from "../CompanyReadMore";
 
 export default class CompanyCell extends Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            showReadMore: false,
+        };
+
         this.spanDistance = React.createRef();
         this.spanISO = React.createRef();
+        this.spanAddress = React.createRef();
     }
 
     componentDidMount = () => {
+        let distanceWidth = this.spanDistance.current.offsetWidth + 2;
         if (this.spanDistance.current.offsetWidth > this.spanISO.current.offsetWidth) {
-            this.spanISO.current.style.width = this.spanDistance.current.offsetWidth + "px";
+            this.spanISO.current.style.width = distanceWidth + "px";
         }
         if (this.spanISO.current.offsetWidth > this.spanDistance.current.offsetWidth) {
-            this.spanDistance.current.style.width = this.spanISO.current.offsetWidth + "px";
+            distanceWidth = this.spanISO.current.offsetWidth + 2;
+            this.spanDistance.current.style.width = distanceWidth + "px";
         }
+        this.spanAddress.current.style.width = `calc(100% - ${distanceWidth}px)`;
     };
 
-    getInstructonText = (intro) => {
-        if (!intro) {
-            return "";
-        }
+    handleClickReadMore = () => {};
 
-        let limit = this.props.viewMode ? 180 : 90;
-        if (intro.length < limit) {
-            return intro;
-        }
-        return intro.substr(0, limit) + "...";
+    handleClickClose = () => {
+        this.setState({ showReadMore: false });
     };
 
     render() {
@@ -44,12 +47,12 @@ export default class CompanyCell extends Component {
                 <div className="col-9 title pl-2">{company.officialName}</div>
                 <div className={`${viewMode ? "col-xl-10 col-md-9" : "col-md-12"} col-12 content`}>
                     <h5>{company.officialName}</h5>
-                    <div className="d-flex justify-content-between">
-                        <span>
+                    <div className="d-flex">
+                        <span className="address" ref={this.spanAddress}>
                             <i className="fa fa-map-marker" />
-                            {company.city}, {company.region}
+                            {company.companyAddress && company.companyAddress.length ? company.companyAddress : company.city + "," + company.region}
                         </span>
-                        <span ref={this.spanDistance}>
+                        <span ref={this.spanDistance} className="distance">
                             <i className="fa fa-map-signs" />
                             {company.distance ? `${company.distance} km` : "---"}
                         </span>
@@ -106,11 +109,18 @@ export default class CompanyCell extends Component {
                         </div>
                     </div>
                     <div className="d-flex justify-content-end pt-2">
-                        <button className="text-uppercase text-bold" onClick={handleClickProfile}>
-                            {STRINGS.profile}
-                        </button>
+                        {company.id ? (
+                            <button className="text-uppercase" onClick={handleClickProfile}>
+                                {STRINGS.profile}
+                            </button>
+                        ) : (
+                            <button className="text-uppercase read-more" onClick={() => this.setState({ showReadMore: true })}>
+                                {STRINGS.readMore}
+                            </button>
+                        )}
                     </div>
                 </div>
+                {this.state.showReadMore && <CompanyReadMore company={company} onClose={this.handleClickClose} />}
             </div>
         );
     }

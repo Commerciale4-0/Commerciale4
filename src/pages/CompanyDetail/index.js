@@ -4,7 +4,7 @@ import DetailBody from "../../components/Detail/Body";
 import "./index.css";
 import { requestAPI } from "../../utils/api";
 import SpinnerView from "../../components/SpinnerView";
-import { orderTags } from "../../utils";
+import { orderTags, SESSION_SELECTED_COMPANY } from "../../utils";
 import { LangConsumer } from "../../utils/LanguageContext";
 import { STRINGS } from "../../utils/strings";
 
@@ -23,6 +23,12 @@ export default class CompanyDetail extends Component {
     componentDidMount = async () => {
         let id = this.props.match.params.id;
         if (!id) {
+            return;
+        }
+
+        if (id === "unknown") {
+            let selectedCompany = JSON.parse(sessionStorage.getItem(SESSION_SELECTED_COMPANY));
+            this.setState({ profile: { user: selectedCompany, posts: [] } });
             return;
         }
 
@@ -55,6 +61,7 @@ export default class CompanyDetail extends Component {
 
     render() {
         const { profile, isProcessing } = this.state;
+        console.log(profile);
         return (
             <div>
                 <LangConsumer>

@@ -7,15 +7,16 @@
     border-radius: 2px;
 }
 
-.company-cell.grid {
-    min-height: 264px;
-}
 .company-cell .title {
     margin: auto 0;
     padding: 5px;
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 500;
     display: none;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 60px;
 }
 .company-cell .title,
 .company-cell h5 {
@@ -30,6 +31,21 @@
     padding-left: 20px;
 }
 
+.company-cell .address {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 20px;
+}
+.company-cell .distance {
+    overflow: hidden;
+    height: 20px;
+    /* display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical; */
+}
 .company-cell .content .intro {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -74,12 +90,12 @@
     padding: 0;
 }
 
-.company-cell .distance {
+/* .company-cell .distance {
     font-weight: bold;
     background: #ddd;
     border-radius: 4px;
     padding: 0 4px;
-}
+} */
 
 .company-cell i {
     color: #888;
@@ -94,10 +110,11 @@
 }
 
 .company-cell.grid {
-    padding: 10px 14px;
+    padding: 14px;
 }
 .company-cell.grid .title {
     display: block;
+    /* align-items: center; */
 }
 .company-cell.grid h5 {
     display: none;
@@ -108,6 +125,15 @@
 }
 .company-cell.grid .content {
     padding: 10px 0 0 0;
+}
+
+.company-cell button.read-more {
+    background: transparent;
+    color: #333;
+    text-decoration: underline;
+}
+.company-cell button.read-more:hover {
+    color: #13a;
 }
 
 @media (max-width: 768px) and (min-width: 576px) {

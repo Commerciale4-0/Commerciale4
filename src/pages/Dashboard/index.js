@@ -6,7 +6,7 @@ import CompanyCell from "../../components/CompanyCell";
 import { Dropdown } from "react-bootstrap";
 // import Sidebar from "../../components/Sidebar";
 import Pagination from "react-js-pagination";
-import { distanceFromCoords, numberFromStringWithUnit, orderTags, LOGGED_USER, ORDERS } from "../../utils";
+import { distanceFromCoords, numberFromStringWithUnit, orderTags, SESSION_LOGGED_USER, ORDERS, getTotalCompanies } from "../../utils";
 import SpinnerView from "../../components/SpinnerView";
 import { LangConsumer } from "../../utils/LanguageContext";
 import { STRINGS } from "../../utils/strings";
@@ -79,7 +79,7 @@ export default class Dashboard extends Component {
     };
 
     getCurrentLocation = () => {
-        let loggedUser = JSON.parse(sessionStorage.getItem(LOGGED_USER));
+        let loggedUser = JSON.parse(sessionStorage.getItem(SESSION_LOGGED_USER));
         if (loggedUser && loggedUser.user && loggedUser.user.latitude && loggedUser.user.longitude) {
             this.setState({
                 myLocation: {
@@ -110,8 +110,9 @@ export default class Dashboard extends Component {
             await requestAPI("/user/all", "POST").then((res) => {
                 if (res.status === 1) {
                     let companies = this.companiesWithDistance(res.data);
+                    let totalCompanies = getTotalCompanies(companies);
                     this.setState({
-                        totalCompanies: companies,
+                        totalCompanies: totalCompanies,
                     });
 
                     let filter = JSON.parse(sessionStorage.getItem("filter"));
@@ -120,12 +121,12 @@ export default class Dashboard extends Component {
                             updateFilterForm: true,
                         });
 
-                        this.applyFilter(filter, companies);
+                        this.applyFilter(filter, totalCompanies);
                     } else {
                         this.setState({
-                            filteredCompanies: companies,
+                            filteredCompanies: totalCompanies,
                         });
-                        this.setCompaniesToShow(companies, selectedOrder, activePage, itemsCountPerPage);
+                        this.setCompaniesToShow(totalCompanies, selectedOrder, activePage, itemsCountPerPage);
                     }
 
                     this.setState({ isProcessing: false });

@@ -38,6 +38,23 @@ const getID = () => {
     const nanoSecond = hrTime[0] * 1000000000 + hrTime[1];
     return nanoSecond;
 };
+
+// router.post('/upload-companies', async(req, res) => {
+//     let companies = req.body;
+//     companies.forEach(company => {
+//         let result = await client.query(
+//             q.Create(q.Collection("User"), {
+//                 data: {
+//                     ...company,
+//                     active: "1",
+//                     id: getID(),
+//                 },
+//             })
+//         );
+
+//     })
+// })
+
 router.post("/verify-pec", async (req, res) => {
     let data = req.body;
     // let html = `${Utils.VERIFY_EMAIL_MESSAGE}
@@ -49,6 +66,7 @@ router.post("/verify-pec", async (req, res) => {
             html: Utils.VERIFY_EMAIL_MESSAGE + Utils.MESSAGE_FOOTER,
         });
     } catch (e) {
+        console.log(e.toString());
         return res.send({ status: 0, message: e.toString() });
     }
     res.send({ status: 1, message: "Email has been sent" });
@@ -64,9 +82,7 @@ router.post("/login", async (req, res) => {
     try {
         let result = await client.query(
             q.Map(
-                q.Paginate(
-                    q.Match(q.Index("findUserByEmailAndPassAndActive"), data.email, encrypt(data.password), "1")
-                ),
+                q.Paginate(q.Match(q.Index("findUserByEmailAndPassAndActive"), data.email, encrypt(data.password), "1")),
                 q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))
             )
         );
@@ -77,10 +93,7 @@ router.post("/login", async (req, res) => {
             });
         } else {
             let posts = await client.query(
-                q.Map(
-                    q.Paginate(q.Match(q.Index("findPostsByUserId"), result.data[0].id)),
-                    q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))
-                )
+                q.Map(q.Paginate(q.Match(q.Index("findPostsByUserId"), result.data[0].id)), q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref")))))
             );
             res.send({
                 status: 1,
@@ -210,17 +223,9 @@ router.post("/", async (req, res) => {
         return;
     }
     try {
-        let result = await client.query(
-            q.Map(
-                q.Paginate(q.Match(q.Index("findUserById"), userId)),
-                q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))
-            )
-        );
+        let result = await client.query(q.Map(q.Paginate(q.Match(q.Index("findUserById"), userId)), q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))));
         let posts = await client.query(
-            q.Map(
-                q.Paginate(q.Match(q.Index("findPostsByUserId"), parseInt(userId))),
-                q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))
-            )
+            q.Map(q.Paginate(q.Match(q.Index("findPostsByUserId"), parseInt(userId))), q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref")))))
         );
         if (result.data.length) {
             res.send({
@@ -238,12 +243,7 @@ router.post("/", async (req, res) => {
 
 router.post("/all", async (req, res) => {
     try {
-        let result = await client.query(
-            q.Map(
-                q.Paginate(q.Match(q.Index("findUserByActive"), "1")),
-                q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))
-            )
-        );
+        let result = await client.query(q.Map(q.Paginate(q.Match(q.Index("findUserByActive"), "1")), q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))));
         if (result.data.length) {
             res.send({ status: 1, data: result.data });
         } else {
@@ -258,18 +258,8 @@ router.post("/all", async (req, res) => {
 router.get("/profile/:id", async (req, res) => {
     let userId = req.params.id;
     try {
-        let profile = await client.query(
-            q.Map(
-                q.Paginate(q.Match(q.Index("findUserById"), userId)),
-                q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))
-            )
-        );
-        let posts = await client.query(
-            q.Map(
-                q.Paginate(q.Match(q.Index("findPostsByUserId"), userId)),
-                q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))
-            )
-        );
+        let profile = await client.query(q.Map(q.Paginate(q.Match(q.Index("findUserById"), userId)), q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))));
+        let posts = await client.query(q.Map(q.Paginate(q.Match(q.Index("findPostsByUserId"), userId)), q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))));
         res.send({ status: 1, profile: profile.data[0], posts: posts.data });
     } catch (e) {
         res.send({ status: 0, data: "Database connection failed!" });
@@ -427,9 +417,7 @@ router.post("/profile/edit", async (req, res) => {
     }
 
     try {
-        let result = await client.query(
-            q.Update(q.Select("ref", q.Get(q.Match(q.Index("findUserById"), data.id))), saveToData)
-        );
+        let result = await client.query(q.Update(q.Select("ref", q.Get(q.Match(q.Index("findUserById"), data.id))), saveToData));
 
         res.send({
             status: 1,
@@ -517,12 +505,7 @@ router.post("/delete", async (req, res) => {
         res.send({ status: 0, message: "Database connection failed!" });
     }
     try {
-        let isPosts = await client.query(
-            q.Map(
-                q.Paginate(q.Match(q.Index("findPostsByUserId"), data.id)),
-                q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))
-            )
-        );
+        let isPosts = await client.query(q.Map(q.Paginate(q.Match(q.Index("findPostsByUserId"), data.id)), q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))));
         if (isPosts.data.length) {
             await client.query(q.Delete(q.Select("ref", q.Get(q.Match(q.Index("findPostsByUserId"), data.id)))));
         }
@@ -542,9 +525,7 @@ router.post("/update-email", async (req, res) => {
         },
     };
     try {
-        let result = await client.query(
-            q.Update(q.Select("ref", q.Get(q.Match(q.Index("findUserById"), data.id))), saveToData)
-        );
+        let result = await client.query(q.Update(q.Select("ref", q.Get(q.Match(q.Index("findUserById"), data.id))), saveToData));
         res.send({ status: 1, data: result.data.email });
     } catch (error) {
         console.log({ status: 0, message: "Database connection failed!" });

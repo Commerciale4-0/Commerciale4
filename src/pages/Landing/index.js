@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./index.css";
 import LoginForm from "../../components/LoginForm";
 import FilterForm from "../../components/FilterForm";
-import { LOGGED_USER } from "../../utils";
+import { SESSION_LOGGED_USER } from "../../utils";
 // import SearchInput from "../../components/SearchInput";
 import { STRINGS } from "../../utils/strings";
 
@@ -32,7 +32,7 @@ export default class LandingPage extends Component {
     };
 
     render() {
-        const loggedUser = JSON.parse(sessionStorage.getItem(LOGGED_USER));
+        const loggedUser = JSON.parse(sessionStorage.getItem(SESSION_LOGGED_USER));
         return (
             <div className="landing">
                 <div className="slide">

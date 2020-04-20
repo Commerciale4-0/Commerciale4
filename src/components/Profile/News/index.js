@@ -3,7 +3,7 @@ import TextareaAutosize from "react-autosize-textarea";
 import "./index.css";
 import PostItem from "../../PostItem";
 import { requestAPI } from "../../../utils/api";
-import { LOGGED_USER } from "../../../utils";
+import { SESSION_LOGGED_USER } from "../../../utils";
 import SpinnerView from "../../SpinnerView";
 // import { scaleImage } from "../../../utils/ImageProcess";
 import * as Validate from "../../../utils/Validate";
@@ -47,13 +47,13 @@ export default class ProfileNews extends Component {
 
     updatePosts = (posts) => {
         this.setState({ posts });
-        let loggedUser = JSON.parse(sessionStorage.getItem(LOGGED_USER));
+        let loggedUser = JSON.parse(sessionStorage.getItem(SESSION_LOGGED_USER));
 
         let newData = {
             ...loggedUser,
             posts: posts,
         };
-        sessionStorage.setItem(LOGGED_USER, JSON.stringify(newData));
+        sessionStorage.setItem(SESSION_LOGGED_USER, JSON.stringify(newData));
     };
 
     handleClickPhoto = (e) => {

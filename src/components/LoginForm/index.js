@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./index.css";
 import { requestAPI } from "../../utils/api";
-import { LOGGED_USER } from "../../utils";
+import { SESSION_LOGGED_USER } from "../../utils";
 import * as Validate from "../../utils/Validate";
 import { Alert } from "react-bootstrap";
 import SpinnerView from "../SpinnerView";
@@ -54,7 +54,7 @@ class LoginForm extends Component {
             if (res.status === 0) {
                 alert(STRINGS.emailOrPasswordIncorrect);
             } else if (res.status === 1) {
-                sessionStorage.setItem(LOGGED_USER, JSON.stringify(res.data));
+                sessionStorage.setItem(SESSION_LOGGED_USER, JSON.stringify(res.data));
                 window.location.href = "/";
             } else {
                 alert(STRINGS.connectionFailed);

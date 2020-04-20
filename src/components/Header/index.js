@@ -4,9 +4,10 @@ import "./index.css";
 import Sidebar from "../Sidebar";
 // import SearchInput from "../SearchInput";
 import { requestAPI } from "../../utils/api";
-import { LOGGED_USER } from "../../utils";
+import { SESSION_LOGGED_USER, getTotalCompanies } from "../../utils";
 import Lang from "../Lang";
 import { STRINGS } from "../../utils/strings";
+import CompanyReadMore from "../CompanyReadMore";
 
 class Header extends Component {
     constructor(props) {
@@ -23,6 +24,7 @@ class Header extends Component {
             isExpanded: false,
             prevScrollpos: window.pageYOffset,
             visible: true,
+            companyToPreview: null,
         };
     }
 
@@ -80,7 +82,7 @@ class Header extends Component {
 
     handleClickMenu = (menu) => {
         if (menu.link === "/") {
-            sessionStorage.removeItem(LOGGED_USER);
+            sessionStorage.removeItem(SESSION_LOGGED_USER);
         }
         window.location.href = menu.link;
         this.setState({
@@ -89,7 +91,7 @@ class Header extends Component {
     };
 
     handleClickLogout = () => {
-        sessionStorage.removeItem(LOGGED_USER);
+        sessionStorage.removeItem(SESSION_LOGGED_USER);
         window.location.href = "/";
     };
 
@@ -105,12 +107,21 @@ class Header extends Component {
         window.location.href = "/user-edit";
     };
 
+    handleCloseCompanyPreview = () => {
+        this.setState({ companyToPreview: null });
+    };
+
     handleKeyPress = (e) => {
         if (e.key === "Enter") {
             const { searchedCompanies, cursor } = this.state;
             if (searchedCompanies && searchedCompanies.length) {
                 e.target.value = searchedCompanies[cursor].officialName;
-                window.location.href = `/company/${searchedCompanies[cursor].id}`;
+                if (searchedCompanies[cursor].id) {
+                    window.location.href = `/company/${searchedCompanies[cursor].id}`;
+                } else {
+                    this.setState({ companyToPreview: searchedCompanies[cursor], searchedCompanies: null, cursor: 0 });
+                    this.refKey.current.value = "";
+                }
             }
             // this.setState({ searchedCompanies: null, cursor: 0 });
         }
@@ -150,10 +161,9 @@ class Header extends Component {
             await requestAPI("/user/all", "POST").then((res) => {
                 if (res.status === 1) {
                     companies = res.data;
+                    let totalCompanies = getTotalCompanies(companies);
+                    this.setState({ totalCompanies });
                 }
-                this.setState({
-                    totalCompanies: companies,
-                });
             });
         }
 
@@ -171,8 +181,12 @@ class Header extends Component {
 
     handleClickCompany = (company) => {
         this.refKey.current.value = company.officialName;
-        window.location.href = `/company/${company.id}`;
-        // this.setState({ searchedCompanies: null, cursor: 0 });
+        if (company.id) {
+            window.location.href = `/company/${company.id}`;
+        } else {
+            this.setState({ companyToPreview: company, searchedCompanies: null, cursor: 0 });
+            this.refKey.current.value = "";
+        }
     };
 
     highlightMatchedWords = (text) => {
@@ -196,7 +210,7 @@ class Header extends Component {
     };
 
     render() {
-        const { isExpanded, searchedCompanies, cursor, isMobile, visible } = this.state;
+        const { isExpanded, searchedCompanies, cursor, isMobile, visible, companyToPreview } = this.state;
         const { needSearchBar, isTransparent } = this.props;
         // console.log(isTransparent);
 
@@ -210,7 +224,7 @@ class Header extends Component {
             { id: 2, title: STRINGS.logout, link: "/" },
         ];
 
-        let loggedUser = JSON.parse(sessionStorage.getItem(LOGGED_USER));
+        let loggedUser = JSON.parse(sessionStorage.getItem(SESSION_LOGGED_USER));
         let menus = loggedUser ? menusInLoggedin : menusInNotLoggedin;
         const sideBar = (
             <Sidebar isExpanded={isExpanded} handleCollapse={this.handleDidCollapse}>
@@ -302,6 +316,7 @@ class Header extends Component {
                     {isMobile && needSearchBar === true ? searchBar : <div />}
                 </div>
                 {sideBar}
+                {companyToPreview && <CompanyReadMore company={companyToPreview} onClose={this.handleCloseCompanyPreview} />}
             </div>
         );
     }

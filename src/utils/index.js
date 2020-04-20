@@ -1,7 +1,8 @@
 import { STRINGS } from "./strings";
-import { VALIDATE_MSGS } from "./Validate";
+import unregisteredCompanies from "../init-data.json";
 
-export const LOGGED_USER = "loggedUser";
+export const SESSION_LOGGED_USER = "loggedUser";
+export const SESSION_SELECTED_COMPANY = "selectedCompany";
 
 export const ORDERS = () => {
     return [
@@ -429,4 +430,22 @@ export const getCompanyTypeText = (value) => {
     });
 
     return text;
+};
+
+export const getTotalCompanies = (registeredCompanies) => {
+    return registeredCompanies;
+
+    let companies = registeredCompanies.slice(0);
+    unregisteredCompanies.forEach((unregisteredCompany) => {
+        let found = false;
+        registeredCompanies.forEach((registeredCompany) => {
+            if (unregisteredCompany.vat === registeredCompany.vat) {
+                found = true;
+            }
+        });
+        if (!found) {
+            companies.push(unregisteredCompany);
+        }
+    });
+    return companies;
 };

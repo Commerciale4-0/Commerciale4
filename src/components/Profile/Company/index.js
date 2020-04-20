@@ -3,7 +3,7 @@ import TextareaAutosize from "react-autosize-textarea";
 import ReactTags from "react-tag-autocomplete";
 import "./index.css";
 import MySelect from "../../Custom/MySelect";
-import { ISO, COMPANY_TYPES, LOGGED_USER, stringWithUnitFromNumber } from "../../../utils";
+import { ISO, COMPANY_TYPES, SESSION_LOGGED_USER, stringWithUnitFromNumber } from "../../../utils";
 import ImageCropper from "../../ImageCropper";
 import { requestAPI } from "../../../utils/api";
 import SpinnerView from "../../SpinnerView";
@@ -289,14 +289,14 @@ export default class ProfileCompany extends Component {
                         productImages: originPhotos.productPhotos,
                     });
 
-                    let loggedUser = JSON.parse(sessionStorage.getItem(LOGGED_USER));
+                    let loggedUser = JSON.parse(sessionStorage.getItem(SESSION_LOGGED_USER));
                     let newData = {
                         ...loggedUser,
                         user: res.data,
                     };
 
                     console.log(newData);
-                    sessionStorage.setItem(LOGGED_USER, JSON.stringify(newData));
+                    sessionStorage.setItem(SESSION_LOGGED_USER, JSON.stringify(newData));
                     this.requestRemovePhotos(removedPhotos);
                 }
             } else {

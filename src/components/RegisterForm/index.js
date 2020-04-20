@@ -226,7 +226,7 @@ export default class RegisterForm extends Component {
         // });
         try {
             let res = await requestAPI("/user/register", "POST", data);
-            this.setState({ isProcessing: false });
+            console.log(res);
 
             if (res.status === 0) {
                 // this.setAlertData(0, STRINGS.theEmailExist);
@@ -240,30 +240,29 @@ export default class RegisterForm extends Component {
             }
 
             /* it's for just test */
-            this.setState({ step: 3 });
-            // this.setAlertData(1, `${STRINGS.sentEmail} ${data.pec} ${STRINGS.toVerifyYourAccount}`);
-            this.setAlertData(1, [{ langKey: "sentEmail" }, ` ${data.pec}`, { langKey: "toVerifyYourAccount" }]);
+            // this.setState({ step: 3 });
+            // this.setAlertData(1, [{ langKey: "sentEmail" }, ` ${data.pec}`, { langKey: "toVerifyYourAccount" }]);
             /**********************/
 
-            // try {
-            //     let res = await requestAPI("/user/verify-pec", "POST", {
-            //         pec: data.pec
-            //     });
+            try {
+                let res = await requestAPI("/user/verify-pec", "POST", {
+                    pec: data.pec,
+                });
+                console.log(res);
+                this.setState({ isProcessing: false });
 
-            //     if (res.status === 0) {
-            //         this.setAlertData(0, res.message);
-            //     } else {
-            //         this.setState({ step: 3 });
-            //         this.setAlertData(
-            //             1,
-            //             `We've sent an email to ${data.pec} to verify your account. Please check your email inbox to coutinue.`
-            //         );
-            //     }
-            // } catch (e) {
-            //     this.setAlertData(0, "Connection failed!");
-            // }
+                if (res.status === 0) {
+                    this.setAlertData(0, [res.message]);
+                    // this.setAlertData(0, [{ langKey: "connectionFailed" }]);
+                } else {
+                    this.setState({ step: 3 });
+                    this.setAlertData(1, [{ langKey: "sentEmail" }, ` ${data.pec}`, { langKey: "toVerifyYourAccount" }]);
+                }
+            } catch (e) {
+                this.setAlertData(0, [{ langKey: "connectionFailed" }]);
+            }
         } catch (e) {
-            this.setAlertData(0, STRINGS.connectionFailed);
+            this.setAlertData(0, [{ langKey: "connectionFailed" }]);
             this.setState({ isProcessing: false });
         }
     };
