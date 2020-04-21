@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./index.css";
 import { STRINGS } from "../../utils/strings";
 
-export default class Except extends Component {
+export default class Error404 extends Component {
     render() {
         return (
             <div className="except d-flex align-items-center justify-content-center">

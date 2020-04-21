@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { requestAPI } from "../../utils/api";
 import SpinnerView from "../../components/SpinnerView";
 function Login() {
@@ -35,20 +35,10 @@ function Login() {
                     <span>Commerciale4.0</span>
                 </h2>
                 <div className="pt-5">
-                    <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Username"
-                        ref={refUserName}
-                    />
+                    <input type="text" className="form-control" placeholder="Username" ref={refUserName} />
                 </div>
                 <div className="pt-3">
-                    <input
-                        type="password"
-                        className="form-control"
-                        placeholder="Password"
-                        ref={refPassword}
-                    />
+                    <input type="password" className="form-control" placeholder="Password" ref={refPassword} />
                 </div>
                 <div className="pt-3">
                     <button className="btn btn-default" onClick={handleClickLogin}>

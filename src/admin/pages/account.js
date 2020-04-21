@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { InputGroup, FormControl, Button, Alert } from "react-bootstrap";
 import { requestAPI } from "../../utils/api";
 import SpinnerView from "../../components/SpinnerView";

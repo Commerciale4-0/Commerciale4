@@ -17,7 +17,7 @@ import ForgotPasswordPage from "./pages/ForgotPassword";
 import ResetPasswordPage from "./pages/ResetPassword";
 import CompanyDetail from "./pages/CompanyDetail";
 import Profile from "./pages/Profile";
-import Except from "./pages/Except";
+import Error404 from "./pages/Error404";
 import { LangProvider } from "./utils/LanguageContext";
 import { STRINGS } from "./utils/strings";
 
@@ -82,7 +82,7 @@ class App extends Component {
                                 <Route exact path="/dashboard" component={Dashboard} />
                                 <Route exact path="/company/:id" component={CompanyDetail} />
                                 <Route exact path="/user-edit" component={Profile} />
-                                {/* <Route component={Except} /> */}
+                                <Route component={Error404} />
                             </Switch>
                         </div>
                         {needFooter && <Footer />}

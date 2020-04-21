@@ -31,10 +31,10 @@
 
 .detail-body .menu.active {
     color: var(--colorPrimary);
-    font-weight: bold;
+    font-weight: 500;
     border-left: 3px solid var(--colorPrimary);
     background: white;
-    text-shadow: 0 0 0.05em #222;
+    text-shadow: 0 0 0.04em #222;
     /* box-shadow: 0.1em 0.1em 0.2em #ccc; */
 }
 
@@ -53,7 +53,7 @@
     margin-bottom: 20px;
 }
 .detail-body .info-panel i {
-    font-size: 24px;
+    font-size: 20px;
 }
 .detail-body .info-panel span {
     display: inline-block;

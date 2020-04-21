@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { Table, Modal, Button, InputGroup, FormControl } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 import Pagination from "react-js-pagination";
 import { requestAPI } from "../../utils/api";
 import SpinnerView from "../../components/SpinnerView";
 import { stringWithUnitFromNumber } from "../../utils";
 
 function Verified() {
-    const [modalShow, setModalShow] = useState(false);
+    // const [modalShow, setModalShow] = useState(false);
 
     const [activatedUsers, setActivatedUsers] = useState([]);
     const [activePage, setActivePage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(10);
-    const [pageRangeDisplayed, setPageRangeDisplayed] = useState(5);
+    const [itemsPerPage] = useState(10);
+    const [pageRangeDisplayed] = useState(5);
     const [itemsToShow, setItemsToShow] = useState([]);
     const [isProcessing, setProcessing] = useState(false);
 
-    const [selectedUser, setSelectedUser] = useState({});
+    // const [selectedUser, setSelectedUser] = useState({});
 
     useEffect(() => {
         getActivatedUsers();
@@ -67,10 +67,10 @@ function Verified() {
         setProcessing(false);
     };
 
-    const showModal = (user) => {
-        setModalShow(true);
-        setSelectedUser(user);
-    };
+    // const showModal = (user) => {
+    //     setModalShow(true);
+    //     setSelectedUser(user);
+    // };
 
     const handleClickDelete = async (id) => {
         if (window.confirm("Are you really delete?")) {
@@ -195,22 +195,22 @@ function Verified() {
         </div>
     );
 }
-function ViewInfoModal(props) {
-    // console.log(props.user);
-    return (
-        <Modal {...props} size="lg" aria-labelledby="contained-modal-title-vcenter">
-            <Modal.Header closeButton>
-                <Modal.Title id="contained-modal-title-vcenter">User Information</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <p>{props.user.id}</p>
-                <p>{props.user.email}</p>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button onClick={props.onHide}>Close</Button>
-            </Modal.Footer>
-        </Modal>
-    );
-}
+// function ViewInfoModal(props) {
+//     // console.log(props.user);
+//     return (
+//         <Modal {...props} size="lg" aria-labelledby="contained-modal-title-vcenter">
+//             <Modal.Header closeButton>
+//                 <Modal.Title id="contained-modal-title-vcenter">User Information</Modal.Title>
+//             </Modal.Header>
+//             <Modal.Body>
+//                 <p>{props.user.id}</p>
+//                 <p>{props.user.email}</p>
+//             </Modal.Body>
+//             <Modal.Footer>
+//                 <Button onClick={props.onHide}>Close</Button>
+//             </Modal.Footer>
+//         </Modal>
+//     );
+// }
 
 export default Verified;

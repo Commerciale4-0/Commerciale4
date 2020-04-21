@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Table, InputGroup, FormControl } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Table } from "react-bootstrap";
 import Pagination from "react-js-pagination";
 import { requestAPI } from "../../utils/api";
 import SpinnerView from "../../components/SpinnerView";
@@ -7,8 +7,8 @@ import SpinnerView from "../../components/SpinnerView";
 function Pending() {
     const [pendingUsers, setPendingUsers] = useState([]);
     const [activePage, setActivePage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(10);
-    const [pageRangeDisplayed, setPageRangeDisplayed] = useState(5);
+    const [itemsPerPage] = useState(10);
+    const [pageRangeDisplayed] = useState(5);
     const [itemsToShow, setItemsToShow] = useState([]);
     const [isProcessing, setProcessing] = useState(false);
 
