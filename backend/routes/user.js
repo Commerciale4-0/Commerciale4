@@ -1,5 +1,8 @@
 const router = require("express").Router();
 const nodemailer = require("nodemailer");
+const { google } = require("googleapis");
+const OAuth2 = google.auth.OAuth2;
+
 const { Utils } = require("../utils");
 const { client, query } = require("../db");
 const q = query;
@@ -8,15 +11,27 @@ const crypto = require("crypto");
 const AWS = require("aws-sdk");
 
 function sendMailer(emailData) {
-    const transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com",
-        port: 465,
-        secure: true,
+    const oauth2Client = new OAuth2(
+        "73149676455-s3u60tnl2jjqnat77dpip90qaurhjquk.apps.googleusercontent.com", // ClientID
+        "vlamNRWDBmJmFt18wGG_8NCT", // Client Secret
+        "https://developers.google.com/oauthplayground" // Redirect URL
+    );
+
+    oauth2Client.setCredentials({
+        refresh_token: "1//04pKHjhKoqQ1fCgYIARAAGAQSNwF-L9IrVyGb4o0zPuUKC8_nPSpe3Si0FdKJJCO2ItHUQfTWdOqswdgdXm6r4Eo_rjDO8SKJPwI",
+    });
+
+    const accessToken = oauth2Client.getAccessToken();
+
+    const smtpTransport = nodemailer.createTransport({
+        service: "gmail",
         auth: {
+            type: "OAuth2",
             user: "daxing999@gmail.com",
-            pass: "Eightyfour526",
-            // user: Utils.NODEMAILER_ACCOUNT,
-            // pass: Utils.NODEMAILER_PASSWORD,
+            clientId: "73149676455-s3u60tnl2jjqnat77dpip90qaurhjquk.apps.googleusercontent.com",
+            clientSecret: "vlamNRWDBmJmFt18wGG_8NCT",
+            refreshToken: "1//04pKHjhKoqQ1fCgYIARAAGAQSNwF-L9IrVyGb4o0zPuUKC8_nPSpe3Si0FdKJJCO2ItHUQfTWdOqswdgdXm6r4Eo_rjDO8SKJPwI",
+            accessToken: accessToken,
         },
     });
 
@@ -28,7 +43,7 @@ function sendMailer(emailData) {
         html: emailData.html,
     };
 
-    return transporter.sendMail(mailOption);
+    return smtpTransport.sendMail(mailOption);
 }
 const encrypt = (password) => {
     let mykey = crypto.createCipher("aes-128-cbc", password);
