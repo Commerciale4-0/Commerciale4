@@ -459,16 +459,16 @@ export const getTotalCompanies = (registeredCompanies) => {
 
     let companies = registeredCompanies.slice(0);
     let unregisteredCompanies = [
-        // ...ateco24,
+        ...ateco24,
         // ...ateco25_01,
-        // ...ateco25_02,
+        ...ateco25_02,
         // ...ateco25_03,
-        // ...ateco25_04,
+        ...ateco25_04,
         // ...ateco27,
-        // ...ateco28_01,
+        ...ateco28_01,
         // ...ateco28_02,
-        // ...ateco28_03,
-        // ...ateco29,
+        ...ateco28_03,
+        ...ateco29,
         // ...ateco33_01,
         // ...ateco33_02,
         ...ateco46_01,
