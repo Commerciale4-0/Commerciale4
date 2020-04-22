@@ -506,10 +506,23 @@ export const separateHugeArray = (firstArray, countToCut, seek) => {
         ateco46_01,
         ateco46_02,
     ];
-    let totalLength = 0;
-    totalArray.forEach((item) => {
-        totalLength += item.length;
-    });
+
+    let totalLength = firstArray.length;
+    totalLength += ateco24.length;
+    totalLength += ateco25_01.length;
+    totalLength += ateco25_02.length;
+    totalLength += ateco25_03.length;
+    totalLength += ateco25_04.length;
+    totalLength += ateco27.length;
+    totalLength += ateco28_01.length;
+    totalLength += ateco28_02.length;
+    totalLength += ateco28_03.length;
+    totalLength += ateco29.length;
+    totalLength += ateco33_01.length;
+    totalLength += ateco33_02.length;
+    totalLength += ateco46_01.length;
+    totalLength += ateco46_02.length;
+
     console.log(totalLength);
     return totalLength;
 };
