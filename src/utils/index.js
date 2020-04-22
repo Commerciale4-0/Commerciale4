@@ -469,7 +469,7 @@ export const getTotalCompanies = (registeredCompanies) => {
         // ...ateco28_02,
         ...ateco28_03,
         ...ateco29,
-        // ...ateco33_01,
+        ...ateco33_01,
         // ...ateco33_02,
         ...ateco46_01,
         ...ateco46_02,
@@ -500,7 +500,7 @@ export const separateHugeArray = (firstArray, countToCut, seek) => {
     // totalLength += ateco28_02.length;
     totalLength += ateco28_03.length;
     totalLength += ateco29.length;
-    // totalLength += ateco33_01.length;
+    totalLength += ateco33_01.length;
     // totalLength += ateco33_02.length;
     totalLength += ateco46_01.length;
     totalLength += ateco46_02.length;
