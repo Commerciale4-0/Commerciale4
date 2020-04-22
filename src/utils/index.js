@@ -489,24 +489,6 @@ export const getTotalCompanies = (registeredCompanies) => {
 };
 
 export const separateHugeArray = (firstArray, countToCut, seek) => {
-    let totalArray = [
-        firstArray,
-        ateco24,
-        ateco25_01,
-        ateco25_02,
-        ateco25_03,
-        ateco25_04,
-        ateco27,
-        ateco28_01,
-        ateco28_02,
-        ateco28_03,
-        ateco29,
-        ateco33_01,
-        ateco33_02,
-        ateco46_01,
-        ateco46_02,
-    ];
-
     let totalLength = firstArray.length;
     totalLength += ateco24.length;
     totalLength += ateco25_01.length;
