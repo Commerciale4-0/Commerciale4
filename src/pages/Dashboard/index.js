@@ -6,7 +6,7 @@ import CompanyCell from "../../components/CompanyCell";
 import { Dropdown } from "react-bootstrap";
 // import Sidebar from "../../components/Sidebar";
 import Pagination from "react-js-pagination";
-import { distanceFromCoords, numberFromStringWithUnit, orderTags, SESSION_LOGGED_USER, ORDERS, getTotalCompanies } from "../../utils";
+import { distanceFromCoords, numberFromStringWithUnit, orderTags, SESSION_LOGGED_USER, ORDERS, getTotalCompanies, separateHugeArray } from "../../utils";
 import SpinnerView from "../../components/SpinnerView";
 import { LangConsumer } from "../../utils/LanguageContext";
 import { STRINGS } from "../../utils/strings";
@@ -18,6 +18,8 @@ export default class Dashboard extends Component {
         super(props);
 
         this.state = {
+            numberOfFilteredCompanies: 0,
+
             totalCompanies: [],
             filteredCompanies: [],
             companiesToShow: [],
@@ -114,6 +116,9 @@ export default class Dashboard extends Component {
                     this.setState({
                         totalCompanies: totalCompanies,
                     });
+
+                    let length = separateHugeArray(companies, 0, 0);
+                    console.log(length);
 
                     let filter = JSON.parse(sessionStorage.getItem("filter"));
                     if (filter) {
@@ -461,7 +466,9 @@ export default class Dashboard extends Component {
                     </button>
                 </div>
                 <div className="result-xs">
-                    <div>{`${(activePage - 1) * itemsCountPerPage + 1}-${(activePage - 1) * itemsCountPerPage + companiesToShow.length} / ${filteredCompanies.length} ${STRINGS.results}`}</div>
+                    <div>{`${(activePage - 1) * itemsCountPerPage + 1}-${(activePage - 1) * itemsCountPerPage + companiesToShow.length} / ${filteredCompanies.length} ${
+                        STRINGS.results
+                    }`}</div>
                     <div>
                         <button className="btn-prev secondary round mr-2" onClick={this.handleClickPrev}>
                             <i className="fa fa-angle-left" />
@@ -478,7 +485,9 @@ export default class Dashboard extends Component {
         const filterBarMD = (
             <div className="filter-bar">
                 <span className="result-md">
-                    {`${(activePage - 1) * itemsCountPerPage + 1}-${(activePage - 1) * itemsCountPerPage + companiesToShow.length} / ${filteredCompanies.length} ${STRINGS.results}`}
+                    {`${(activePage - 1) * itemsCountPerPage + 1}-${(activePage - 1) * itemsCountPerPage + companiesToShow.length} / ${filteredCompanies.length} ${
+                        STRINGS.results
+                    }`}
                 </span>
                 <div className="d-flex">
                     {dropdown}
@@ -508,7 +517,12 @@ export default class Dashboard extends Component {
                     ))}
                 </div>
                 <div className="pagination-bar">
-                    <Pagination activePage={activePage} itemsCountPerPage={itemsCountPerPage} totalItemsCount={filteredCompanies.length} onChange={this.handleChangePage.bind(this)} />
+                    <Pagination
+                        activePage={activePage}
+                        itemsCountPerPage={itemsCountPerPage}
+                        totalItemsCount={filteredCompanies.length}
+                        onChange={this.handleChangePage.bind(this)}
+                    />
                 </div>
             </div>
         );
