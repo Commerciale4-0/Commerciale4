@@ -1,11 +1,18 @@
 import { STRINGS } from "./strings";
 import ateco24 from "../json/24.json";
-import ateco25 from "../json/25.json";
+import ateco25_01 from "../json/25-01.json";
+import ateco25_02 from "../json/25-02.json";
+import ateco25_03 from "../json/25-03.json";
+import ateco25_04 from "../json/25-04.json";
 import ateco27 from "../json/27.json";
-import ateco28 from "../json/28.json";
+import ateco28_01 from "../json/28-01.json";
+import ateco28_02 from "../json/28-02.json";
+import ateco28_03 from "../json/28-03.json";
 import ateco29 from "../json/29.json";
-import ateco33 from "../json/33.json";
-import ateco46 from "../json/46.json";
+import ateco33_01 from "../json/33-01.json";
+import ateco33_02 from "../json/33-02.json";
+import ateco46_01 from "../json/46-01.json";
+import ateco46_02 from "../json/46-02.json";
 
 export const SESSION_LOGGED_USER = "loggedUser";
 export const SESSION_SELECTED_COMPANY = "selectedCompany";
@@ -451,7 +458,22 @@ export const getTotalCompanies = (registeredCompanies) => {
     // return registeredCompanies;
 
     let companies = registeredCompanies.slice(0);
-    let unregisteredCompanies = [...ateco24, ...ateco25, ...ateco27, ...ateco28, ...ateco29, ...ateco33, ...ateco46];
+    let unregisteredCompanies = [
+        ...ateco24,
+        ...ateco25_01,
+        ...ateco25_02,
+        ...ateco25_03,
+        ...ateco25_04,
+        ...ateco27,
+        ...ateco28_01,
+        ...ateco28_02,
+        ...ateco28_03,
+        ...ateco29,
+        ...ateco33_01,
+        ...ateco33_02,
+        ...ateco46_01,
+        ...ateco46_02,
+    ];
     unregisteredCompanies.forEach((unregisteredCompany) => {
         let found = false;
         registeredCompanies.forEach((registeredCompany) => {
