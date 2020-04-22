@@ -89,22 +89,22 @@ router.post("/verify-pec", async (req, res) => {
     res.send({ status: 1, message: "Email has been sent" });
 });
 
-router.post("/email-to-admin", async (req, res) => {
-    let data = req.body;
-    // let html = `${Utils.VERIFY_EMAIL_MESSAGE}
-    //       <br/><br/><a href="${Utils.SERVER_URL}${Utils.NETLIFY_FUNCTIONS_URL}/user/get-verified?id=${data.id}" ${Utils.EMAIL_STYLE}>Verify your email</a>${Utils.MESSAGE_FOOTER}`;
-    try {
-        await sendMailer({
-            address: data.pec,
-            subject: Utils.VERIFY_EMAIL_SUBJECT,
-            html: Utils.VERIFY_EMAIL_MESSAGE + Utils.MESSAGE_FOOTER,
-        });
-    } catch (e) {
-        console.log(e.toString());
-        return res.send({ status: 0, message: e.toString() });
-    }
-    res.send({ status: 1, message: "Email has been sent" });
-});
+// router.post("/email-to-admin", async (req, res) => {
+//     let data = req.body;
+//     // let html = `${Utils.VERIFY_EMAIL_MESSAGE}
+//     //       <br/><br/><a href="${Utils.SERVER_URL}${Utils.NETLIFY_FUNCTIONS_URL}/user/get-verified?id=${data.id}" ${Utils.EMAIL_STYLE}>Verify your email</a>${Utils.MESSAGE_FOOTER}`;
+//     try {
+//         await sendMailer({
+//             address: data.pec,
+//             subject: Utils.VERIFY_EMAIL_SUBJECT,
+//             html: Utils.VERIFY_EMAIL_MESSAGE + Utils.MESSAGE_FOOTER,
+//         });
+//     } catch (e) {
+//         console.log(e.toString());
+//         return res.send({ status: 0, message: e.toString() });
+//     }
+//     res.send({ status: 1, message: "Email has been sent" });
+// });
 
 // login route
 router.post("/login", async (req, res) => {
