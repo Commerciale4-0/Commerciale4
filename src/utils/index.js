@@ -1,6 +1,11 @@
 import { STRINGS } from "./strings";
-import unregisteredCompanies01 from "../init-data-01.json";
-import unregisteredCompanies02 from "../init-data-02.json";
+import ateco24 from "../json/24.json";
+import ateco25 from "../json/25.json";
+import ateco27 from "../json/27.json";
+import ateco28 from "../json/28.json";
+import ateco29 from "../json/29.json";
+import ateco33 from "../json/33.json";
+import ateco46 from "../json/46.json";
 
 export const SESSION_LOGGED_USER = "loggedUser";
 export const SESSION_SELECTED_COMPANY = "selectedCompany";
@@ -446,7 +451,7 @@ export const getTotalCompanies = (registeredCompanies) => {
     // return registeredCompanies;
 
     let companies = registeredCompanies.slice(0);
-    let unregisteredCompanies = [...unregisteredCompanies01, ...unregisteredCompanies02];
+    let unregisteredCompanies = [...ateco24, ...ateco25, ...ateco27, ...ateco28, ...ateco29, ...ateco33, ...ateco46];
     unregisteredCompanies.forEach((unregisteredCompany) => {
         let found = false;
         registeredCompanies.forEach((registeredCompany) => {
