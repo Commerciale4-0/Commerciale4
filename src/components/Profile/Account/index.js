@@ -3,7 +3,7 @@ import "./index.css";
 import * as Validate from "../../../utils/Validate";
 import { Alert } from "react-bootstrap";
 import { requestAPI } from "../../../utils/api";
-import { SESSION_LOGGED_USER } from "../../../utils";
+import { SESSION_LOGGED_USER, getAtecoStringWithCode } from "../../../utils";
 import SpinnerView from "../../SpinnerView";
 import crypto from "crypto";
 import { STRINGS } from "../../../utils/strings";
@@ -205,8 +205,7 @@ export default class ProfileAccount extends Component {
     };
 
     handleFocusPasswordInput = () => {
-        this.refOldPassword.current.style.border = this.refNewPassword.current.style.border = this.refConfirmPassword.current.style.border =
-            "1px solid var(--colorBorder)";
+        this.refOldPassword.current.style.border = this.refNewPassword.current.style.border = this.refConfirmPassword.current.style.border = "1px solid var(--colorBorder)";
         this.setState({ passwordAlertData: null });
     };
 
@@ -307,7 +306,7 @@ export default class ProfileAccount extends Component {
                 </div>
                 <div className="info-row">
                     <span>{STRINGS.atecoCode}:</span>
-                    <input disabled ref={this.refAteco} defaultValue={userData.user.ateco} />
+                    <input disabled ref={this.refAteco} defaultValue={getAtecoStringWithCode(userData.user.ateco)} />
                 </div>
                 <div className="info-row">
                     <span>{STRINGS.pec}:</span>

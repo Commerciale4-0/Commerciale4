@@ -164,7 +164,11 @@
 	}
 	.detail-body .info-panel .-type {
 		width: 60%;
-	} */
+    } */
+
+    .detail-body .info-panel .multi-values {
+        margin: 0;
+    }
 
     .detail-body .info-panel .multi-values label {
         font-size: 13px;

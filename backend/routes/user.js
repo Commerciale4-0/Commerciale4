@@ -89,8 +89,21 @@ router.post("/verify-pec", async (req, res) => {
     res.send({ status: 1, message: "Email has been sent" });
 });
 
-router.get("/hello", (req, res) => {
-    res.send({ express: "Hello!!!!!!!" });
+router.post("/email-to-admin", async (req, res) => {
+    let data = req.body;
+    // let html = `${Utils.VERIFY_EMAIL_MESSAGE}
+    //       <br/><br/><a href="${Utils.SERVER_URL}${Utils.NETLIFY_FUNCTIONS_URL}/user/get-verified?id=${data.id}" ${Utils.EMAIL_STYLE}>Verify your email</a>${Utils.MESSAGE_FOOTER}`;
+    try {
+        await sendMailer({
+            address: data.pec,
+            subject: Utils.VERIFY_EMAIL_SUBJECT,
+            html: Utils.VERIFY_EMAIL_MESSAGE + Utils.MESSAGE_FOOTER,
+        });
+    } catch (e) {
+        console.log(e.toString());
+        return res.send({ status: 0, message: e.toString() });
+    }
+    res.send({ status: 1, message: "Email has been sent" });
 });
 
 // login route
@@ -98,10 +111,7 @@ router.post("/login", async (req, res) => {
     let data = req.body;
     try {
         let result = await client.query(
-            q.Map(
-                q.Paginate(q.Match(q.Index("findUserByEmailAndPassAndActive"), data.email, encrypt(data.password), "1")),
-                q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))
-            )
+            q.Map(q.Paginate(q.Match(q.Index("findUserByEmailAndPassAndActive"), data.email, encrypt(data.password), "1")), q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref")))))
         );
         if (!result.data.length) {
             res.send({
@@ -109,9 +119,7 @@ router.post("/login", async (req, res) => {
                 message: "Email or password is incorrect",
             });
         } else {
-            let posts = await client.query(
-                q.Map(q.Paginate(q.Match(q.Index("findPostsByUserId"), result.data[0].id)), q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref")))))
-            );
+            let posts = await client.query(q.Map(q.Paginate(q.Match(q.Index("findPostsByUserId"), result.data[0].id)), q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))));
             res.send({
                 status: 1,
                 data: { user: result.data[0], posts: posts.data },
@@ -129,9 +137,12 @@ router.post("/register", async (req, res) => {
         let result = await client.query(q.Paginate(q.Match(q.Index("findUserByEmail"), data.email)));
 
         if (result.data.length) {
-            return res.send({ status: 0, message: "The email already exists" });
+            return res.send({ status: -1, message: "The email already exists" });
         }
-
+        result = await client.query(q.Paginate(q.Match(q.Index("findUserByVat"), data.vat)));
+        if (result.data.length) {
+            return res.send({ status: -2, message: "The vat number already exists" });
+        }
         try {
             result = await client.query(
                 q.Create(q.Collection("User"), {
@@ -156,10 +167,10 @@ router.post("/register", async (req, res) => {
             //     res.send({ status: 0, message: "Email has not been sent" });
             // }
         } catch (e) {
-            res.send({ status: -1, message: "A document creation failed!" });
+            res.send({ status: -3, message: "A document creation failed!" });
         }
     } catch (e) {
-        res.send({ status: -1, message: "Database connection failed!" });
+        res.send({ status: -3, message: "Database connection failed!" });
     }
 });
 
@@ -241,9 +252,7 @@ router.post("/", async (req, res) => {
     }
     try {
         let result = await client.query(q.Map(q.Paginate(q.Match(q.Index("findUserById"), userId)), q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))));
-        let posts = await client.query(
-            q.Map(q.Paginate(q.Match(q.Index("findPostsByUserId"), parseInt(userId))), q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref")))))
-        );
+        let posts = await client.query(q.Map(q.Paginate(q.Match(q.Index("findPostsByUserId"), parseInt(userId))), q.Lambda("ref", q.Select(["data"], q.Get(q.Var("ref"))))));
         if (result.data.length) {
             res.send({
                 status: 1,

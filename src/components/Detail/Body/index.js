@@ -3,7 +3,7 @@ import "./index.css";
 import DetailOverview from "../Overview";
 import DetailProduct from "../Product";
 import DetailContacts from "../Contacts";
-import { stringWithUnitFromNumber, getCompanyTypeText } from "../../../utils";
+import { stringWithUnitFromNumber, getCompanyTypeText, getAtecoStringWithCode } from "../../../utils";
 import { LangConsumer } from "../../../utils/LanguageContext";
 import { STRINGS } from "../../../utils/strings";
 
@@ -157,10 +157,10 @@ export default class DetailBody extends Component {
                         {profile && stringWithUnitFromNumber(profile.user.revenues)}
                     </p>
                     {isoPanel}
-                    <p className="-ateco">
-                        <span>{STRINGS.ateco}</span>
-                        {profile && (profile.user.ateco === "Other code" || profile.user.ateco === "Altro codice" ? STRINGS.otherCode : profile.user.ateco)}
-                    </p>
+                    <div className="multi-values">
+                        <span className="pt-0">{STRINGS.ateco}</span>
+                        <div>{profile && profile.user.ateco ? isMobile ? profile.user.ateco : getAtecoStringWithCode(profile.user.ateco) : <div />}</div>
+                    </div>
                 </div>
                 <p className="-type mb-0">
                     <span className="text-uppercase">{STRINGS.type}</span>

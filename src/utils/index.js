@@ -69,58 +69,58 @@ export const REVENUES = () => {
     ];
 };
 
-export const ATECO_CODES = () => {
-    return [
-        { value: 0, label: STRINGS.otherCode },
-        { value: 1, label: "22.1" },
-        { value: 2, label: "22.2" },
-        { value: 3, label: "24.1" },
-        { value: 4, label: "24.2" },
-        { value: 5, label: "24.31" },
-        { value: 6, label: "24.32" },
-        { value: 7, label: "24.33" },
-        { value: 8, label: "24.34" },
-        { value: 9, label: "24.41" },
-        { value: 10, label: "24.42" },
-        { value: 11, label: "24.43" },
-        { value: 12, label: "24.44" },
-        { value: 13, label: "24.45" },
-        { value: 14, label: "24.51" },
-        { value: 15, label: "24.52" },
-        { value: 16, label: "24.53" },
-        { value: 17, label: "24.54" },
-        { value: 18, label: "25.11" },
-        { value: 19, label: "25.12.1" },
-        { value: 20, label: "25.21" },
-        { value: 21, label: "25.29" },
-        { value: 22, label: "25.3" },
-        { value: 23, label: "25.5" },
-        { value: 24, label: "25.61" },
-        { value: 25, label: "25.62" },
-        { value: 26, label: "25.7" },
-        { value: 27, label: "25.9" },
-        { value: 28, label: "26.12" },
-        { value: 29, label: "26.2" },
-        { value: 30, label: "26.30.1" },
-        { value: 31, label: "26.51.10" },
-        { value: 32, label: "26.52" },
-        { value: 33, label: "26.70.11" },
-        { value: 34, label: "28 (tutti/all)" },
-        { value: 35, label: "29.1" },
-        { value: 36, label: "29.2" },
-        { value: 37, label: "29.3" },
-        { value: 38, label: "33.11" },
-        { value: 39, label: "33.2" },
-        { value: 40, label: "46.61" },
-        { value: 41, label: "46.62" },
-        { value: 42, label: "46.63" },
-        { value: 43, label: "46.64" },
-        { value: 44, label: "46.69.20" },
-        { value: 45, label: "46.69.91" },
-        { value: 46, label: "46.69.94" },
-        { value: 47, label: "46.69.99" },
-    ];
-};
+// export const ATECO_CODES = () => {
+//     return [
+//         { value: 0, label: STRINGS.otherCode },
+//         { value: 1, label: "22.1" },
+//         { value: 2, label: "22.2" },
+//         { value: 3, label: "24.1" },
+//         { value: 4, label: "24.2" },
+//         { value: 5, label: "24.31" },
+//         { value: 6, label: "24.32" },
+//         { value: 7, label: "24.33" },
+//         { value: 8, label: "24.34" },
+//         { value: 9, label: "24.41" },
+//         { value: 10, label: "24.42" },
+//         { value: 11, label: "24.43" },
+//         { value: 12, label: "24.44" },
+//         { value: 13, label: "24.45" },
+//         { value: 14, label: "24.51" },
+//         { value: 15, label: "24.52" },
+//         { value: 16, label: "24.53" },
+//         { value: 17, label: "24.54" },
+//         { value: 18, label: "25.11" },
+//         { value: 19, label: "25.12.1" },
+//         { value: 20, label: "25.21" },
+//         { value: 21, label: "25.29" },
+//         { value: 22, label: "25.3" },
+//         { value: 23, label: "25.5" },
+//         { value: 24, label: "25.61" },
+//         { value: 25, label: "25.62" },
+//         { value: 26, label: "25.7" },
+//         { value: 27, label: "25.9" },
+//         { value: 28, label: "26.12" },
+//         { value: 29, label: "26.2" },
+//         { value: 30, label: "26.30.1" },
+//         { value: 31, label: "26.51.10" },
+//         { value: 32, label: "26.52" },
+//         { value: 33, label: "26.70.11" },
+//         { value: 34, label: "28 (tutti/all)" },
+//         { value: 35, label: "29.1" },
+//         { value: 36, label: "29.2" },
+//         { value: 37, label: "29.3" },
+//         { value: 38, label: "33.11" },
+//         { value: 39, label: "33.2" },
+//         { value: 40, label: "46.61" },
+//         { value: 41, label: "46.62" },
+//         { value: 42, label: "46.63" },
+//         { value: 43, label: "46.64" },
+//         { value: 44, label: "46.69.20" },
+//         { value: 45, label: "46.69.91" },
+//         { value: 46, label: "46.69.94" },
+//         { value: 47, label: "46.69.99" },
+//     ];
+// };
 
 export const REGIONS = [
     { value: 1, label: "Abruzzo" },
@@ -258,6 +258,15 @@ export const CITIES = [
     { value: 110, label: "Verona", region: 20 },
     { value: 111, label: "Vicenza", region: 20 },
 ];
+
+export const getAtecoStringWithCode = (code) => {
+    let atecoList = STRINGS.atecoList;
+    let matchedArray = atecoList.filter((ateco) => ateco.value === code);
+    if (!matchedArray || !matchedArray.length) {
+        return "";
+    }
+    return matchedArray[0].label;
+};
 
 export const citiesInRegion = (regionId) => {
     let cities = [];
@@ -433,7 +442,7 @@ export const getCompanyTypeText = (value) => {
 };
 
 export const getTotalCompanies = (registeredCompanies) => {
-    return registeredCompanies;
+    // return registeredCompanies;
 
     let companies = registeredCompanies.slice(0);
     unregisteredCompanies.forEach((unregisteredCompany) => {

@@ -5,7 +5,7 @@ import ReactTags from "react-tag-autocomplete";
 import { Row, Col } from "react-bootstrap";
 
 import "./index.css";
-import { ATECO_CODES, N_EMPOYEES, REVENUES, COMPANY_TYPES, REGIONS, citiesInRegion, maxsFromMin, minsFromMax } from "../../utils";
+import { N_EMPOYEES, REVENUES, COMPANY_TYPES, REGIONS, citiesInRegion, maxsFromMin, minsFromMax } from "../../utils";
 import MySelect from "../Custom/MySelect";
 // import SearchInput from "../SearchInput";
 import { STRINGS } from "../../utils/strings";
@@ -27,7 +27,7 @@ export default class FilterForm extends Component {
             maxEmployees: N_EMPOYEES(),
             minRevenues: REVENUES(),
             maxRevenues: REVENUES(),
-            atecoCodes: ATECO_CODES(),
+            atecoCodes: STRINGS.atecoList,
             tagsPlaceholder: STRINGS.searchWithTags,
 
             selectedRegion: null,
@@ -81,7 +81,7 @@ export default class FilterForm extends Component {
         const maxEmployees = N_EMPOYEES();
         const minRevenues = REVENUES();
         const maxRevenues = REVENUES();
-        const atecoCodes = ATECO_CODES();
+        const atecoCodes = STRINGS.atecoList;
 
         let noValue = { value: 0, label: STRINGS.select };
 

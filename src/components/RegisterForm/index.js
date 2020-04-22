@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./index.css";
 import { Row, Col, Alert } from "react-bootstrap";
 
-import { ATECO_CODES, REGIONS, citiesByAsc } from "../../utils";
+import { REGIONS, citiesByAsc } from "../../utils";
 
 import * as Validate from "../../utils/Validate";
 
@@ -36,7 +36,7 @@ export default class RegisterForm extends Component {
     }
 
     componentWillReceiveProps = (props) => {
-        let atecoCodes = ATECO_CODES();
+        let atecoCodes = STRINGS.atecoList;
         atecoCodes.forEach((elem) => {
             if (this.state.selectedCode && elem.value === this.state.selectedCode.value) {
                 this.setState({ selectedCode: elem });
@@ -208,7 +208,7 @@ export default class RegisterForm extends Component {
             latitude: latitude,
             longitude: longitude,
             vat: this.refVAT.current.value,
-            ateco: this.state.selectedCode.label,
+            ateco: this.state.selectedCode.value,
             pec: this.refPEC.current.value,
         };
 
@@ -228,15 +228,14 @@ export default class RegisterForm extends Component {
             let res = await requestAPI("/user/register", "POST", data);
             console.log(res);
 
-            if (res.status === 0) {
-                // this.setAlertData(0, STRINGS.theEmailExist);
-                this.setAlertData(0, [{ langKey: "theEmailExist" }]);
-                this.setState({ isProcessing: false });
-                return;
-            }
-            if (res.status === -1) {
-                // this.setAlertData(0, STRINGS.databaseFailed);
-                this.setAlertData(0, [{ langKey: "databaseFailed" }]);
+            if (res.status !== 1) {
+                if (res.status === -1) {
+                    this.setAlertData(0, [{ langKey: "theEmailExist" }]);
+                } else if (res.status === -2) {
+                    this.setAlertData(0, [{ langKey: "vatExist" }]);
+                } else {
+                    this.setAlertData(0, [{ langKey: "databaseFailed" }]);
+                }
                 this.setState({ isProcessing: false });
                 return;
             }
@@ -306,13 +305,7 @@ export default class RegisterForm extends Component {
                 </Row>
                 <Row className="justify-content-center mb-3">
                     <Col md={6}>
-                        <MySelect
-                            value={selectedCode}
-                            onChange={this.handleCodeChange}
-                            options={ATECO_CODES()}
-                            placeholder={STRINGS.atecoCode}
-                            checkValid={checkValidCode}
-                        />
+                        <MySelect value={selectedCode} onChange={this.handleCodeChange} options={STRINGS.atecoList} placeholder={STRINGS.atecoCode} checkValid={checkValidCode} />
                     </Col>
                 </Row>
                 <Row className="mb-3">

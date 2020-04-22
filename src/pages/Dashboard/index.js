@@ -291,7 +291,7 @@ export default class Dashboard extends Component {
 
         temp = temp.filter(
             (company) =>
-                (!filter.ateco || !filter.ateco.value || filter.ateco.label === company.ateco) &&
+                (!filter.ateco || filter.ateco.value === company.ateco) &&
                 (!filter.type || !filter.type.value || filter.type.value === company.typeOfCompany || (filter.type.value === 3 && company.typeOfCompany)) &&
                 (!filter.employeeMin || !filter.employeeMin.value || numberFromStringWithUnit(filter.employeeMin.label) <= numberFromStringWithUnit(company.employees)) &&
                 (!filter.employeeMax || !filter.employeeMax.value || numberFromStringWithUnit(filter.employeeMax.label) >= numberFromStringWithUnit(company.employees)) &&
@@ -461,11 +461,7 @@ export default class Dashboard extends Component {
                     </button>
                 </div>
                 <div className="result-xs">
-                    <div>
-                        {`${(activePage - 1) * itemsCountPerPage + 1}-${(activePage - 1) * itemsCountPerPage + companiesToShow.length} / ${filteredCompanies.length} ${
-                            STRINGS.results
-                        }`}
-                    </div>
+                    <div>{`${(activePage - 1) * itemsCountPerPage + 1}-${(activePage - 1) * itemsCountPerPage + companiesToShow.length} / ${filteredCompanies.length} ${STRINGS.results}`}</div>
                     <div>
                         <button className="btn-prev secondary round mr-2" onClick={this.handleClickPrev}>
                             <i className="fa fa-angle-left" />
@@ -482,9 +478,7 @@ export default class Dashboard extends Component {
         const filterBarMD = (
             <div className="filter-bar">
                 <span className="result-md">
-                    {`${(activePage - 1) * itemsCountPerPage + 1}-${(activePage - 1) * itemsCountPerPage + companiesToShow.length} / ${filteredCompanies.length} ${
-                        STRINGS.results
-                    }`}
+                    {`${(activePage - 1) * itemsCountPerPage + 1}-${(activePage - 1) * itemsCountPerPage + companiesToShow.length} / ${filteredCompanies.length} ${STRINGS.results}`}
                 </span>
                 <div className="d-flex">
                     {dropdown}
@@ -514,12 +508,7 @@ export default class Dashboard extends Component {
                     ))}
                 </div>
                 <div className="pagination-bar">
-                    <Pagination
-                        activePage={activePage}
-                        itemsCountPerPage={itemsCountPerPage}
-                        totalItemsCount={filteredCompanies.length}
-                        onChange={this.handleChangePage.bind(this)}
-                    />
+                    <Pagination activePage={activePage} itemsCountPerPage={itemsCountPerPage} totalItemsCount={filteredCompanies.length} onChange={this.handleChangePage.bind(this)} />
                 </div>
             </div>
         );

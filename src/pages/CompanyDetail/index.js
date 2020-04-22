@@ -61,7 +61,6 @@ export default class CompanyDetail extends Component {
 
     render() {
         const { profile, isProcessing } = this.state;
-        console.log(profile);
         return (
             <div>
                 <LangConsumer>
