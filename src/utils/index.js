@@ -1,18 +1,22 @@
 import { STRINGS } from "./strings";
-import ateco24 from "../json/24.json";
-import ateco25_01 from "../json/25-01.json";
-import ateco25_02 from "../json/25-02.json";
-import ateco25_03 from "../json/25-03.json";
-import ateco25_04 from "../json/25-04.json";
-import ateco27 from "../json/27.json";
-import ateco28_01 from "../json/28-01.json";
-import ateco28_02 from "../json/28-02.json";
-import ateco28_03 from "../json/28-03.json";
-import ateco29 from "../json/29.json";
-import ateco33_01 from "../json/33-01.json";
-import ateco33_02 from "../json/33-02.json";
-import ateco46_01 from "../json/46-01.json";
-import ateco46_02 from "../json/46-02.json";
+import init_data_00 from "../json/init-data-00.json";
+import init_data_01 from "../json/init-data-01.json";
+import init_data_02 from "../json/init-data-02.json";
+import init_data_03 from "../json/init-data-03.json";
+import init_data_04 from "../json/init-data-04.json";
+import init_data_05 from "../json/init-data-05.json";
+import init_data_06 from "../json/init-data-06.json";
+import init_data_07 from "../json/init-data-07.json";
+import init_data_08 from "../json/init-data-08.json";
+import init_data_09 from "../json/init-data-09.json";
+import init_data_10 from "../json/init-data-10.json";
+import init_data_11 from "../json/init-data-11.json";
+import init_data_12 from "../json/init-data-12.json";
+import init_data_13 from "../json/init-data-13.json";
+import init_data_14 from "../json/init-data-14.json";
+import init_data_15 from "../json/init-data-15.json";
+import init_data_16 from "../json/init-data-16.json";
+import init_data_17 from "../json/init-data-17.json";
 
 export const SESSION_LOGGED_USER = "loggedUser";
 export const SESSION_SELECTED_COMPANY = "selectedCompany";
@@ -459,20 +463,24 @@ export const getTotalCompanies = (registeredCompanies) => {
 
     let companies = registeredCompanies.slice(0);
     let unregisteredCompanies = [
-        ...ateco24,
-        // ...ateco25_01,
-        ...ateco25_02,
-        // ...ateco25_03,
-        ...ateco25_04,
-        // ...ateco27,
-        ...ateco28_01,
-        ...ateco28_02,
-        ...ateco28_03,
-        ...ateco29,
-        ...ateco33_01,
-        // ...ateco33_02,
-        ...ateco46_01,
-        ...ateco46_02,
+        ...init_data_00,
+        ...init_data_01,
+        ...init_data_02,
+        ...init_data_03,
+        ...init_data_04,
+        ...init_data_05,
+        ...init_data_06,
+        ...init_data_07,
+        ...init_data_08,
+        ...init_data_09,
+        ...init_data_10,
+        ...init_data_11,
+        ...init_data_12,
+        ...init_data_13,
+        ...init_data_14,
+        ...init_data_15,
+        ...init_data_16,
+        ...init_data_17,
     ];
     unregisteredCompanies.forEach((unregisteredCompany) => {
         let found = false;
@@ -490,21 +498,21 @@ export const getTotalCompanies = (registeredCompanies) => {
 
 export const separateHugeArray = (firstArray, countToCut, seek) => {
     let totalLength = firstArray.length;
-    totalLength += ateco24.length;
-    // totalLength += ateco25_01.length;
-    totalLength += ateco25_02.length;
-    // totalLength += ateco25_03.length;
-    totalLength += ateco25_04.length;
-    // totalLength += ateco27.length;
-    totalLength += ateco28_01.length;
-    totalLength += ateco28_02.length;
-    totalLength += ateco28_03.length;
-    totalLength += ateco29.length;
-    totalLength += ateco33_01.length;
-    // totalLength += ateco33_02.length;
-    totalLength += ateco46_01.length;
-    totalLength += ateco46_02.length;
+    // totalLength += ateco24.length;
+    // // totalLength += ateco25_01.length;
+    // totalLength += ateco25_02.length;
+    // // totalLength += ateco25_03.length;
+    // totalLength += ateco25_04.length;
+    // // totalLength += ateco27.length;
+    // totalLength += ateco28_01.length;
+    // // totalLength += ateco28_02.length;
+    // totalLength += ateco28_03.length;
+    // totalLength += ateco29.length;
+    // totalLength += ateco33_01.length;
+    // // totalLength += ateco33_02.length;
+    // totalLength += ateco46_01.length;
+    // totalLength += ateco46_02.length;
 
-    console.log(totalLength);
+    // console.log(totalLength);
     return totalLength;
 };
