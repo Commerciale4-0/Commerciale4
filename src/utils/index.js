@@ -473,14 +473,14 @@ export const getTotalCompanies = (registeredCompanies) => {
         ...init_data_07,
         ...init_data_08,
         ...init_data_09,
-        ...init_data_10,
-        ...init_data_11,
-        ...init_data_12,
-        ...init_data_13,
-        ...init_data_14,
-        ...init_data_15,
-        ...init_data_16,
-        ...init_data_17,
+        // ...init_data_10,
+        // ...init_data_11,
+        // ...init_data_12,
+        // ...init_data_13,
+        // ...init_data_14,
+        // ...init_data_15,
+        // ...init_data_16,
+        // ...init_data_17,
     ];
     unregisteredCompanies.forEach((unregisteredCompany) => {
         let found = false;
