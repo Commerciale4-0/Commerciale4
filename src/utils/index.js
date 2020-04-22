@@ -1,5 +1,6 @@
 import { STRINGS } from "./strings";
-import unregisteredCompanies from "../init-data.json";
+import unregisteredCompanies01 from "../init-data-01.json";
+import unregisteredCompanies02 from "../init-data-02.json";
 
 export const SESSION_LOGGED_USER = "loggedUser";
 export const SESSION_SELECTED_COMPANY = "selectedCompany";
@@ -445,6 +446,7 @@ export const getTotalCompanies = (registeredCompanies) => {
     // return registeredCompanies;
 
     let companies = registeredCompanies.slice(0);
+    let unregisteredCompanies = [...unregisteredCompanies01, ...unregisteredCompanies02];
     unregisteredCompanies.forEach((unregisteredCompany) => {
         let found = false;
         registeredCompanies.forEach((registeredCompany) => {
