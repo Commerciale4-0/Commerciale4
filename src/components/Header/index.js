@@ -157,14 +157,22 @@ class Header extends Component {
         }
 
         let companies = totalCompanies;
+
         if (!companies || !companies.length) {
-            await requestAPI("/user/all", "POST").then((res) => {
-                if (res.status === 1) {
-                    companies = res.data;
-                    let totalCompanies = getTotalCompanies(companies);
-                    this.setState({ totalCompanies });
-                }
-            });
+            let result = await requestAPI("/user/all", "POST");
+            if (result.status !== 1) {
+                this.setState({ isProcessing: false });
+                alert(STRINGS.connectionFailed);
+                return;
+            }
+            result = await getTotalCompanies(result.data);
+            if (result.status !== 1) {
+                this.setState({ isProcessing: false });
+                alert(STRINGS.connectionFailed);
+                return;
+            }
+
+            this.setState({ totalCompanies: result.data });
         }
 
         if (companies) {

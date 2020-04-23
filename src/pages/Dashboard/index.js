@@ -122,9 +122,7 @@ export default class Dashboard extends Component {
         }
 
         let totalCompanies = result.data;
-        this.setState({
-            totalCompanies: totalCompanies,
-        });
+        this.setState({ totalCompanies });
 
         let filter = JSON.parse(sessionStorage.getItem("filter"));
         if (filter) {
