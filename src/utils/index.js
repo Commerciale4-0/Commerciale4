@@ -484,7 +484,7 @@ export const getTotalCompanies = (registeredCompanies) => {
     // ];
 
     let firstPieces = getFirstPieces();
-    let secondPieces = getSecondPieces();
+    // let secondPieces = getSecondPieces();
 
     firstPieces.forEach((unregisteredCompany) => {
         let found = false;
