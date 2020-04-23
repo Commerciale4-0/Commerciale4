@@ -18,8 +18,6 @@ export default class Dashboard extends Component {
         super(props);
 
         this.state = {
-            numberOfFilteredCompanies: 0,
-
             totalCompanies: [],
             filteredCompanies: [],
             companiesToShow: [],
@@ -107,65 +105,88 @@ export default class Dashboard extends Component {
     };
 
     pullAllCompanies = async () => {
-        const { failCount, selectedOrder, activePage, itemsCountPerPage } = this.state;
+        const { selectedOrder, activePage, itemsCountPerPage } = this.state;
 
-        // await fetch("https://commerciale.s3.us-east-2.amazonaws.com/init-data-00.json")
-        await fetch("/init-data.json")
-            .then((res) => res.json())
-            .then((res1) => {
-                console.log(res1.length);
+        let result = await requestAPI("/user/all", "POST");
+        if (result.status !== 1) {
+            this.setState({ isProcessing: false });
+            alert(STRINGS.connectionFailed);
+            return;
+        }
+        let companies = this.companiesWithDistance(result.data);
+        result = await getTotalCompanies(companies);
+        if (result.status !== 1) {
+            this.setState({ isProcessing: false });
+            alert(STRINGS.connectionFailed);
+            return;
+        }
+
+        let totalCompanies = result.data;
+        this.setState({
+            totalCompanies: totalCompanies,
+        });
+
+        let filter = JSON.parse(sessionStorage.getItem("filter"));
+        if (filter) {
+            this.setState({
+                updateFilterForm: true,
             });
+
+            this.applyFilter(filter, totalCompanies);
+        } else {
+            this.setState({
+                filteredCompanies: totalCompanies,
+            });
+            this.setCompaniesToShow(totalCompanies, selectedOrder, activePage, itemsCountPerPage);
+        }
+
         this.setState({ isProcessing: false });
 
-        return;
-        try {
-            await requestAPI("/user/all", "POST").then((res) => {
-                if (res.status === 1) {
-                    let companies = this.companiesWithDistance(res.data);
-                    let totalCompanies = getTotalCompanies(companies);
-                    this.setState({
-                        totalCompanies: totalCompanies,
-                    });
+        // try {
+        //     await requestAPI("/user/all", "POST").then((res) => {
+        //         if (res.status === 1) {
+        //             let companies = this.companiesWithDistance(res.data);
+        //             let totalCompanies = getTotalCompanies(companies);
+        //             this.setState({
+        //                 totalCompanies: totalCompanies,
+        //             });
 
-                    let length = separateHugeArray(companies, 0, 0);
-                    console.log(length);
+        //             let filter = JSON.parse(sessionStorage.getItem("filter"));
+        //             if (filter) {
+        //                 this.setState({
+        //                     updateFilterForm: true,
+        //                 });
 
-                    let filter = JSON.parse(sessionStorage.getItem("filter"));
-                    if (filter) {
-                        this.setState({
-                            updateFilterForm: true,
-                        });
+        //                 this.applyFilter(filter, totalCompanies);
+        //             } else {
+        //                 this.setState({
+        //                     filteredCompanies: totalCompanies,
+        //                 });
+        //                 this.setCompaniesToShow(totalCompanies, selectedOrder, activePage, itemsCountPerPage);
+        //             }
 
-                        this.applyFilter(filter, totalCompanies);
-                    } else {
-                        this.setState({
-                            filteredCompanies: totalCompanies,
-                        });
-                        this.setCompaniesToShow(totalCompanies, selectedOrder, activePage, itemsCountPerPage);
-                    }
-
-                    this.setState({ isProcessing: false });
-                } else {
-                    this.setState({ failCount: failCount + 1 });
-                    console.log("failCount", failCount + 1);
-                    if (failCount < 3) {
-                        this.pullAllCompanies();
-                    } else {
-                        alert(STRINGS.connectionFailed);
-                        this.setState({ isProcessing: false });
-                    }
-                }
-            });
-        } catch (e) {
-            this.setState({ failCount: failCount + 1 });
-            console.log("catch failCount", failCount + 1);
-            if (failCount < 3) {
-                this.pullAllCompanies();
-            } else {
-                alert(STRINGS.connectionFailed);
-                this.setState({ isProcessing: false });
-            }
-        }
+        //             this.setState({ isProcessing: false });
+        //         } else {
+        //             this.setState({ failCount: failCount + 1 });
+        //             console.log("failCount", failCount + 1);
+        //             if (failCount < 3) {
+        //                 this.pullAllCompanies();
+        //             } else {
+        //                 alert(STRINGS.connectionFailed);
+        //                 this.setState({ isProcessing: false });
+        //             }
+        //         }
+        //     });
+        // } catch (e) {
+        //     this.setState({ failCount: failCount + 1 });
+        //     console.log("catch failCount", failCount + 1);
+        //     if (failCount < 3) {
+        //         this.pullAllCompanies();
+        //     } else {
+        //         alert(STRINGS.connectionFailed);
+        //         this.setState({ isProcessing: false });
+        //     }
+        // }
     };
 
     setCompaniesToShow = (companies, order, page, countPerPage) => {
