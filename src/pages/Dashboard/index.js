@@ -109,6 +109,15 @@ export default class Dashboard extends Component {
     pullAllCompanies = async () => {
         const { failCount, selectedOrder, activePage, itemsCountPerPage } = this.state;
 
+        // await fetch("https://commerciale.s3.us-east-2.amazonaws.com/init-data-00.json")
+        await fetch("/init-data.json")
+            .then((res) => res.json())
+            .then((res1) => {
+                console.log(res1.length);
+            });
+        this.setState({ isProcessing: false });
+
+        return;
         try {
             await requestAPI("/user/all", "POST").then((res) => {
                 if (res.status === 1) {
