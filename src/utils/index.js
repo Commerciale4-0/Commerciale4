@@ -462,27 +462,31 @@ export const getTotalCompanies = (registeredCompanies) => {
     // return registeredCompanies;
 
     let companies = registeredCompanies.slice(0);
-    let unregisteredCompanies = [
-        ...init_data_00,
-        ...init_data_01,
-        ...init_data_02,
-        ...init_data_03,
-        ...init_data_04,
-        ...init_data_05,
-        ...init_data_06,
-        ...init_data_07,
-        ...init_data_08,
-        ...init_data_09,
-        // ...init_data_10,
-        // ...init_data_11,
-        // ...init_data_12,
-        // ...init_data_13,
-        // ...init_data_14,
-        // ...init_data_15,
-        // ...init_data_16,
-        // ...init_data_17,
-    ];
-    unregisteredCompanies.forEach((unregisteredCompany) => {
+    // let unregisteredCompanies = [
+    //     ...init_data_00,
+    //     ...init_data_01,
+    //     ...init_data_02,
+    //     ...init_data_03,
+    //     ...init_data_04,
+    //     ...init_data_05,
+    //     ...init_data_06,
+    //     ...init_data_07,
+    //     ...init_data_08,
+    //     ...init_data_09,
+    //     ...init_data_10,
+    //     ...init_data_11,
+    //     ...init_data_12,
+    //     ...init_data_13,
+    //     ...init_data_14,
+    //     ...init_data_15,
+    //     ...init_data_16,
+    //     ...init_data_17,
+    // ];
+
+    let firstPieces = getFirstPieces();
+    let secondPieces = getSecondPieces();
+
+    firstPieces.forEach((unregisteredCompany) => {
         let found = false;
         registeredCompanies.forEach((registeredCompany) => {
             if (unregisteredCompany.vat === registeredCompany.vat) {
@@ -494,6 +498,27 @@ export const getTotalCompanies = (registeredCompanies) => {
         }
     });
     return companies;
+};
+
+export const getFirstPieces = () => {
+    let items = [
+        ...init_data_00,
+        ...init_data_01,
+        ...init_data_02,
+        ...init_data_03,
+        ...init_data_04,
+        ...init_data_05,
+        ...init_data_06,
+        ...init_data_07,
+        ...init_data_08,
+        ...init_data_09,
+    ];
+    return items;
+};
+
+export const getSecondPieces = () => {
+    let items = [...init_data_10, ...init_data_11, ...init_data_12, ...init_data_13, ...init_data_14, ...init_data_15, ...init_data_16, ...init_data_17];
+    return items;
 };
 
 export const separateHugeArray = (firstArray, countToCut, seek) => {

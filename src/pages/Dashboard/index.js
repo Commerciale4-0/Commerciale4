@@ -108,6 +108,7 @@ export default class Dashboard extends Component {
 
     pullAllCompanies = async () => {
         const { failCount, selectedOrder, activePage, itemsCountPerPage } = this.state;
+
         try {
             await requestAPI("/user/all", "POST").then((res) => {
                 if (res.status === 1) {
