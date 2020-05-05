@@ -17,7 +17,8 @@ export default class PostItemDetail extends Component {
                             <LangConsumer>
                                 {(context) => (
                                     <h5 className="pr-4">
-                                        {context.lang === "en" ? (post.title ? post.title : post.titleIt) : post.titleIt ? post.titleIt : post.title}
+                                        {post.title &&
+                                            (context.lang === "en" ? (post.title.en ? post.title.en : post.title.it) : post.title.it ? post.title.it : post.title.en)}
                                     </h5>
                                 )}
                             </LangConsumer>
@@ -26,18 +27,19 @@ export default class PostItemDetail extends Component {
                         <LangConsumer>
                             {(context) => (
                                 <p className="mt-3">
-                                    {context.lang === "en"
-                                        ? post.description
-                                            ? post.description
-                                            : post.descriptionIt
-                                        : post.descriptionIt
-                                        ? post.descriptionIt
-                                        : post.description}
+                                    {post.description &&
+                                        (context.lang === "en"
+                                            ? post.description.en
+                                                ? post.description.en
+                                                : post.description.it
+                                            : post.description.it
+                                            ? post.description.it
+                                            : post.description.en)}
                                 </p>
                             )}
                         </LangConsumer>
                         <div className="published">
-                            {STRINGS.publishedOn} {new Date(post.published).toLocaleDateString()}
+                            {STRINGS.publishedOn} {new Date(post.id).toLocaleDateString()}
                         </div>
                     </div>
                 )}

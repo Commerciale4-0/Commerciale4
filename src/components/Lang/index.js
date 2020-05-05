@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./index.css";
+import { SESSION_LANG } from "../../utils";
 
 const LANGUAGES = [
     {
@@ -16,7 +17,7 @@ export default class Lang extends Component {
     constructor(props) {
         super(props);
 
-        let lang = sessionStorage.getItem("lang");
+        let lang = sessionStorage.getItem(SESSION_LANG);
         this.state = {
             selectedLang: lang ? lang : "en",
         };

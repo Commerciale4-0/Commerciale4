@@ -1,10 +1,11 @@
 import React from "react";
 import { DropdownButton, Dropdown } from "react-bootstrap";
 import "./index.css";
+import { SESSION_ADMIN } from "../../../utils";
 function Header() {
-    let getSession = JSON.parse(sessionStorage.getItem("admin"));
+    let getSession = JSON.parse(sessionStorage.getItem(SESSION_ADMIN));
     const handleLogout = () => {
-        sessionStorage.removeItem("admin");
+        sessionStorage.removeItem(SESSION_ADMIN);
         window.location.href = "/admin";
     };
     return (

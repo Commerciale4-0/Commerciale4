@@ -9,9 +9,10 @@ import SideBar from "./admin/components/Sidebar";
 import Header from "./admin/components/Header";
 import Login from "./admin/pages/login";
 import "./Admin.css";
+import { SESSION_ADMIN } from "./utils";
 
 function Admin() {
-    let isSession = sessionStorage.getItem("admin");
+    let isSession = sessionStorage.getItem(SESSION_ADMIN);
     return (
         <div className="admin-panel">
             {isSession ? (

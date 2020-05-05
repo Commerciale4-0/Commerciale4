@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./index.css";
 import { Row, Col, Alert } from "react-bootstrap";
 
-import { REGIONS, citiesByAsc } from "../../utils";
+import { REGIONS, citiesByAsc, encrypt } from "../../utils";
 
 import * as Validate from "../../utils/Validate";
 
@@ -200,72 +200,55 @@ export default class RegisterForm extends Component {
         });
 
         let data = {
-            email: this.refEmail.current.value,
-            password: this.refPassword.current.value,
-            officialName: this.refName.current.value,
-            city: this.state.selectedCity.label,
-            region: region,
-            latitude: latitude,
-            longitude: longitude,
-            vat: this.refVAT.current.value,
-            ateco: this.state.selectedCode.value,
-            pec: this.refPEC.current.value,
+            account: {
+                email: this.refEmail.current.value,
+                password: encrypt(this.refPassword.current.value),
+            },
+            profile: {
+                officialName: this.refName.current.value,
+                vat: this.refVAT.current.value,
+                ateco: this.state.selectedCode.value,
+                pec: this.refPEC.current.value,
+                contact: {
+                    region: region,
+                    city: this.state.selectedCity.label,
+                    location: {
+                        type: "Point",
+                        coordinates: [longitude, latitude],
+                    },
+                },
+            },
         };
 
-        // requestAPI("/user/register", "POST", data).then(res => {
-        //     console.log("response", res);
-        //     if (res.status !== 1) {
-        //         this.setAlertData(0, res.message);
-        //     } else {
-        //         this.setState({ step: 3 });
-        //         this.setAlertData(
-        //             1,
-        //             `We've sent an email to ${data.email} to verify your account. Please check your email inbox to coutinue.`
-        //         );
-        //     }
-        // });
-        try {
-            let res = await requestAPI("/user/register", "POST", data);
-            console.log(res);
-
-            if (res.status !== 1) {
-                if (res.status === -1) {
-                    this.setAlertData(0, [{ langKey: "theEmailExist" }]);
-                } else if (res.status === -2) {
-                    this.setAlertData(0, [{ langKey: "vatExist" }]);
-                } else {
-                    this.setAlertData(0, [{ langKey: "databaseFailed" }]);
-                }
-                this.setState({ isProcessing: false });
-                return;
-            }
-
-            /* it's for just test */
-            // this.setState({ step: 3 });
-            // this.setAlertData(1, [{ langKey: "sentEmail" }, ` ${data.pec} `, { langKey: "toVerifyYourAccount" }]);
-            /**********************/
-
-            try {
-                let res = await requestAPI("/user/verify-pec", "POST", {
-                    pec: data.pec,
-                });
-                console.log(res);
-                this.setState({ isProcessing: false });
-
-                if (res.status === 0) {
-                    this.setAlertData(0, [res.message]);
-                    // this.setAlertData(0, [{ langKey: "connectionFailed" }]);
-                } else {
-                    this.setState({ step: 3 });
-                    this.setAlertData(1, [{ langKey: "sentEmail" }, ` ${data.pec} `, { langKey: "toVerifyYourAccount" }]);
-                }
-            } catch (e) {
-                this.setAlertData(0, [{ langKey: "connectionFailed" }]);
-            }
-        } catch (e) {
-            this.setAlertData(0, [{ langKey: "connectionFailed" }]);
+        let response = await requestAPI("/companies/auth/register", "POST", data);
+        let result = await response.json();
+        console.log(result);
+        if (result.error) {
+            this.setAlertData(0, [{ langKey: result.error }]);
             this.setState({ isProcessing: false });
+            return;
         }
+
+        response = await requestAPI(`/companies/auth/email-to-user/${this.refPEC.current.value}`, "GET");
+        result = await response.json();
+        console.log(result);
+        if (result.error) {
+            this.setAlertData(0, [{ langKey: result.error }]);
+            this.setState({ isProcessing: false });
+            return;
+        }
+
+        response = await requestAPI("/companies/auth/email-to-admin", "POST", data);
+        result = await response.json();
+        console.log(result);
+        if (result.error) {
+            this.setAlertData(0, [{ langKey: result.error }]);
+            this.setState({ isProcessing: false });
+            return;
+        }
+
+        this.setState({ step: 3, isProcessing: false });
+        this.setAlertData(1, [{ langKey: "sentEmail" }, ` ${data.pec} `, { langKey: "toVerifyYourAccount" }]);
     };
 
     handleCheck(e) {
@@ -305,7 +288,13 @@ export default class RegisterForm extends Component {
                 </Row>
                 <Row className="justify-content-center mb-3">
                     <Col md={6}>
-                        <MySelect value={selectedCode} onChange={this.handleCodeChange} options={STRINGS.atecoList} placeholder={STRINGS.atecoCode} checkValid={checkValidCode} />
+                        <MySelect
+                            value={selectedCode}
+                            onChange={this.handleCodeChange}
+                            options={STRINGS.atecoList}
+                            placeholder={STRINGS.atecoCode}
+                            checkValid={checkValidCode}
+                        />
                     </Col>
                 </Row>
                 <Row className="mb-3">

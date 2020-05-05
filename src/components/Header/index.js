@@ -4,7 +4,7 @@ import "./index.css";
 import Sidebar from "../Sidebar";
 // import SearchInput from "../SearchInput";
 import { requestAPI } from "../../utils/api";
-import { SESSION_LOGGED_USER, getTotalCompanies } from "../../utils";
+import { SESSION_LOGGED_COMPANY } from "../../utils";
 import Lang from "../Lang";
 import { STRINGS } from "../../utils/strings";
 import CompanyReadMore from "../CompanyReadMore";
@@ -18,7 +18,6 @@ class Header extends Component {
         this.popup = React.createRef();
 
         this.state = {
-            totalCompanies: null,
             cursor: 0,
             isMobile: false,
             isExpanded: false,
@@ -29,11 +28,6 @@ class Header extends Component {
     }
 
     componentDidMount = () => {
-        let filter = JSON.parse(sessionStorage.getItem("filter"));
-        if (filter && filter.key) {
-            this.refKey.current.value = filter.key;
-        }
-
         this.handleWindowResize();
         window.addEventListener("resize", this.handleWindowResize);
         if (this.props.autoHide) {
@@ -82,7 +76,7 @@ class Header extends Component {
 
     handleClickMenu = (menu) => {
         if (menu.link === "/") {
-            sessionStorage.removeItem(SESSION_LOGGED_USER);
+            sessionStorage.removeItem(SESSION_LOGGED_COMPANY);
         }
         window.location.href = menu.link;
         this.setState({
@@ -91,7 +85,7 @@ class Header extends Component {
     };
 
     handleClickLogout = () => {
-        sessionStorage.removeItem(SESSION_LOGGED_USER);
+        sessionStorage.removeItem(SESSION_LOGGED_COMPANY);
         window.location.href = "/";
     };
 
@@ -147,7 +141,6 @@ class Header extends Component {
     };
 
     handleKeyChange = async (e) => {
-        const { totalCompanies } = this.state;
         let keyword = e.target.value.toLowerCase();
         if (keyword.length < 2) {
             this.setState({
@@ -156,41 +149,20 @@ class Header extends Component {
             return;
         }
 
-        let companies = totalCompanies;
-
-        if (!companies || !companies.length) {
-            let result = await requestAPI("/user/all", "POST");
-            if (result.status !== 1) {
-                this.setState({ isProcessing: false });
-                alert(STRINGS.connectionFailed);
-                return;
-            }
-            result = await getTotalCompanies(result.data);
-            if (result.status !== 1) {
-                this.setState({ isProcessing: false });
-                alert(STRINGS.connectionFailed);
-                return;
-            }
-
-            this.setState({ totalCompanies: result.data });
+        let response = await requestAPI(`/companies`, "POST", { keyword: keyword });
+        let result = await response.json();
+        this.setState({ isProcessing: false });
+        if (result.error) {
+            console.log(STRINGS[result.error]);
+            return;
         }
-
-        if (companies) {
-            companies = companies.filter((elem) => {
-                return elem.officialName.toLowerCase().search(keyword) !== -1;
-            });
-            companies = companies.slice(0, 10);
-            this.setState({
-                searchedCompanies: companies,
-            });
-            this.handleWindowResize();
-        }
+        this.setState({ searchedCompanies: result });
     };
 
     handleClickCompany = (company) => {
-        this.refKey.current.value = company.officialName;
+        this.refKey.current.value = company.profile.officialName;
         if (company.id) {
-            window.location.href = `/company/${company.id}`;
+            window.location.href = `/company/${company._id}`;
         } else {
             this.setState({ companyToPreview: company, searchedCompanies: null, cursor: 0 });
             this.refKey.current.value = "";
@@ -232,8 +204,8 @@ class Header extends Component {
             { id: 2, title: STRINGS.logout, link: "/" },
         ];
 
-        let loggedUser = JSON.parse(sessionStorage.getItem(SESSION_LOGGED_USER));
-        let menus = loggedUser ? menusInLoggedin : menusInNotLoggedin;
+        let loggedCompany = JSON.parse(sessionStorage.getItem(SESSION_LOGGED_COMPANY));
+        let menus = loggedCompany ? menusInLoggedin : menusInNotLoggedin;
         const sideBar = (
             <Sidebar isExpanded={isExpanded} handleCollapse={this.handleDidCollapse}>
                 {menus.map((menu) => (
@@ -270,7 +242,7 @@ class Header extends Component {
                                 key={index}
                                 onClick={() => this.handleClickCompany(company)}
                                 dangerouslySetInnerHTML={{
-                                    __html: this.highlightMatchedWords(company.officialName),
+                                    __html: this.highlightMatchedWords(company.profile.officialName),
                                 }}
                             ></div>
                         ))
@@ -288,12 +260,12 @@ class Header extends Component {
                         <Col className="item title" sm={4}>
                             <img src="/images/logo.svg" className="cursor-pointer" alt="" onClick={this.handleClickLogo} />
                         </Col>
-                        <Col className="item" sm={loggedUser ? 3 : 4}>
+                        <Col className="item" sm={loggedCompany ? 3 : 4}>
                             {!isMobile ? searchBar : <div />}
                         </Col>
-                        {loggedUser ? (
+                        {loggedCompany ? (
                             <Col className="item user" sm={3}>
-                                <DropdownButton id="dropdown-basic-button" title={loggedUser ? loggedUser.user.email : "User email address "}>
+                                <DropdownButton id="dropdown-basic-button" title={loggedCompany ? loggedCompany.account.email : "User email address "}>
                                     <Dropdown.Item onClick={() => this.handleClickProfile()}>{STRINGS.profile}</Dropdown.Item>
                                     <Dropdown.Item onClick={() => this.handleClickLogout()}>{STRINGS.logout}</Dropdown.Item>
                                 </DropdownButton>
@@ -302,7 +274,7 @@ class Header extends Component {
                             <></>
                         )}
 
-                        <Col className="item lang d-flex align-items-center" sm={{ span: "2", offset: loggedUser ? "0" : "2" }}>
+                        <Col className="item lang d-flex align-items-center" sm={{ span: "2", offset: loggedCompany ? "0" : "2" }}>
                             <Lang onChange={this.handleChangeLang} />
                         </Col>
                     </Row>

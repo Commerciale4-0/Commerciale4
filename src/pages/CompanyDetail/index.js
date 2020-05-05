@@ -4,7 +4,7 @@ import DetailBody from "../../components/Detail/Body";
 import "./index.css";
 import { requestAPI } from "../../utils/api";
 import SpinnerView from "../../components/SpinnerView";
-import { orderTags, SESSION_SELECTED_COMPANY } from "../../utils";
+import { orderTags, SESSION_SELECTED_COMPANY, SESSION_FILTER } from "../../utils";
 import { LangConsumer } from "../../utils/LanguageContext";
 import { STRINGS } from "../../utils/strings";
 
@@ -15,7 +15,7 @@ export default class CompanyDetail extends Component {
         super(props);
 
         this.state = {
-            profile: null,
+            company: null,
             isProcessing: false,
         };
     }
@@ -33,34 +33,52 @@ export default class CompanyDetail extends Component {
         }
 
         this.setState({ isProcessing: true });
-        await requestAPI("/user", "POST", { id: id })
-            .then((res) => {
-                if (res.status === 1) {
-                    let profile = res.data;
-                    if (profile.user) {
-                        let filter = JSON.parse(sessionStorage.getItem("filter"));
-                        if (filter) {
-                            if (lang === "en") {
-                                profile.user.tags = orderTags(profile.user.tags, filter.tags);
-                            } else {
-                                profile.user.tagsIt = orderTags(profile.user.tagsIt, filter.tags);
-                            }
-                        }
-                    }
-                    this.setState({ profile: res.data });
-                } else {
-                    console.log(STRINGS.connectionFailed);
-                }
-                this.setState({ isProcessing: false });
-            })
-            .catch((e) => {
-                console.log(STRINGS.connectionFailed);
-                this.setState({ isProcessing: false });
-            });
+        let response = await requestAPI(`/companies/${id}`, "GET");
+        let result = await response.json();
+        this.setState({ isProcessing: false });
+        if (result.error) {
+            console.log(STRINGS[result.error]);
+            return;
+        }
+
+        let filter = JSON.parse(sessionStorage.getItem(SESSION_FILTER));
+        if (filter.tags && filter.tags.length && result.tags) {
+            if (lang === "en") {
+                result.tags.en = orderTags(result.tags.en, filter.tags);
+            } else {
+                result.tags.it = orderTags(result.tags.it, filter.tags);
+            }
+        }
+
+        this.setState({ company: result });
+
+        // .then((res) => {
+        //     if (res.status === 1) {
+        //         let profile = res.data;
+        //         if (profile.user) {
+        //             let filter = JSON.parse(sessionStorage.getItem("filter"));
+        //             if (filter) {
+        //                 if (lang === "en") {
+        //                     profile.user.tags = orderTags(profile.user.tags, filter.tags);
+        //                 } else {
+        //                     profile.user.tagsIt = orderTags(profile.user.tagsIt, filter.tags);
+        //                 }
+        //             }
+        //         }
+        //         this.setState({ profile: res.data });
+        //     } else {
+        //         console.log(STRINGS.connectionFailed);
+        //     }
+        //     this.setState({ isProcessing: false });
+        // })
+        // .catch((e) => {
+        //     console.log(STRINGS.connectionFailed);
+        //     this.setState({ isProcessing: false });
+        // });
     };
 
     render() {
-        const { profile, isProcessing } = this.state;
+        const { company, isProcessing } = this.state;
         return (
             <div>
                 <LangConsumer>
@@ -69,8 +87,8 @@ export default class CompanyDetail extends Component {
                     }}
                 </LangConsumer>
                 <div className="company-detail container">
-                    <DetailHeader profile={profile && profile.user} />
-                    <DetailBody profile={profile} />
+                    <DetailHeader profile={company && company.profile} />
+                    <DetailBody company={company} />
                 </div>
                 {isProcessing && <SpinnerView />}
             </div>

@@ -5,16 +5,7 @@ export const requestAPI = async (path, method, data) => {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
-    })
-        .then((res) => {
-            if (res.status === 200) {
-                return res.json();
-            }
-            return { status: 0, message: "Connection failed!" };
-        })
-        .catch((err) => {
-            return { status: 0, message: "Connection failed" };
-        });
+    });
 };
 
 export const geocodeByAddress = async (city, region) => {

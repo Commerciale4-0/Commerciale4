@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./index.css";
 import { requestAPI } from "../../utils/api";
-import { SESSION_LOGGED_USER } from "../../utils";
+import { SESSION_LOGGED_COMPANY } from "../../utils";
 import * as Validate from "../../utils/Validate";
 import { Alert } from "react-bootstrap";
 import SpinnerView from "../SpinnerView";
@@ -41,26 +41,25 @@ class LoginForm extends Component {
         return true;
     };
 
-    handleClickLogin = (e) => {
+    handleClickLogin = async (e) => {
         if (!this.validate()) {
             return;
         }
 
         this.setState({ isProcessing: true });
-        requestAPI("/user/login", "POST", {
+        let response = await requestAPI("/companies/auth/login", "POST", {
             email: this.refEmail.current.value,
             password: this.refPassword.current.value,
-        }).then((res) => {
-            if (res.status === 0) {
-                alert(STRINGS.emailOrPasswordIncorrect);
-            } else if (res.status === 1) {
-                sessionStorage.setItem(SESSION_LOGGED_USER, JSON.stringify(res.data));
-                window.location.href = "/";
-            } else {
-                alert(STRINGS.connectionFailed);
-            }
-            this.setState({ isProcessing: false });
         });
+        let result = await response.json();
+        this.setState({ isProcessing: false });
+        if (result.error) {
+            alert(STRINGS[result.error]);
+            return;
+        }
+
+        sessionStorage.setItem(SESSION_LOGGED_COMPANY, JSON.stringify(result));
+        window.location.href = "/";
     };
 
     render() {

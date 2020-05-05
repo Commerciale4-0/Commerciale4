@@ -4,6 +4,7 @@ import Pagination from "react-js-pagination";
 import { requestAPI } from "../../utils/api";
 import SpinnerView from "../../components/SpinnerView";
 import { stringWithUnitFromNumber } from "../../utils";
+import { STRINGS } from "../../utils/strings";
 
 function Verified() {
     // const [modalShow, setModalShow] = useState(false);
@@ -23,18 +24,14 @@ function Verified() {
 
     const getActivatedUsers = async () => {
         setProcessing(true);
-        await requestAPI("/user/all", "POST")
-            .then((res) => {
-                if (res.status === 1) {
-                    refreshActivatedUsers(res.data);
-                } else {
-                    console.log(res.data);
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        let response = await requestAPI("/admin/approved", "GET");
+        let result = await response.json();
         setProcessing(false);
+        if (result.error) {
+            alert(STRINGS[result.error]);
+            return;
+        }
+        refreshActivatedUsers(result);
     };
 
     const refreshActivatedUsers = (users) => {
@@ -48,51 +45,6 @@ function Verified() {
         let endIndex = startIndex + itemsPerPage;
         setItemsToShow(activatedUsers.slice(startIndex, endIndex));
         setActivePage(pageNumber);
-    };
-
-    const handleClickReject = async (id) => {
-        setProcessing(true);
-        await requestAPI("/admin/users/reject", "POST", { id: id })
-            .then((res) => {
-                if (res.status === 1) {
-                    console.log(res.data);
-                } else {
-                    console.log(res.data);
-                    return;
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-        setProcessing(false);
-    };
-
-    // const showModal = (user) => {
-    //     setModalShow(true);
-    //     setSelectedUser(user);
-    // };
-
-    const handleClickDelete = async (id) => {
-        if (window.confirm("Are you really delete?")) {
-            setProcessing(true);
-            await requestAPI("/admin/users/pending/delete", "POST", { id: id })
-                .then((res) => {
-                    if (res.status === 1) {
-                        activatedUsers.splice(
-                            activatedUsers.findIndex((user) => user.id === id),
-                            1
-                        );
-                        refreshActivatedUsers(activatedUsers);
-                    } else {
-                        console.log(res.data);
-                        return;
-                    }
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
-            setProcessing(false);
-        }
     };
 
     return (
@@ -133,7 +85,7 @@ function Verified() {
                             <th style={{ width: "80px" }}>Reject</th> */}
                                 <th>Employees</th>
                                 <th>Revenues</th>
-                                <th style={{ width: 80 }}>Action</th>
+                                {/* <th style={{ width: 80 }}>Action</th> */}
                             </tr>
                         </thead>
                         <tbody>
@@ -145,20 +97,20 @@ function Verified() {
                                 </tr>
                             ) : (
                                 itemsToShow.map((user, index) => (
-                                    <tr key={user.id}>
+                                    <tr key={user._id}>
                                         <td>{itemsPerPage * (activePage - 1) + index + 1}</td>
-                                        <td>{user.officialName}</td>
-                                        <td>{user.email}</td>
-                                        <td>{user.city}</td>
-                                        <td>{user.vat}</td>
-                                        <td>{user.ateco}</td>
-                                        <td>{stringWithUnitFromNumber(user.employees)}</td>
-                                        <td>{stringWithUnitFromNumber(user.revenues)}</td>
-                                        <td>
+                                        <td>{user.profile.officialName}</td>
+                                        <td>{user.account.email}</td>
+                                        <td>{user.profile.contact.city}</td>
+                                        <td>{user.profile.vat}</td>
+                                        <td>{user.profile.ateco}</td>
+                                        <td>{stringWithUnitFromNumber(user.profile.employees)}</td>
+                                        <td>{stringWithUnitFromNumber(user.profile.revenues)}</td>
+                                        {/* <td>
                                             <button type="button" className="btn btn-outline-danger btn-sm btn-size" onClick={() => handleClickDelete(user.id)}>
                                                 Delete
                                             </button>
-                                        </td>
+                                        </td> */}
                                         {/* <td>
                                     <button
                                         type="button"

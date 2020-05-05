@@ -3,7 +3,7 @@ import TextareaAutosize from "react-autosize-textarea";
 import "./index.css";
 import PostItem from "../../PostItem";
 import { requestAPI } from "../../../utils/api";
-import { SESSION_LOGGED_USER } from "../../../utils";
+import { SESSION_LOGGED_COMPANY, SESSION_LANG } from "../../../utils";
 import SpinnerView from "../../SpinnerView";
 // import { scaleImage } from "../../../utils/ImageProcess";
 import * as Validate from "../../../utils/Validate";
@@ -16,7 +16,7 @@ const MAX_LENGTH = 300;
 export default class ProfileNews extends Component {
     constructor(props) {
         super(props);
-        let lang = sessionStorage.getItem("lang");
+        let lang = sessionStorage.getItem(SESSION_LANG);
         this.state = {
             photoFileName: null,
             photoData: null,
@@ -45,17 +45,6 @@ export default class ProfileNews extends Component {
         });
     };
 
-    updatePosts = (posts) => {
-        this.setState({ posts });
-        let loggedUser = JSON.parse(sessionStorage.getItem(SESSION_LOGGED_USER));
-
-        let newData = {
-            ...loggedUser,
-            posts: posts,
-        };
-        sessionStorage.setItem(SESSION_LOGGED_USER, JSON.stringify(newData));
-    };
-
     handleClickPhoto = (e) => {
         this.refBrowse.current.click();
     };
@@ -81,51 +70,49 @@ export default class ProfileNews extends Component {
     };
 
     handleClickPublish = async (e) => {
-        if (this.validate()) {
-            let dataToSave = {
-                userId: this.props.userId,
-                title: this.refTitle.current.value,
-                titleIt: this.refTitleIt.current.value,
-                description: this.refDescription.current.value,
-                descriptionIt: this.refDescriptionIt.current.value,
-                photo: this.state.photoData,
-            };
-
-            this.setState({ isProcessing: true });
-            await requestAPI("/user/news/create", "POST", dataToSave).then((res) => {
-                if (res.status === 1) {
-                    let posts = [...this.state.posts, res.data];
-                    this.updatePosts(posts);
-                } else {
-                    alert(STRINGS.connectionFailed);
-                    console.log("Error occured!");
-                }
-                this.setState({ isProcessing: false });
-            });
+        if (!this.validate()) {
+            return;
         }
+
+        let dataToSave = {
+            new: {
+                title: {
+                    en: this.refTitle.current.value,
+                    it: this.refTitleIt.current.value,
+                },
+                description: {
+                    en: this.refDescription.current.value,
+                    it: this.refDescriptionIt.current.value,
+                },
+                photo: this.state.photoData,
+            },
+            posts: this.state.posts,
+        };
+
+        this.setState({ isProcessing: true });
+        let response = await requestAPI(`/companies/${this.props.id}/posts`, "POST", dataToSave);
+        let result = await response.json();
+        this.setState({ isProcessing: false });
+        if (result.error) {
+            alert(STRINGS[result.error]);
+            return;
+        }
+        this.setState({ posts: result.posts });
+        sessionStorage.setItem(SESSION_LOGGED_COMPANY, JSON.stringify(result));
     };
 
     handleDeleteNews = async (post) => {
         if (window.confirm(STRINGS.wantToDelete)) {
-            let data = {
-                id: post.id,
-                photo: post.photo,
-            };
-
             this.setState({ isProcessing: true });
-            await requestAPI("/user/news/delete", "POST", data).then((res) => {
-                if (res.status === 1) {
-                    const { posts } = this.state;
-                    posts.splice(
-                        posts.findIndex((item) => item.id === post.id),
-                        1
-                    );
-                    this.updatePosts(posts);
-                } else {
-                    alert(STRINGS.errorOccuredDelete);
-                }
-                this.setState({ isProcessing: false });
-            });
+            let response = await requestAPI(`/companies/${this.props.id}/posts/${post.id}`, "DELETE");
+            let result = await response.json();
+            this.setState({ isProcessing: false });
+            if (result.error) {
+                alert(STRINGS[result.error]);
+                return;
+            }
+            this.setState({ posts: result.posts });
+            sessionStorage.setItem(SESSION_LOGGED_COMPANY, JSON.stringify(result));
         }
     };
 
@@ -144,12 +131,6 @@ export default class ProfileNews extends Component {
                     image: reader.result,
                 },
             });
-            // let image = new Image();
-            // image.onload = () => {
-            // 	let scaledImage = scaleImage(image, 800);
-            // 	this.setState({ photoData: scaledImage });
-            // };
-            // image.src = reader.result;
         };
     };
 
@@ -240,11 +221,7 @@ export default class ProfileNews extends Component {
                 </div>
                 <div className="mt-5 text-bold text-uppercase text-large">{STRINGS.previousNews}</div>
                 <hr className="mt-2 mb-3" />
-                <div>
-                    {posts.map((post, index) => (
-                        <PostItem key={index} data={post} handleDelete={() => this.handleDeleteNews(post)} />
-                    ))}
-                </div>
+                <div>{posts && posts.map((post, index) => <PostItem key={index} data={post} handleDelete={() => this.handleDeleteNews(post)} />)}</div>
                 {imageToCrop && imageToCrop.image && <ImageCropper options={imageToCrop} onSave={this.handleImageCropped} onCancel={this.handleCropCancelled} />}
                 {isProcessing && <SpinnerView />}
             </div>

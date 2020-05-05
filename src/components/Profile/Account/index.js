@@ -3,9 +3,8 @@ import "./index.css";
 import * as Validate from "../../../utils/Validate";
 import { Alert } from "react-bootstrap";
 import { requestAPI } from "../../../utils/api";
-import { SESSION_LOGGED_USER, getAtecoStringWithCode } from "../../../utils";
+import { SESSION_LOGGED_COMPANY, getAtecoStringWithCode, encrypt } from "../../../utils";
 import SpinnerView from "../../SpinnerView";
-import crypto from "crypto";
 import { STRINGS } from "../../../utils/strings";
 
 export default class ProfileAccount extends Component {
@@ -13,7 +12,7 @@ export default class ProfileAccount extends Component {
         super(props);
 
         this.state = {
-            userData: props.userData,
+            company: props.company,
             passwordAlertData: null,
             emailAlertData: null,
             isProcessing: false,
@@ -50,16 +49,9 @@ export default class ProfileAccount extends Component {
         });
     };
 
-    encrypt(password) {
-        let mykey = crypto.createCipher("aes-128-cbc", password);
-        let encodePassword = mykey.update("abc", "utf8", "hex");
-        encodePassword += mykey.final("hex");
-        return encodePassword;
-    }
-
     validatePassword = () => {
-        const oldPassword = this.encrypt(this.refOldPassword.current.value);
-        if (oldPassword !== this.state.userData.user.password) {
+        const oldPassword = encrypt(this.refOldPassword.current.value);
+        if (oldPassword !== this.state.company.account.password) {
             Validate.applyToInput(this.refOldPassword.current, -1);
             this.setPasswordAlertData(0, [{ langKey: "passwordNotCorrect" }]);
             return false;
@@ -70,14 +62,7 @@ export default class ProfileAccount extends Component {
         let valid = Validate.checkPassword(this.refNewPassword.current.value);
         Validate.applyToInput(this.refNewPassword.current, valid.code);
         if (valid.code !== Validate.VALID) {
-            this.setPasswordAlertData(0, [{ langKey: "newPassword" }, { validCode: valid.code }]);
-            return false;
-        }
-
-        valid = Validate.checkPassword(this.refConfirmPassword.current.value);
-        Validate.applyToInput(this.refConfirmPassword.current, valid.code);
-        if (valid.code !== Validate.VALID) {
-            this.setPasswordAlertData(0, [{ langKey: "confirmPassword" }, { validCode: valid.code }]);
+            this.setPasswordAlertData(0, [{ langKey: "password" }, { validCode: valid.code }]);
             return false;
         }
 
@@ -97,20 +82,13 @@ export default class ProfileAccount extends Component {
             return false;
         }
 
-        valid = Validate.checkEmail(this.refConfirmEmail.current.value);
-        Validate.applyToInput(this.refConfirmEmail.current, valid.code);
-        if (valid.code !== Validate.VALID) {
-            this.setEmailAlertData(0, [{ langKey: "confirmEmail" }, { validCode: valid.code }]);
-            return false;
-        }
-
         if (this.refNewEmail.current.value !== this.refConfirmEmail.current.value) {
             this.setEmailAlertData(0, [{ langKey: "emailNotMatch" }]);
             return false;
         }
 
-        let password = this.encrypt(this.refInsertPassword.current.value);
-        if (this.state.userData.user.password !== password) {
+        let password = encrypt(this.refInsertPassword.current.value);
+        if (this.state.company.account.password !== password) {
             Validate.applyToInput(this.refInsertPassword.current, -1);
             this.setEmailAlertData(0, [{ langKey: "passwordNotMatch" }]);
             return false;
@@ -120,92 +98,74 @@ export default class ProfileAccount extends Component {
     };
 
     handleClickChangePassword = async (e) => {
-        let { userData } = this.state;
-
         if (!this.validatePassword()) {
             return;
         }
 
         this.setState({ isProcessing: true });
+        let response = await requestAPI(`/companies/${this.state.company._id}/password`, "POST", { password: this.refNewPassword.current.value });
+        let result = await response.json();
+        this.setState({ isProcessing: false });
+        if (result.error) {
+            this.setPasswordAlertData(0, [{ langKey: result.error }]);
+            return;
+        }
 
-        await requestAPI("/user/change-password", "POST", {
-            id: userData.user.id,
-            password: this.refNewPassword.current.value,
-        }).then((res) => {
-            if (res.status !== 1) {
-                this.setPasswordAlertData(0, [{ langKey: "databaseFailed" }]);
-            } else {
-                userData.user.password = res.data;
-                sessionStorage.setItem(SESSION_LOGGED_USER, JSON.stringify(userData));
-                this.setPasswordAlertData(1, [{ langKey: "passwordChanged" }]);
-            }
-            this.setState({ isProcessing: false });
-        });
+        this.setState({ company: result });
+        sessionStorage.setItem(SESSION_LOGGED_COMPANY, JSON.stringify(result));
+        this.setPasswordAlertData(1, [{ langKey: "passwordChanged" }]);
     };
 
     handleClickChangeEmail = async (e) => {
-        let { userData } = this.state;
         if (!this.validateEmail()) {
             return;
         }
 
-        let emailData = {
-            id: userData.user.id,
-            newEmail: this.refNewEmail.current.value,
-        };
-
         this.setState({ isProcessing: true });
 
-        await requestAPI("/user/update-email", "POST", emailData)
-            .then((res) => {
-                if (res.status === 1) {
-                    userData.user.email = res.data;
-                    sessionStorage.setItem(SESSION_LOGGED_USER, JSON.stringify(userData));
-                    this.setEmailAlertData(1, [{ langKey: "emailChanged" }]);
-                } else {
-                    this.setEmailAlertData(0, [{ langKey: "databaseFailed" }]);
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        let response = await requestAPI(`/companies/${this.state.company._id}/email`, "POST", { email: this.refNewEmail.current.value });
+        let result = await response.json();
         this.setState({ isProcessing: false });
+        if (result.error) {
+            this.setEmailAlertData(0, [{ langKey: result.error }]);
+            return;
+        }
+
+        this.setState({ company: result });
+        sessionStorage.setItem(SESSION_LOGGED_COMPANY, JSON.stringify(result));
+        this.setEmailAlertData(1, [{ langKey: "emailChanged" }]);
     };
 
     handleClickDelete = async (e) => {
-        const { userData } = this.state;
-        let removePhotos = userData.user.productPhotos.slice(0);
-        removePhotos = [...removePhotos, userData.user.background, userData.user.logo];
+        const { company } = this.state;
+        if (!company || !company.profile) {
+            return;
+        }
+        let removePhotos = company.profile.product && company.profile.product.photos;
+        removePhotos = [...removePhotos, company.profile.background, company.profile.logo];
 
-        userData.posts.forEach((post) => {
-            removePhotos.push(post.photo);
-        });
-
-        let deleteData = {
-            id: userData.user.id,
-            removePhotos: removePhotos,
-        };
+        company.posts &&
+            company.posts.forEach((post) => {
+                removePhotos.push(post.photo);
+            });
 
         if (window.confirm(STRINGS.wantToDelete)) {
             this.setState({ isProcessing: true });
-            await requestAPI("/user/delete", "POST", deleteData)
-                .then((res) => {
-                    if (res.status === 1) {
-                        sessionStorage.clear();
-                        window.location.href = "/";
-                    } else {
-                        alert(STRINGS.errorOccuredDelete);
-                    }
-                    this.setState({ isProcessing: false });
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
+            let response = await requestAPI(`/companies/${company._id}`, "DELETE", { photos: removePhotos });
+            let result = await response.json();
+            this.setState({ isProcessing: false });
+            if (result.error) {
+                alert(STRINGS[result.error]);
+                return;
+            }
+            sessionStorage.clear();
+            window.location.href = "/";
         }
     };
 
     handleFocusPasswordInput = () => {
-        this.refOldPassword.current.style.border = this.refNewPassword.current.style.border = this.refConfirmPassword.current.style.border = "1px solid var(--colorBorder)";
+        this.refOldPassword.current.style.border = this.refNewPassword.current.style.border = this.refConfirmPassword.current.style.border =
+            "1px solid var(--colorBorder)";
         this.setState({ passwordAlertData: null });
     };
 
@@ -215,7 +175,7 @@ export default class ProfileAccount extends Component {
     };
 
     render() {
-        const { userData, passwordAlertData, emailAlertData, isProcessing } = this.state;
+        const { company, passwordAlertData, emailAlertData, isProcessing } = this.state;
         const { tab } = this.props;
 
         const actionsPanel = (
@@ -294,50 +254,32 @@ export default class ProfileAccount extends Component {
                 <h6 className="text-center mb-4">{STRINGS.infoNotEditable}</h6>
                 <div className="info-row">
                     <span>{STRINGS.officialName}:</span>
-                    <input disabled ref={this.refOfficialName} defaultValue={userData.user.officialName} />
+                    <input disabled ref={this.refOfficialName} defaultValue={company && company.profile && company.profile.officialName} />
                 </div>
                 <div className="info-row">
                     <span>{STRINGS.city}:</span>
-                    <input disabled ref={this.refCity} defaultValue={userData.user.city} />
+                    <input
+                        disabled
+                        ref={this.refCity}
+                        defaultValue={company && company.profile && company.profile && company.profile.contact && company.profile.contact.city}
+                    />
                 </div>
                 <div className="info-row">
                     <span>{STRINGS.vatNumber}:</span>
-                    <input disabled ref={this.refVat} defaultValue={userData.user.vat} />
+                    <input disabled ref={this.refVat} value={company && company.profile && company.profile.vat} />
                 </div>
                 <div className="info-row">
                     <span>{STRINGS.atecoCode}:</span>
-                    <input disabled ref={this.refAteco} defaultValue={getAtecoStringWithCode(userData.user.ateco)} />
+                    <input disabled ref={this.refAteco} value={company && company.profile && getAtecoStringWithCode(company.profile.ateco)} />
                 </div>
                 <div className="info-row">
                     <span>{STRINGS.pec}:</span>
-                    <input disabled ref={this.refPec} defaultValue={userData.user.pec} />
+                    <input disabled ref={this.refPec} value={company && company.profile && company.profile.pec} />
                 </div>
             </div>
         );
         return (
             <div className="account-view">
-                {/* <div className="tab-header">
-                    <button
-                        className={`tab-item ${tab === 0 ? "active" : ""}`}
-                        onClick={() =>
-                            this.setState({
-                                selectedTab: 0,
-                            })
-                        }
-                    >
-                        Actions
-                    </button>
-                    <button
-                        className={`tab-item ${tab === 1 ? "active" : ""}`}
-                        onClick={() =>
-                            this.setState({
-                                selectedTab: 1,
-                            })
-                        }
-                    >
-                        Info
-                    </button>
-                </div> */}
                 <div className="tab-body">
                     {actionsPanel}
                     {infoPanel}

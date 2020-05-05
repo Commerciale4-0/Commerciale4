@@ -3,7 +3,7 @@ import "./index.css";
 import ProfileCompany from "../../components/Profile/Company";
 import ProfileNews from "../../components/Profile/News";
 import ProfileAccount from "../../components/Profile/Account";
-import { SESSION_LOGGED_USER } from "../../utils";
+import { SESSION_LOGGED_COMPANY } from "../../utils";
 import { STRINGS } from "../../utils/strings";
 
 export default class Profile extends Component {
@@ -11,23 +11,23 @@ export default class Profile extends Component {
         super(props);
 
         this.state = {
-            userData: null,
+            loggedCompany: null,
             selectedMenu: { root: 0, sub: 0 },
         };
     }
 
     componentDidMount = async () => {
-        let loggedUser = JSON.parse(sessionStorage.getItem(SESSION_LOGGED_USER));
-        if (!loggedUser) {
+        let loggedCompany = JSON.parse(sessionStorage.getItem(SESSION_LOGGED_COMPANY));
+        if (!loggedCompany) {
             window.location.href = "/";
             return;
         }
 
-        this.setState({ userData: loggedUser });
+        this.setState({ loggedCompany });
     };
 
     render() {
-        const { userData, selectedMenu } = this.state;
+        const { loggedCompany, selectedMenu } = this.state;
         const MENUS = [
             {
                 id: 0,
@@ -57,7 +57,7 @@ export default class Profile extends Component {
         ];
         return (
             <div>
-                {userData && (
+                {loggedCompany && (
                     <div className="user-profile container">
                         <div className="left-panel">
                             {MENUS.map((menu) => (
@@ -101,13 +101,13 @@ export default class Profile extends Component {
                         </div>
                         <div className="right-panel">
                             <div className={selectedMenu.root === 0 ? "d-block" : "d-none"}>
-                                <ProfileCompany profile={userData.user} tab={selectedMenu.sub} />
+                                <ProfileCompany profile={loggedCompany && loggedCompany.profile} id={loggedCompany && loggedCompany._id} tab={selectedMenu.sub} />
                             </div>
                             <div className={selectedMenu.root === 1 ? "d-block" : "d-none"}>
-                                <ProfileNews posts={userData.posts} userId={userData.user.id} />
+                                <ProfileNews posts={loggedCompany && loggedCompany.posts} id={loggedCompany && loggedCompany._id} />
                             </div>
                             <div className={selectedMenu.root === 2 ? "d-block" : "d-none"}>
-                                <ProfileAccount userData={userData} tab={selectedMenu.sub} />
+                                <ProfileAccount company={loggedCompany} tab={selectedMenu.sub} />
                             </div>
                         </div>
                     </div>

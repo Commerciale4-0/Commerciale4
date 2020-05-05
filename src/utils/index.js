@@ -1,7 +1,11 @@
+import crypto from "crypto";
 import { STRINGS } from "./strings";
 
-export const SESSION_LOGGED_USER = "loggedUser";
+export const SESSION_ADMIN = "admin";
+export const SESSION_LOGGED_COMPANY = "loggedCompany";
 export const SESSION_SELECTED_COMPANY = "selectedCompany";
+export const SESSION_FILTER = "filter";
+export const SESSION_LANG = "lang";
 
 export const ORDERS = () => {
     return [
@@ -464,4 +468,17 @@ export const getTotalCompanies = async (registeredCompanies) => {
     });
 
     return { status: 1, data: companies };
+};
+
+export const encrypt = (data) => {
+    let mykey = crypto.createCipher("aes-128-cbc", data);
+    return mykey.update("abc", "utf8", "hex") + mykey.final("hex");
+};
+
+export const getHttpUrl = (url) => {
+    if (!url || !url.length) return "#";
+    if (url.substr(0, 7) === "http://" || url.substr(0, 8) === "https://") {
+        return url;
+    }
+    return "http://" + url;
 };

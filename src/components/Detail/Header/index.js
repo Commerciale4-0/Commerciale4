@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./index.css";
+import { getHttpUrl } from "../../../utils";
 import { STRINGS } from "../../../utils/strings";
 
 export default class DetailHeader extends Component {
@@ -16,11 +17,14 @@ export default class DetailHeader extends Component {
                         <h5>{profile && profile.officialName}</h5>
                         <span>
                             <i className="fa fa-map-marker pr-2" />
-                            {profile && (profile.companyAddress && profile.companyAddress.length ? profile.companyAddress : profile.city + ", " + profile.region)}
+                            {profile &&
+                                (profile.contact.address && profile.contact.address.length
+                                    ? profile.contact.address
+                                    : profile.contact.city + ", " + profile.contact.region)}
                         </span>
                     </div>
                     <button>
-                        <a href={profile && profile.website} target="blank">
+                        <a href={profile && getHttpUrl(profile.contact.website)} target="blank">
                             {STRINGS.officialWebsite}
                         </a>
                     </button>

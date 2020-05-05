@@ -24,9 +24,9 @@ export default class DetailOverView extends Component {
     };
 
     render() {
-        const { profile } = this.props;
+        const { company } = this.props;
         const { selectedPost } = this.state;
-        let posts = profile && profile.posts.slice(0);
+        let posts = company && company.posts && company.posts.slice(0);
         if (posts) {
             posts = posts.sort((a, b) => {
                 return b.published - a.published;
@@ -49,28 +49,32 @@ export default class DetailOverView extends Component {
                                 {STRINGS.introduction}
                             </div>
                             <p className="font-15 text-gray">
-                                {profile &&
+                                {company &&
+                                    company.profile &&
+                                    company.profile.introduction &&
                                     (context.lang === "en"
-                                        ? profile.user.introduction
-                                            ? profile.user.introduction
-                                            : profile.user.introductionIt
-                                        : profile.user.introductionIt
-                                        ? profile.user.introductionIt
-                                        : profile.user.introduction)}
+                                        ? company.profile.introduction.en
+                                            ? company.profile.introduction.en
+                                            : company.profile.introduction.it
+                                        : company.profile.introduction.it
+                                        ? company.profile.introduction.it
+                                        : company.profile.introduction.en)}
                             </p>
                             <div className="text-uppercase text-bold text-dark-light mb-2 pt-2 d-flex align-items-center">
                                 <i className="fa fa-industry font-22 pr-3" />
                                 {STRINGS.whatWeDo}
                             </div>
                             <p className="font-15 text-gray">
-                                {profile &&
+                                {company &&
+                                    company.profile &&
+                                    company.profile.whatWeDo &&
                                     (context.lang === "en"
-                                        ? profile.user.whatWeDo
-                                            ? profile.user.whatWeDo
-                                            : profile.user.whatWeDoIt
-                                        : profile.user.whatWeDoIt
-                                        ? profile.user.whatWeDoIt
-                                        : profile.user.whatWeDo)}
+                                        ? company.profile.whatWeDo.en
+                                            ? company.profile.whatWeDo.en
+                                            : company.profile.whatWeDo.it
+                                        : company.profile.whatWeDo.it
+                                        ? company.profile.whatWeDo.it
+                                        : company.profile.whatWeDo.en)}
                             </p>
                         </div>
                     )}

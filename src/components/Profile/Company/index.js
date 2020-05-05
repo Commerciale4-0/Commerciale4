@@ -3,7 +3,7 @@ import TextareaAutosize from "react-autosize-textarea";
 import ReactTags from "react-tag-autocomplete";
 import "./index.css";
 import MySelect from "../../Custom/MySelect";
-import { ISO, COMPANY_TYPES, SESSION_LOGGED_USER, stringWithUnitFromNumber } from "../../../utils";
+import { ISO, COMPANY_TYPES, SESSION_LOGGED_COMPANY, stringWithUnitFromNumber, SESSION_LANG } from "../../../utils";
 import ImageCropper from "../../ImageCropper";
 import { requestAPI } from "../../../utils/api";
 import SpinnerView from "../../SpinnerView";
@@ -28,12 +28,14 @@ export default class ProfileCompany extends Component {
         let tags = [];
         let tagsIt = [];
         props.profile.tags &&
-            props.profile.tags.forEach((tag) => {
+            props.profile.tags.en &&
+            props.profile.tags.en.forEach((tag) => {
                 tags.push({ name: tag });
             });
-        props.profile.tagsIt &&
-            props.profile.tagsIt.forEach((tagIt) => {
-                tagsIt.push({ name: tagIt });
+        props.profile.tags &&
+            props.profile.tags.it &&
+            props.profile.tags.it.forEach((tag) => {
+                tagsIt.push({ name: tag });
             });
 
         let selectedISO = [];
@@ -48,13 +50,14 @@ export default class ProfileCompany extends Component {
             }
         }
 
-        let selectedType = COMPANY_TYPES().filter((type) => type.value === props.profile.typeOfCompany);
+        let selectedType = COMPANY_TYPES().filter((type) => type.value === props.profile.type);
         selectedType = selectedType.length ? selectedType[0] : null;
 
         let productPhotos = [];
-        props.profile.productPhotos &&
-            props.profile.productPhotos.length &&
-            props.profile.productPhotos.forEach((photo) => {
+        props.profile.product &&
+            props.profile.product.photos &&
+            props.profile.product.photos.length &&
+            props.profile.product.photos.forEach((photo) => {
                 productPhotos.push(process.env.REACT_APP_AWS_PREFIX + photo);
             });
 
@@ -64,7 +67,7 @@ export default class ProfileCompany extends Component {
             productPhotos: productPhotos,
         };
 
-        let lang = sessionStorage.getItem("lang");
+        let lang = sessionStorage.getItem(SESSION_LANG);
         this.state = {
             selectedISO: selectedISO,
             selectedType: selectedType,
@@ -164,6 +167,7 @@ export default class ProfileCompany extends Component {
 
     handleClickSave = async (e) => {
         const { originPhotos, coverImage, logoImage, productImages, tags, tagsIt, selectedISO, selectedType } = this.state;
+        const { profile } = this.props;
 
         let newTags = [];
         let newTagsIt = [];
@@ -186,32 +190,47 @@ export default class ProfileCompany extends Component {
             revenues = 0;
         }
         let arrayISO = [];
-        for (let i in selectedISO) {
-            arrayISO.push(selectedISO[i].label);
+        for (let iso of selectedISO) {
+            arrayISO.push(iso.label);
         }
 
         let dataToSave = {
-            id: this.props.profile.id,
-            stringData: {
-                introduction: this.refIntro.current.value,
-                introductionIt: this.refIntroIt.current.value,
-                whatWeDo: this.refWhatWeDo.current.value,
-                whatWeDoIt: this.refWhatWeDoIt.current.value,
+            profile: {
+                ...profile,
+                introduction: {
+                    en: this.refIntro.current.value,
+                    it: this.refIntroIt.current.value,
+                },
+                whatWeDo: {
+                    en: this.refWhatWeDo.current.value,
+                    it: this.refWhatWeDoIt.current.value,
+                },
                 employees: employees,
                 revenues: revenues,
                 iso: selectedISO && arrayISO,
-                typeOfCompany: selectedType && selectedType.value,
-                productName: this.refProductName.current.value,
-                productNameIt: this.refProductNameIt.current.value,
-                productDetail: this.refProductDetail.current.value,
-                productDetailIt: this.refProductDetailIt.current.value,
-                companyAddress: this.refAddress.current.value,
-                companyPhone: this.refPhone.current.value,
-                website: this.refWebsite.current.value,
-                companyEmail: this.refEmail.current.value,
-                company2ndEmail: this.ref2ndEmail.current.value,
-                tags: newTags,
-                tagsIt: newTagsIt,
+                type: selectedType && selectedType.value,
+                tags: {
+                    en: newTags,
+                    it: newTagsIt,
+                },
+                contact: {
+                    ...profile.contact,
+                    address: this.refAddress.current.value,
+                    phone: this.refPhone.current.value,
+                    website: this.refWebsite.current.value,
+                    email: this.refEmail.current.value,
+                    email2nd: this.ref2ndEmail.current.value,
+                },
+                product: {
+                    name: {
+                        en: this.refProductName.current.value,
+                        it: this.refProductNameIt.current.value,
+                    },
+                    detail: {
+                        en: this.refProductDetail.current.value,
+                        it: this.refProductDetailIt.current.value,
+                    },
+                },
             },
 
             imageData: {
@@ -222,21 +241,25 @@ export default class ProfileCompany extends Component {
 
         let removedPhotos = [];
         let prefix = process.env.REACT_APP_AWS_PREFIX;
-        if (originPhotos.background && coverImage && coverImage.search(prefix) === -1) {
+        if (originPhotos.background) {
             let path = originPhotos.background.substr(originPhotos.background.search(prefix) + prefix.length, originPhotos.background.length);
-            removedPhotos.push(path);
+            dataToSave.profile.background = path;
+            if (coverImage && coverImage.search(prefix) === -1) {
+                removedPhotos.push(path);
+            }
         }
 
-        if (originPhotos.logo && logoImage && logoImage.search(prefix) === -1) {
+        if (originPhotos.logo) {
             let path = originPhotos.logo.substr(originPhotos.logo.search(prefix) + prefix.length, originPhotos.logo.length);
-            removedPhotos.push(path);
+            dataToSave.profile.logo = path;
+            if (logoImage && logoImage.search(prefix) === -1) {
+                removedPhotos.push(path);
+            }
         }
 
-        for (let i in originPhotos.productPhotos) {
-            let originPhoto = originPhotos.productPhotos[i];
+        for (let originPhoto of originPhotos.productPhotos) {
             let removed = true;
-            for (let j in productImages) {
-                let modifiedPhoto = productImages[j];
+            for (let modifiedPhoto of productImages) {
                 if (modifiedPhoto.search(originPhoto) !== -1) {
                     removed = false;
                     break;
@@ -251,8 +274,7 @@ export default class ProfileCompany extends Component {
         // dataToSave.imageData.removedPhotos = removedPhotos;
 
         let newImages = [];
-        for (let i in productImages) {
-            let photo = productImages[i];
+        for (let photo of productImages) {
             let index = photo.search(prefix);
             if (index === -1) {
                 newImages.push(photo);
@@ -263,52 +285,51 @@ export default class ProfileCompany extends Component {
 
         dataToSave.imageData.productPhotos = newImages;
 
+        console.log(dataToSave);
+
         this.setState({ isProcessing: true });
+        let response = await requestAPI(`/companies/${this.props.id}`, "POST", dataToSave);
+        let result = await response.json();
+        if (result.error) {
+            alert(STRINGS[result.error]);
+            return;
+        }
 
-        await requestAPI("/user/profile/edit", "POST", dataToSave).then((res) => {
-            if (res.status === 1) {
-                if (res.data) {
-                    let originPhotos = this.state.originPhotos;
-                    if (res.data.background) {
-                        originPhotos.background = prefix + res.data.background;
-                    }
-                    if (res.data.logo) {
-                        originPhotos.logo = prefix + res.data.logo;
-                    }
-                    if (res.data.productPhotos && res.data.productPhotos.length) {
-                        let productPhotos = [];
-                        res.data.productPhotos.forEach((photo) => {
-                            productPhotos.push(prefix + photo);
-                        });
-                        originPhotos.productPhotos = productPhotos;
-                    }
-                    this.setState({
-                        originPhotos,
-                        coverImage: originPhotos.background,
-                        logoImage: originPhotos.logo,
-                        productImages: originPhotos.productPhotos,
-                    });
+        console.log(result);
 
-                    let loggedUser = JSON.parse(sessionStorage.getItem(SESSION_LOGGED_USER));
-                    let newData = {
-                        ...loggedUser,
-                        user: res.data,
-                    };
-
-                    console.log(newData);
-                    sessionStorage.setItem(SESSION_LOGGED_USER, JSON.stringify(newData));
-                    this.requestRemovePhotos(removedPhotos);
-                }
-            } else {
-                this.setState({ isProcessing: false });
-            }
+        if (result.profile.background) {
+            originPhotos.background = prefix + result.profile.background;
+        }
+        if (result.profile.logo) {
+            originPhotos.logo = prefix + result.profile.logo;
+        }
+        if (result.profile.product && result.profile.product.photos && result.profile.product.photos.length) {
+            let productPhotos = [];
+            result.profile.product.photos.forEach((photo) => {
+                productPhotos.push(prefix + photo);
+            });
+            originPhotos.productPhotos = productPhotos;
+        }
+        this.setState({
+            originPhotos,
+            coverImage: originPhotos.background,
+            logoImage: originPhotos.logo,
+            productImages: originPhotos.productPhotos,
         });
+
+        sessionStorage.setItem(SESSION_LOGGED_COMPANY, JSON.stringify(result));
+        this.requestRemovePhotos(removedPhotos);
     };
 
     requestRemovePhotos = async (photos) => {
-        await requestAPI("/user/profile/remove-photos", "POST", photos).then((res) => {
-            this.setState({ isProcessing: false });
-        });
+        if (photos && photos.length) {
+            let response = await requestAPI("/companies/photos/remove", "POST", photos);
+            let result = await response.json();
+            if (result.error) {
+                console.log(STRINGS[result.error]);
+            }
+        }
+        this.setState({ isProcessing: false });
     };
 
     handleRemoveProductImage = (index) => {
@@ -560,7 +581,7 @@ export default class ProfileCompany extends Component {
                     <TextareaAutosize
                         maxLength={INTRO_MAX_LENGTH}
                         ref={this.refIntro}
-                        defaultValue={profile && profile.introduction}
+                        defaultValue={profile && profile.introduction && profile.introduction.en}
                         onChange={this.handleChangeText}
                         style={{ maxHeight: 200 }}
                     />
@@ -572,7 +593,7 @@ export default class ProfileCompany extends Component {
                     <TextareaAutosize
                         maxLength={INTRO_MAX_LENGTH}
                         ref={this.refIntroIt}
-                        defaultValue={profile && profile.introductionIt}
+                        defaultValue={profile && profile.introduction && profile.introduction.it}
                         onChange={this.handleChangeText}
                         style={{ maxHeight: 200 }}
                     />
@@ -586,7 +607,7 @@ export default class ProfileCompany extends Component {
                         <TextareaAutosize
                             maxLength={WHATWEDO_MAX_LENGTH}
                             ref={this.refWhatWeDo}
-                            defaultValue={profile && profile.whatWeDo}
+                            defaultValue={profile && profile.whatWeDo && profile.whatWeDo.en}
                             onChange={this.handleChangeText}
                             style={{ maxHeight: 200 }}
                         />
@@ -598,7 +619,7 @@ export default class ProfileCompany extends Component {
                         <TextareaAutosize
                             maxLength={WHATWEDO_MAX_LENGTH}
                             ref={this.refWhatWeDoIt}
-                            defaultValue={profile && profile.whatWeDoIt}
+                            defaultValue={profile && profile.whatWeDo && profile.whatWeDo.it}
                             onChange={this.handleChangeText}
                             style={{ maxHeight: 200 }}
                         />
@@ -692,10 +713,10 @@ export default class ProfileCompany extends Component {
                 <div className="info-row">
                     <span className="pr-1">{STRINGS.productName}: </span>
                     <div className={selectedProductLang === "en" ? "d-block" : "d-none"}>
-                        <input ref={this.refProductName} defaultValue={profile.productName} style={{ width: 300 }} />
+                        <input ref={this.refProductName} defaultValue={profile.product && profile.product.name && profile.product.name.en} style={{ width: 300 }} />
                     </div>
                     <div className={selectedProductLang === "it" ? "d-block" : "d-none"}>
-                        <input ref={this.refProductNameIt} defaultValue={profile.productNameIt} style={{ width: 300 }} />
+                        <input ref={this.refProductNameIt} defaultValue={profile.product && profile.product.name && profile.product.name.it} style={{ width: 300 }} />
                     </div>
                 </div>
                 <div>
@@ -724,10 +745,18 @@ export default class ProfileCompany extends Component {
                 </div>
                 <div className="mt-4 mb-2">{STRINGS.details}:</div>
                 <div className={selectedProductLang === "en" ? "d-block" : "d-none"}>
-                    <TextareaAutosize ref={this.refProductDetail} defaultValue={profile.productDetail} style={{ maxHeight: 400 }} />
+                    <TextareaAutosize
+                        ref={this.refProductDetail}
+                        defaultValue={profile.product && profile.product.detail && profile.product.detail.en}
+                        style={{ maxHeight: 400 }}
+                    />
                 </div>
                 <div className={selectedProductLang === "it" ? "d-block" : "d-none"}>
-                    <TextareaAutosize ref={this.refProductDetailIt} defaultValue={profile.productDetailIt} style={{ maxHeight: 400 }} />
+                    <TextareaAutosize
+                        ref={this.refProductDetailIt}
+                        defaultValue={profile.product && profile.product.detail && profile.product.detail.it}
+                        style={{ maxHeight: 400 }}
+                    />
                 </div>
                 {btnSave}
             </div>
@@ -737,23 +766,23 @@ export default class ProfileCompany extends Component {
             <div className={`pt-4 ${tab === 2 ? "d-block" : "d-none"}`} ref={this.contactsPanel}>
                 <div className="info-row">
                     <span>{STRINGS.address}:</span>
-                    <input ref={this.refAddress} defaultValue={profile.companyAddress} />
+                    <input ref={this.refAddress} defaultValue={profile.contact.address} />
                 </div>
                 <div className="info-row">
                     <span>{STRINGS.phone}:</span>
-                    <input ref={this.refPhone} defaultValue={profile.companyPhone} />
+                    <input ref={this.refPhone} defaultValue={profile.contact.phone} />
                 </div>
                 <div className="info-row">
                     <span>{STRINGS.website}:</span>
-                    <input ref={this.refWebsite} defaultValue={profile.website} />
+                    <input ref={this.refWebsite} defaultValue={profile.contact.website} />
                 </div>
                 <div className="info-row">
                     <span>{STRINGS.email}:</span>
-                    <input ref={this.refEmail} defaultValue={profile.companyEmail} />
+                    <input ref={this.refEmail} defaultValue={profile.contact.email} />
                 </div>
                 <div className="info-row">
                     <span>{STRINGS.secondEmail}:</span>
-                    <input ref={this.ref2ndEmail} defaultValue={profile.company2ndEmail} />
+                    <input ref={this.ref2ndEmail} defaultValue={profile.contact.email2nd} />
                 </div>
                 {btnSave}
             </div>

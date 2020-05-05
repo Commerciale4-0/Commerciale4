@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import "./index.css";
 import FilterForm from "../../components/FilterForm";
-import { requestAPI, geocodeByAddress } from "../../utils/api";
+import { requestAPI } from "../../utils/api";
 import CompanyCell from "../../components/CompanyCell";
 import { Dropdown } from "react-bootstrap";
 // import Sidebar from "../../components/Sidebar";
 import Pagination from "react-js-pagination";
-import { distanceFromCoords, numberFromStringWithUnit, orderTags, SESSION_LOGGED_USER, ORDERS, getTotalCompanies, separateHugeArray } from "../../utils";
+import { orderTags, numberFromStringWithUnit, SESSION_LOGGED_COMPANY, SESSION_FILTER, ORDERS } from "../../utils";
 import SpinnerView from "../../components/SpinnerView";
 import { LangConsumer } from "../../utils/LanguageContext";
 import { STRINGS } from "../../utils/strings";
@@ -18,9 +18,8 @@ export default class Dashboard extends Component {
         super(props);
 
         this.state = {
-            totalCompanies: [],
-            filteredCompanies: [],
-            companiesToShow: [],
+            numberOfCompanies: 0,
+            companies: [],
             selectedOrder: ORDERS()[0],
             isExpandedSidebar: false,
             activePage: 1,
@@ -28,7 +27,6 @@ export default class Dashboard extends Component {
             isProcessing: false,
             viewMode: 0,
             itemsCountPerPage: 30,
-            failCount: 0,
             filterBarXSScrollPos: window.pageYOffset,
             filterBarXSVisible: true,
         };
@@ -43,11 +41,11 @@ export default class Dashboard extends Component {
             });
             window.addEventListener("scroll", this.handleWindowScroll);
         }
+
+        this.setState({ updateFilterForm: true });
+
         this.setState({ isProcessing: true });
-
-        this.getCurrentLocation();
-
-        this.pullAllCompanies();
+        this.getLocationAndPull();
     };
 
     componentWillUnmount() {
@@ -78,170 +76,107 @@ export default class Dashboard extends Component {
         });
     };
 
-    getCurrentLocation = () => {
-        let loggedUser = JSON.parse(sessionStorage.getItem(SESSION_LOGGED_USER));
-        if (loggedUser && loggedUser.user && loggedUser.user.latitude && loggedUser.user.longitude) {
-            this.setState({
-                myLocation: {
-                    latitude: loggedUser.user.latitude,
-                    longitude: loggedUser.user.longitude,
-                },
-            });
+    getLocationAndPull = () => {
+        let loggedUser = JSON.parse(sessionStorage.getItem(SESSION_LOGGED_COMPANY));
+        if (
+            loggedUser &&
+            loggedUser.profile.contact &&
+            loggedUser.profile.contact.location &&
+            loggedUser.profile.contact.location.coordinates[0] &&
+            loggedUser.profile.contact.location.coordinates[1]
+        ) {
+            let myLocation = loggedUser.profile.contact.location.coordinates;
+            this.setState({ myLocation });
+            this.pullCompanies(this.state.activePage, this.state.itemsCountPerPage, this.state.selectedOrder, myLocation);
             return;
         }
 
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(this.showPosition);
+        } else {
+            this.pullCompanies(this.state.activePage, this.state.itemsCountPerPage, this.state.selectedOrder);
         }
     };
 
     showPosition = (position) => {
-        this.setState({
-            myLocation: {
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude,
-            },
-        });
+        let myLocation = [position.coords.longitude, position.coords.latitude];
+        this.setState({ myLocation });
+        this.pullCompanies(this.state.activePage, this.state.itemsCountPerPage, this.state.selectedOrder, myLocation);
     };
 
-    pullAllCompanies = async () => {
-        const { selectedOrder, activePage, itemsCountPerPage } = this.state;
+    pullCompanies = async (pageNumber, count, sort, coordinates) => {
+        let filter = JSON.parse(sessionStorage.getItem(SESSION_FILTER));
+        this.setState({ filter: filter, isExpandedSidebar: false });
 
-        let result = await requestAPI("/user/all", "POST");
-        if (result.status !== 1) {
-            this.setState({ isProcessing: false });
-            alert(STRINGS.connectionFailed);
-            return;
+        let searchFilter = {
+            offset: (pageNumber - 1) * count,
+            count: count,
+        };
+        if (coordinates) searchFilter.coordinates = coordinates;
+
+        if (sort.id === 0) {
+            searchFilter.sort = { title: "relevance", asc: 1 };
+        } else if (sort.id === 1) {
+            searchFilter.sort = { title: "revenues", asc: 1 };
+        } else if (sort.id === 2) {
+            searchFilter.sort = { title: "revenues", asc: -1 };
+        } else if (sort.id === 3) {
+            searchFilter.sort = { title: "employees", asc: 1 };
+        } else if (sort.id === 4) {
+            searchFilter.sort = { title: "employees", asc: -1 };
+        } else if (sort.id === 5) {
+            searchFilter.sort = { title: "distance", asc: 1 };
+        } else if (sort.id === 6) {
+            searchFilter.sort = { title: "distance", asc: -1 };
+        } else {
+            searchFilter.sort = { title: "relevance", asc: 1 };
         }
-        let companies = this.companiesWithDistance(result.data);
-        result = await getTotalCompanies(companies);
-        if (result.status !== 1) {
-            this.setState({ isProcessing: false });
-            alert(STRINGS.connectionFailed);
-            return;
-        }
 
-        let totalCompanies = result.data;
-        this.setState({ totalCompanies });
-
-        let filter = JSON.parse(sessionStorage.getItem("filter"));
+        console.log(filter);
         if (filter) {
-            this.setState({
-                updateFilterForm: true,
-            });
-
-            this.applyFilter(filter, totalCompanies);
-        } else {
-            this.setState({
-                filteredCompanies: totalCompanies,
-            });
-            this.setCompaniesToShow(totalCompanies, selectedOrder, activePage, itemsCountPerPage);
+            if (filter.region && filter.region.value) searchFilter.region = filter.region.label;
+            if (filter.city && filter.city.value) {
+                searchFilter.city = filter.city.label;
+                if (filter.radius) searchFilter.radius = filter.radius;
+            }
+            if (filter.type && filter.type.value) searchFilter.type = filter.type.value;
+            if (filter.employeeMin && filter.employeeMin.value) searchFilter.employeeMin = numberFromStringWithUnit(filter.employeeMin.label);
+            if (filter.employeeMax && filter.employeeMax.value) searchFilter.employeeMax = numberFromStringWithUnit(filter.employeeMax.label);
+            if (filter.revenueMin && filter.revenueMin.value) searchFilter.revenueMin = numberFromStringWithUnit(filter.revenueMin.label);
+            if (filter.revenueMax && filter.revenueMax.value) searchFilter.revenueMax = numberFromStringWithUnit(filter.revenueMax.label);
+            if (filter.ateco) searchFilter.ateco = filter.ateco.value;
+            if (filter.tags && filter.tags.length) {
+                lang === "en" ? (searchFilter.tags = { en: filter.tags }) : (searchFilter.tags = { it: filter.tags });
+            }
         }
 
+        console.log(searchFilter);
+        this.setState({ isProcessing: true });
+        let response = await requestAPI(`/companies`, "POST", searchFilter);
+        let result = await response.json();
         this.setState({ isProcessing: false });
-
-        // try {
-        //     await requestAPI("/user/all", "POST").then((res) => {
-        //         if (res.status === 1) {
-        //             let companies = this.companiesWithDistance(res.data);
-        //             let totalCompanies = getTotalCompanies(companies);
-        //             this.setState({
-        //                 totalCompanies: totalCompanies,
-        //             });
-
-        //             let filter = JSON.parse(sessionStorage.getItem("filter"));
-        //             if (filter) {
-        //                 this.setState({
-        //                     updateFilterForm: true,
-        //                 });
-
-        //                 this.applyFilter(filter, totalCompanies);
-        //             } else {
-        //                 this.setState({
-        //                     filteredCompanies: totalCompanies,
-        //                 });
-        //                 this.setCompaniesToShow(totalCompanies, selectedOrder, activePage, itemsCountPerPage);
-        //             }
-
-        //             this.setState({ isProcessing: false });
-        //         } else {
-        //             this.setState({ failCount: failCount + 1 });
-        //             console.log("failCount", failCount + 1);
-        //             if (failCount < 3) {
-        //                 this.pullAllCompanies();
-        //             } else {
-        //                 alert(STRINGS.connectionFailed);
-        //                 this.setState({ isProcessing: false });
-        //             }
-        //         }
-        //     });
-        // } catch (e) {
-        //     this.setState({ failCount: failCount + 1 });
-        //     console.log("catch failCount", failCount + 1);
-        //     if (failCount < 3) {
-        //         this.pullAllCompanies();
-        //     } else {
-        //         alert(STRINGS.connectionFailed);
-        //         this.setState({ isProcessing: false });
-        //     }
-        // }
-    };
-
-    setCompaniesToShow = (companies, order, page, countPerPage) => {
-        let result = null;
-        if (order.id === 1) {
-            result = companies.sort(function (a, b) {
-                let numberA = numberFromStringWithUnit(a.revenues);
-                let numberB = numberFromStringWithUnit(b.revenues);
-                return numberA - numberB;
-            });
-        } else if (order.id === 2) {
-            result = companies.sort(function (a, b) {
-                let numberA = numberFromStringWithUnit(a.revenues);
-                let numberB = numberFromStringWithUnit(b.revenues);
-                return numberB - numberA;
-            });
-        } else if (order.id === 3) {
-            result = companies.sort(function (a, b) {
-                let numberA = numberFromStringWithUnit(a.employees);
-                let numberB = numberFromStringWithUnit(b.employees);
-                return numberA - numberB;
-            });
-        } else if (order.id === 4) {
-            result = companies.sort(function (a, b) {
-                let numberA = numberFromStringWithUnit(a.employees);
-                let numberB = numberFromStringWithUnit(b.employees);
-                return numberB - numberA;
-            });
-        } else if (order.id === 5) {
-            result = companies.sort(function (a, b) {
-                if (a.distance && b.distance) {
-                    return a.distance - b.distance;
-                } else {
-                    return 0;
-                }
-            });
-        } else if (order.id === 6) {
-            result = companies.sort(function (a, b) {
-                if (a.distance && b.distance) {
-                    return b.distance - a.distance;
-                } else {
-                    return 0;
-                }
-            });
-        } else {
-            result = companies;
+        if (result.error) {
+            alert(STRINGS[result.error]);
+            return;
         }
 
-        result = result.slice((page - 1) * countPerPage, page * countPerPage);
+        if (filter.tags && filter.tags.length) {
+            result.companies.forEach((company) => {
+                if (company.tags) {
+                    if (lang === "en") {
+                        company.tags.en = orderTags(company.tags.en, filter.tags);
+                    } else {
+                        company.tags.it = orderTags(company.tags.it, filter.tags);
+                    }
+                }
+            });
+        }
 
-        this.setState({
-            companiesToShow: result,
-        });
+        this.setState({ numberOfCompanies: result.count, companies: result.companies });
     };
 
     handleClickOrder = (item) => {
-        this.setCompaniesToShow(this.state.filteredCompanies, item, 1, this.state.itemsCountPerPage);
+        this.pullCompanies(1, this.state.itemsCountPerPage, item, this.state.myLocation);
         this.setState({
             selectedOrder: item,
             activePage: 1,
@@ -263,39 +198,36 @@ export default class Dashboard extends Component {
 
     handleClickPrev = (e) => {
         let pageNumber = this.state.activePage > 1 ? this.state.activePage - 1 : 1;
-        this.setCompaniesToShow(this.state.filteredCompanies, this.state.selectedOrder, pageNumber, this.state.itemsCountPerPage);
+        this.pullCompanies(pageNumber, this.state.itemsCountPerPage, this.state.selectedOrder, this.state.myLocation);
         this.setState({ activePage: pageNumber });
     };
     handleClickNext = (e) => {
-        const { activePage, filteredCompanies, itemsCountPerPage, selectedOrder } = this.state;
-        if (!filteredCompanies || !filteredCompanies.length) {
+        const { activePage, numberOfCompanies, itemsCountPerPage, selectedOrder, myLocation } = this.state;
+        if (!numberOfCompanies) {
             return;
         }
 
-        let temp = (activePage * itemsCountPerPage) / (filteredCompanies.length + 1);
-
+        let temp = (activePage * itemsCountPerPage) / (numberOfCompanies + 1);
         let pageNumber = temp < 1 ? activePage + 1 : activePage;
-
-        this.setCompaniesToShow(filteredCompanies, selectedOrder, pageNumber, itemsCountPerPage);
+        this.pullCompanies(pageNumber, itemsCountPerPage, selectedOrder, myLocation);
         this.setState({ activePage: pageNumber });
     };
 
     handleChangePage(pageNumber) {
-        this.setCompaniesToShow(this.state.filteredCompanies, this.state.selectedOrder, pageNumber, this.state.itemsCountPerPage);
+        this.pullCompanies(pageNumber, this.state.itemsCountPerPage, this.state.selectedOrder, this.state.myLocation);
         this.setState({ activePage: pageNumber });
     }
 
     handleClickSearch = async (filter) => {
-        sessionStorage.setItem("filter", JSON.stringify(filter));
+        sessionStorage.setItem(SESSION_FILTER, JSON.stringify(filter));
         this.setState({
             updateFilterForm: false,
         });
-        this.applyFilter(filter);
+        this.pullCompanies(1, this.state.itemsCountPerPage, this.state.selectedOrder, this.state.myLocation);
     };
 
     handleClickList = () => {
-        this.setCompaniesToShow(this.state.filteredCompanies, this.state.selectedOrder, 1, 15);
-
+        this.pullCompanies(1, 15, this.state.selectedOrder, this.state.myLocation);
         this.setState({
             viewMode: 1,
             itemsCountPerPage: 15,
@@ -303,9 +235,9 @@ export default class Dashboard extends Component {
     };
 
     handleClickGrid = () => {
-        this.setCompaniesToShow(this.state.filteredCompanies, this.state.selectedOrder, 1, 30);
+        this.pullCompanies(1, 30, this.state.selectedOrder, this.state.myLocation);
         this.setState({
-            viewMode: 0,
+            viewMode: 1,
             itemsCountPerPage: 30,
         });
     };
@@ -314,150 +246,10 @@ export default class Dashboard extends Component {
         window.location.href = `/company/${id}`;
     };
 
-    applyFilter = async (filter, companies = null) => {
-        this.setState({
-            isProcessing: true,
-            filter: filter,
-            isExpandedSidebar: false,
-        });
-
-        let temp = companies ? companies : this.state.totalCompanies;
-
-        temp = temp.filter(
-            (company) =>
-                (!filter.ateco || filter.ateco.value === company.ateco) &&
-                (!filter.type || !filter.type.value || filter.type.value === company.typeOfCompany || (filter.type.value === 3 && company.typeOfCompany)) &&
-                (!filter.employeeMin || !filter.employeeMin.value || numberFromStringWithUnit(filter.employeeMin.label) <= numberFromStringWithUnit(company.employees)) &&
-                (!filter.employeeMax || !filter.employeeMax.value || numberFromStringWithUnit(filter.employeeMax.label) >= numberFromStringWithUnit(company.employees)) &&
-                (!filter.revenueMin || !filter.revenueMin.value || numberFromStringWithUnit(filter.revenueMin.label) <= numberFromStringWithUnit(company.revenues)) &&
-                (!filter.revenueMax || !filter.revenueMax.value || numberFromStringWithUnit(filter.revenueMax.label) >= numberFromStringWithUnit(company.revenues))
-        );
-
-        temp = await this.getCompaniesInRadius(temp, filter.city, filter.region, filter.radius);
-
-        if (filter.tags && filter.tags.length) {
-            let temp2 = [];
-
-            for (let i in temp) {
-                let company = temp[i];
-                if (company.tags) {
-                    if (lang === "en") {
-                        for (let j in company.tags) {
-                            let tag = company.tags[j];
-                            let found = false;
-                            for (let k in filter.tags) {
-                                if (tag.toLowerCase().search(filter.tags[k].name.toLowerCase()) !== -1) {
-                                    temp2.push(company);
-                                    found = true;
-                                    break;
-                                }
-                            }
-                            if (found) {
-                                break;
-                            }
-                        }
-                    } else {
-                        for (let j in company.tagsIt) {
-                            let tag = company.tagsIt[j];
-                            let found = false;
-                            for (let k in filter.tags) {
-                                if (tag.toLowerCase().search(filter.tags[k].name.toLowerCase()) !== -1) {
-                                    temp2.push(company);
-                                    found = true;
-                                    break;
-                                }
-                            }
-                            if (found) {
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            temp = temp2.slice(0);
-
-            for (let i in temp) {
-                let company = temp[i];
-                if (lang === "en") {
-                    company.tags = orderTags(company.tags, filter.tags);
-                } else {
-                    company.tagsIt = orderTags(company.tagsIt, filter.tags);
-                }
-            }
-        }
-
-        this.setState({
-            filteredCompanies: temp,
-            activePage: 1,
-        });
-
-        this.setCompaniesToShow(temp, this.state.selectedOrder, 1, this.state.itemsCountPerPage);
-        this.setState({ isProcessing: false });
-    };
-
-    getCompaniesInRadius = async (companies, city, region, radius) => {
-        if (!region || !region.value) {
-            return companies;
-        }
-
-        let items = [];
-        if (!city || !city.value) {
-            for (let i in companies) {
-                if (companies[i].region === region.label) {
-                    items.push(companies[i]);
-                }
-            }
-            return items;
-        }
-
-        let latitude = 0.0;
-        let longitude = 0.0;
-        await geocodeByAddress(city.label, region.label)
-            .then((res) => {
-                latitude = res.lat;
-                longitude = res.lng;
-            })
-            .catch((err) => {
-                console.log("Did not get coordiantes for the address");
-                return companies;
-            });
-
-        for (let i in companies) {
-            if (!companies[i].latitude || !companies[i].longitude) {
-                items.push(companies[i]);
-                continue;
-            }
-            let distance = distanceFromCoords(latitude, longitude, companies[i].latitude, companies[i].longitude);
-            if (distance <= radius) {
-                items.push(companies[i]);
-            }
-        }
-        return items;
-    };
-
-    companiesWithDistance = (companies) => {
-        const { myLocation } = this.state;
-
-        if (!myLocation) {
-            return companies;
-        }
-
-        let modifiedCompanies = [];
-        for (let i in companies) {
-            let distance = distanceFromCoords(myLocation.latitude, myLocation.longitude, companies[i].latitude, companies[i].longitude);
-
-            modifiedCompanies.push({
-                ...companies[i],
-                distance: distance.toFixed(2),
-            });
-        }
-        return modifiedCompanies;
-    };
-
     render() {
         const {
-            filteredCompanies,
-            companiesToShow,
+            numberOfCompanies,
+            companies,
             selectedOrder,
             isExpandedSidebar,
             activePage,
@@ -495,7 +287,7 @@ export default class Dashboard extends Component {
                     </button>
                 </div>
                 <div className="result-xs">
-                    <div>{`${(activePage - 1) * itemsCountPerPage + 1}-${(activePage - 1) * itemsCountPerPage + companiesToShow.length} / ${filteredCompanies.length} ${
+                    <div>{`${(activePage - 1) * itemsCountPerPage + 1}-${(activePage - 1) * itemsCountPerPage + companies.length} / ${numberOfCompanies} ${
                         STRINGS.results
                     }`}</div>
                     <div>
@@ -514,9 +306,7 @@ export default class Dashboard extends Component {
         const filterBarMD = (
             <div className="filter-bar">
                 <span className="result-md">
-                    {`${(activePage - 1) * itemsCountPerPage + 1}-${(activePage - 1) * itemsCountPerPage + companiesToShow.length} / ${filteredCompanies.length} ${
-                        STRINGS.results
-                    }`}
+                    {`${(activePage - 1) * itemsCountPerPage + 1}-${(activePage - 1) * itemsCountPerPage + companies.length} / ${numberOfCompanies} ${STRINGS.results}`}
                 </span>
                 <div className="d-flex">
                     {dropdown}
@@ -539,9 +329,9 @@ export default class Dashboard extends Component {
         const listPanel = (
             <div className="list-panel">
                 <div className="row company-list">
-                    {companiesToShow.map((company, index) => (
+                    {companies.map((company, index) => (
                         <div key={index} className={`grid-cell ${viewMode ? "col-12" : "col-sm-6 col-12"} `}>
-                            <CompanyCell company={company} viewMode={viewMode} handleClickProfile={() => this.handleClickProfile(company.id)} />
+                            <CompanyCell company={company} viewMode={viewMode} handleClickProfile={() => this.handleClickProfile(company._id)} />
                         </div>
                     ))}
                 </div>
@@ -549,7 +339,7 @@ export default class Dashboard extends Component {
                     <Pagination
                         activePage={activePage}
                         itemsCountPerPage={itemsCountPerPage}
-                        totalItemsCount={filteredCompanies.length}
+                        totalItemsCount={numberOfCompanies}
                         onChange={this.handleChangePage.bind(this)}
                     />
                 </div>
@@ -577,7 +367,8 @@ export default class Dashboard extends Component {
                 <div className={`right-panel ${isExpandedSidebar ? "xs" : ""}`}>
                     {filterBarMD}
                     {filterBarXS}
-                    {isProcessing ? <SpinnerView /> : filteredCompanies && filteredCompanies.length ? listPanel : <div className="no-result">{STRINGS.noResults}</div>}
+                    {companies && companies.length ? listPanel : <div className="no-result">{STRINGS.noResults}</div>}
+                    {isProcessing && <SpinnerView />}
                 </div>
             </div>
         );

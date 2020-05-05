@@ -59,7 +59,7 @@ export default class PostItem extends Component {
                     <LangConsumer>
                         {(context) => (
                             <p className="text-uppercase text-bold text-dark-light">
-                                {context.lang === "en" ? (data.title ? data.title : data.titleIt) : data.titleIt ? data.titleIt : data.title}
+                                {data.title && (context.lang === "en" ? (data.title.en ? data.title.en : data.title.it) : data.title.it ? data.title.it : data.title.en)}
                             </p>
                         )}
                     </LangConsumer>
@@ -67,19 +67,20 @@ export default class PostItem extends Component {
                 <LangConsumer>
                     {(context) => (
                         <p className="mt-2 text-gray">
-                            {context.lang === "en"
-                                ? data.description
-                                    ? data.description
-                                    : data.descriptionIt
-                                : data.descriptionIt
-                                ? data.descriptionIt
-                                : data.description}
+                            {data.description &&
+                                (context.lang === "en"
+                                    ? data.description.en
+                                        ? data.description.en
+                                        : data.description.it
+                                    : data.description.it
+                                    ? data.description.it
+                                    : data.description.en)}
                         </p>
                     )}
                 </LangConsumer>
 
                 <p className="publish-date">
-                    {STRINGS.publishedOn} {this.getPublished(data.published)}
+                    {STRINGS.publishedOn} {this.getPublished(data.id)}
                 </p>
             </div>
         ) : (
@@ -89,22 +90,23 @@ export default class PostItem extends Component {
                     {(context) => (
                         <div>
                             <p className="text-uppercase text-bold text-dark-light">
-                                {context.lang === "en" ? (data.title ? data.title : data.titleIt) : data.titleIt ? data.titleIt : data.title}
+                                {data.title && (context.lang === "en" ? (data.title.en ? data.title.en : data.title.it) : data.title.it ? data.title.it : data.title.en)}
                             </p>
                             <p className="text-gray">
-                                {context.lang === "en"
-                                    ? data.description
-                                        ? data.description
-                                        : data.descriptionIt
-                                    : data.descriptionIt
-                                    ? data.descriptionIt
-                                    : data.description}
+                                {data.description &&
+                                    (context.lang === "en"
+                                        ? data.description.en
+                                            ? data.description.en
+                                            : data.description.it
+                                        : data.description.it
+                                        ? data.description.it
+                                        : data.description.en)}
                             </p>
                         </div>
                     )}
                 </LangConsumer>
                 <p className="publish-date">
-                    {STRINGS.publishedOn} {this.getPublished(data.published)}
+                    {STRINGS.publishedOn} {this.getPublished(data.id)}
                 </p>
             </div>
         );

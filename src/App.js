@@ -20,12 +20,13 @@ import Profile from "./pages/Profile";
 import Error404 from "./pages/Error404";
 import { LangProvider } from "./utils/LanguageContext";
 import { STRINGS } from "./utils/strings";
+import { SESSION_LANG } from "./utils";
 
 class App extends Component {
     state = {
         headerTransparent: false,
         headerAutoHide: true,
-        selectedLang: sessionStorage.getItem("lang"),
+        selectedLang: sessionStorage.getItem(SESSION_LANG),
         needSearchBar: true,
         needFooter: true,
     };
@@ -48,9 +49,9 @@ class App extends Component {
     };
 
     setLocalization() {
-        let lang = sessionStorage.getItem("lang");
+        let lang = sessionStorage.getItem(SESSION_LANG);
         if (!lang) {
-            sessionStorage.setItem("lang", "en");
+            sessionStorage.setItem(SESSION_LANG, "en");
         }
         STRINGS.setLanguage(lang ? lang : "en");
     }
@@ -58,7 +59,7 @@ class App extends Component {
         this.setState({
             selectedLang: lang,
         });
-        sessionStorage.setItem("lang", lang);
+        sessionStorage.setItem(SESSION_LANG, lang);
         this.setLocalization();
     };
 

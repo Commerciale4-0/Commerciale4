@@ -18,7 +18,7 @@ export default class ForgotPasswordPage extends Component {
         this.refEmail = React.createRef();
     }
 
-    handleClickDone(e) {
+    handleClickDone = async (e) => {
         let valid = Validate.checkEmail(this.refEmail.current.value);
         Validate.applyToInput(this.refEmail.current, valid.code);
         if (valid.code !== Validate.VALID) {
@@ -29,21 +29,15 @@ export default class ForgotPasswordPage extends Component {
         }
 
         this.setState({ isProgressing: true });
-        requestAPI("/user/forgot-password", "POST", {
-            email: this.refEmail.current.value,
-        }).then((res) => {
-            this.setState({ isProgressing: false });
-            if (res.status !== 1) {
-                this.setState({
-                    alertData: { variant: "danger", messages: [{ langKey: "theEmailNotExist" }] },
-                });
-            } else {
-                this.setState({
-                    alertData: { variant: "success", messages: [{ langKey: "sentResetPassword" }] },
-                });
-            }
-        });
-    }
+        let response = await requestAPI(`/companies/auth/forgot-password/${this.refEmail.current.value}`, "GET");
+        let result = await response.json();
+        this.setState({ isProgressing: false });
+        if (result.error) {
+            this.setState({ alertData: { variant: "danger", messages: [{ langKey: result.error }] } });
+            return;
+        }
+        this.setState({ alertData: { variant: "success", messages: [{ langKey: "sentResetPassword" }] } });
+    };
 
     render() {
         const { alertData, isProcessing } = this.state;

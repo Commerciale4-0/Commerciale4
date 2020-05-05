@@ -39,9 +39,9 @@ export const checkVAT = (value) => {
         return { code: EMPTY, msg: MSG_EMPTY };
     }
 
-    if (value.trim().length !== 11) {
-        return { code: INVALID_VAT, msg: MSG_INVALID_VAT };
-    }
+    // if (value.trim().length !== 11) {
+    //     return { code: INVALID_VAT, msg: MSG_INVALID_VAT };
+    // }
 
     return { code: VALID, msg: MSG_VALID };
 };

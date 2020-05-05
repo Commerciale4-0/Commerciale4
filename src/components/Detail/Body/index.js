@@ -96,7 +96,7 @@ export default class DetailBody extends Component {
     };
 
     render() {
-        const { profile } = this.props;
+        const { company } = this.props;
         const { selectedMenu, isMobile } = this.state;
 
         const MENUS = [
@@ -121,9 +121,11 @@ export default class DetailBody extends Component {
                 <div>
                     <LangConsumer>
                         {(value) =>
-                            value.lang === "en"
-                                ? profile && profile.user.tags && profile.user.tags.map((tag, index) => <label key={index}>{tag}</label>)
-                                : profile && profile.user.tagsIt && profile.user.tagsIt.map((tagIt, index) => <label key={index}>{tagIt}</label>)
+                            company &&
+                            company.profile &&
+                            (value.lang === "en"
+                                ? company.profile.tags.en && company.profile.tags.en.map((tag, index) => <label key={index}>{tag}</label>)
+                                : company.profile.tags.it && company.profile.tags.it.map((tagIt, index) => <label key={index}>{tagIt}</label>))
                         }
                     </LangConsumer>
                 </div>
@@ -134,9 +136,10 @@ export default class DetailBody extends Component {
             <div className="multi-values">
                 <span>{STRINGS.iso}</span>
                 <div>
-                    {profile &&
-                        profile.user.iso &&
-                        profile.user.iso.map((item, index) => (
+                    {company &&
+                        company.profile &&
+                        company.profile.iso &&
+                        company.profile.iso.map((item, index) => (
                             <label key={index} className="no-bg" style={{ textDecoration: "underline" }}>
                                 {item}
                             </label>
@@ -150,21 +153,31 @@ export default class DetailBody extends Component {
                 <div className="row-on-mobile">
                     <p>
                         <i className="fa fa-users" />
-                        {profile && stringWithUnitFromNumber(profile.user.employees)}
+                        {company && company.profile && stringWithUnitFromNumber(company.profile.employees)}
                     </p>
                     <p>
                         <i className="fa fa-line-chart" />
-                        {profile && stringWithUnitFromNumber(profile.user.revenues)}
+                        {company && company.profile && stringWithUnitFromNumber(company.profile.revenues)}
                     </p>
                     {isoPanel}
                     <div className="multi-values">
                         <span className="pt-0">{STRINGS.ateco}</span>
-                        <div>{profile && profile.user.ateco ? isMobile ? profile.user.ateco : getAtecoStringWithCode(profile.user.ateco) : <div />}</div>
+                        <div>
+                            {company && company.profile && company.profile.ateco ? (
+                                isMobile ? (
+                                    company.profile.ateco
+                                ) : (
+                                    getAtecoStringWithCode(company.profile.ateco)
+                                )
+                            ) : (
+                                <div />
+                            )}
+                        </div>
                     </div>
                 </div>
                 <p className="-type mb-0">
                     <span className="text-uppercase">{STRINGS.type}</span>
-                    {profile && getCompanyTypeText(profile.user.typeOfCompany)}
+                    {company && company.profile && getCompanyTypeText(company.profile.type)}
                 </p>
                 {tagsPanel}
             </div>
@@ -178,13 +191,13 @@ export default class DetailBody extends Component {
                 </div>
                 <div className="right-panel">
                     <div ref={this.aboutUsPanel}>
-                        <DetailOverview profile={profile} />
+                        <DetailOverview company={company} />
                     </div>
                     <div ref={this.productsPanel}>
-                        <DetailProduct profile={profile} />
+                        <DetailProduct product={company && company.profile && company.profile.product} />
                     </div>
                     <div ref={this.contactsPanel}>
-                        <DetailContacts profile={profile} />
+                        <DetailContacts profile={company && company.profile} />
                     </div>
                     {/* <div className={selectedMenu === 0 ? "d-block" : "d-none"} ref={this.aboutUsPanel}>
 						<DetailOverview profile={profile} />

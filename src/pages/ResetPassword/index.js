@@ -18,13 +18,11 @@ export default class ResetPasswordPage extends Component {
         this.refConfirm = React.createRef();
     }
 
-    handleClickSave(e) {
+    handleClickSave = async (e) => {
         let valid = Validate.checkPassword(this.refPassword.current.value);
         Validate.applyToInput(this.refPassword.current, valid.code);
         if (valid.code !== Validate.VALID) {
-            this.setState({
-                alertText: [{ langKey: "password" }, { validCode: valid.code }],
-            });
+            this.setState({ alertText: [{ langKey: "password" }, { validCode: valid.code }] });
             return;
         }
 
@@ -32,26 +30,24 @@ export default class ResetPasswordPage extends Component {
 
         Validate.applyToInput(this.refConfirm.current, valid.code);
         if (valid.code !== Validate.VALID) {
-            this.setState({
-                alertText: [{ validCode: valid.code }],
-            });
+            this.setState({ alertText: [{ validCode: valid.code }] });
             return;
         }
 
-        requestAPI("/user/reset-password", "POST", {
-            password: this.refPassword.current.value,
-            userId: this.props.match.params.id,
-        }).then((res) => {
-            console.log(res);
-            this.setState({
-                isSuccess: true,
-                alertText: [{ langKey: "passwordReset" }],
-            });
-            setTimeout(function () {
-                window.location.href = "/";
-            }, 1000);
-        });
-    }
+        this.setState({ isProcessing: true });
+        let response = await requestAPI(`/companies/${this.props.match.params.id}/password`, "POST", { password: this.refPassword.current.value });
+        let result = await response.json();
+        this.setState({ isProcessing: false });
+        if (result.error) {
+            this.setState({ alertText: [{ langKey: result.error }] });
+            return;
+        }
+
+        this.setState({ isSuccess: true, alertText: [{ langKey: "passwordReset" }] });
+        setTimeout(() => {
+            window.location.href = "/";
+        }, 1000);
+    };
 
     render() {
         const { isSuccess, alertText } = this.state;

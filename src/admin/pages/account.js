@@ -3,6 +3,8 @@ import { InputGroup, FormControl, Button, Alert } from "react-bootstrap";
 import { requestAPI } from "../../utils/api";
 import SpinnerView from "../../components/SpinnerView";
 import * as Validate from "../../utils/Validate";
+import { SESSION_ADMIN, encrypt } from "../../utils";
+import { STRINGS } from "../../utils/strings";
 
 function Account() {
     const [isProcessing, setProcessing] = useState(false);
@@ -19,16 +21,15 @@ function Account() {
     const validate = () => {
         let valid = Validate.checkEmpty(refName.current.value);
         Validate.applyToInput(refName.current, valid.code);
-        // refName.current.style.border = "1px solid #ced4da";
         if (valid.code !== Validate.VALID) {
             setAlert(0, "Username " + valid.msg);
             return false;
         }
 
-        valid = Validate.checkEmpty(refOldPassword.current.value);
-        Validate.applyToInput(refOldPassword.current, valid.code);
-        if (valid.code !== Validate.VALID) {
-            setAlert(0, "Old password " + valid.msg);
+        let admin = JSON.parse(sessionStorage.getItem(SESSION_ADMIN));
+
+        if (encrypt(refOldPassword.current.value) !== admin.password) {
+            setAlert(0, "Current password is not correct.");
             return false;
         }
 
@@ -39,13 +40,12 @@ function Account() {
             return false;
         }
 
-        valid = Validate.checkEmpty(refConfirmPassword.current.value);
-        Validate.applyToInput(refConfirmPassword.current, valid.code);
-        if (valid.code !== Validate.VALID) {
-            setAlert(0, "Confirm password " + valid.msg);
-            return false;
+        if (refNewPassword.current.value !== refConfirmPassword.current.value) {
+            setAlert(0, "Confirm password does not match.");
+            return;
         }
 
+        this.setState({ alertData: null });
         return true;
     };
 
@@ -55,41 +55,24 @@ function Account() {
             return;
         }
         let userName = refName.current.value;
-        let oldPassword = refOldPassword.current.value;
         let newPassword = refNewPassword.current.value;
-        let confirmPassword = refConfirmPassword.current.value;
-        let getSession = JSON.parse(sessionStorage.getItem("admin"));
-
-        if (oldPassword !== getSession.password) {
-            setAlert(0, "Current password is not correct.");
-            return;
-        }
-
-        if (newPassword !== confirmPassword) {
-            setAlert(0, "Confirm password does not match.");
-            return;
-        }
+        let admin = JSON.parse(sessionStorage.getItem(SESSION_ADMIN));
 
         setProcessing(true);
-        await requestAPI("/admin/modify-account", "POST", {
-            oldUserName: getSession.username,
-            newUserName: userName,
-            password: newPassword,
-        })
-            .then((res) => {
-                if (res.status === 1) {
-                    sessionStorage.removeItem("admin");
-                    alert("Account has been updated. You should login again.");
-                    window.location.href = "/admin";
-                } else {
-                    alert(res.data);
-                    return;
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        let response = await requestAPI(`/admin/${admin._id}`, "POST", {
+            username: userName,
+            password: encrypt(newPassword),
+        });
+        let result = await response.json();
         setProcessing(false);
+        if (result.error) {
+            alert(STRINGS[result.error]);
+            return;
+        }
+
+        sessionStorage.removeItem(SESSION_ADMIN);
+        alert("Account has been updated. You should login again.");
+        window.location.href = "/admin";
     };
 
     const handleClickCancel = (e) => {

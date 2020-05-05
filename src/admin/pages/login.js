@@ -1,6 +1,8 @@
 import React, { useState, useRef } from "react";
 import { requestAPI } from "../../utils/api";
 import SpinnerView from "../../components/SpinnerView";
+import { STRINGS } from "../../utils/strings";
+import { SESSION_ADMIN } from "../../utils";
 function Login() {
     const refUserName = useRef();
     const refPassword = useRef();
@@ -14,20 +16,18 @@ function Login() {
             return;
         }
         setProcessing(true);
-        await requestAPI("/admin/login", "POST", { username: userName, password: password })
-            .then((res) => {
-                if (res.status === 1) {
-                    sessionStorage.setItem("admin", JSON.stringify(res.data));
-                    window.location.href = "/admin";
-                } else {
-                    alert(res.data);
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        let response = await requestAPI("/admin/login", "POST", { username: userName, password: password });
+        let result = await response.json();
         setProcessing(false);
+        if (result.error) {
+            alert(STRINGS[result.error]);
+            return;
+        }
+
+        sessionStorage.setItem(SESSION_ADMIN, JSON.stringify(result));
+        window.location.href = "/admin";
     };
+
     return (
         <div className="login_wrapper">
             <div className="login_content">

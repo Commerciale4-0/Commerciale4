@@ -2,24 +2,15 @@ import React, { Component } from "react";
 import "./index.css";
 import LoginForm from "../../components/LoginForm";
 import FilterForm from "../../components/FilterForm";
-import { SESSION_LOGGED_USER } from "../../utils";
+import { SESSION_LOGGED_COMPANY } from "../../utils";
 // import SearchInput from "../../components/SearchInput";
 import { STRINGS } from "../../utils/strings";
+import { requestAPI } from "../../utils/api";
 
 export default class LandingPage extends Component {
-    // componentDidMount() {
-    // 	this.callApi()
-    // 		.then(res => console.log(res.express))
-    // 		.catch(err => console.log(err));
-    // }
-    // callApi = async () => {
-    // 	const response = await fetch("/.netlify/functions/api/user/hello");
-    // 	const body = await response.json();
-
-    // 	if (response.status !== 200) throw Error(body.message);
-
-    // 	return body;
-    // };
+    componentDidMount = async () => {
+        await requestAPI("/init", "GET");
+    };
 
     handleClickSearch = (filter) => {
         sessionStorage.setItem("filter", JSON.stringify(filter));
@@ -32,7 +23,7 @@ export default class LandingPage extends Component {
     };
 
     render() {
-        const loggedUser = JSON.parse(sessionStorage.getItem(SESSION_LOGGED_USER));
+        const loggedUser = JSON.parse(sessionStorage.getItem(SESSION_LOGGED_COMPANY));
         return (
             <div className="landing">
                 <div className="slide">
