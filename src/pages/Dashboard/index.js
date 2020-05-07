@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./index.css";
 import FilterForm from "../../components/FilterForm";
-import { requestAPI } from "../../utils/api";
+import { requestAPI, geocodeByAddress } from "../../utils/api";
 import CompanyCell from "../../components/CompanyCell";
 import { Dropdown } from "react-bootstrap";
 // import Sidebar from "../../components/Sidebar";
@@ -104,15 +104,17 @@ export default class Dashboard extends Component {
         this.pullCompanies(this.state.activePage, this.state.itemsCountPerPage, this.state.selectedOrder, myLocation);
     };
 
-    pullCompanies = async (pageNumber, count, sort, coordinates) => {
+    pullCompanies = async (pageNumber, count, sort, myLocation) => {
         let filter = JSON.parse(sessionStorage.getItem(SESSION_FILTER));
         this.setState({ filter: filter, isExpandedSidebar: false });
+
+        this.setState({ isProcessing: true });
 
         let searchFilter = {
             offset: (pageNumber - 1) * count,
             count: count,
         };
-        if (coordinates) searchFilter.coordinates = coordinates;
+        if (myLocation) searchFilter.myLocation = myLocation;
 
         if (sort.id === 0) {
             searchFilter.sort = { title: "relevance", asc: 1 };
@@ -132,13 +134,23 @@ export default class Dashboard extends Component {
             searchFilter.sort = { title: "relevance", asc: 1 };
         }
 
-        console.log(filter);
         if (filter) {
-            if (filter.region && filter.region.value) searchFilter.region = filter.region.label;
-            if (filter.city && filter.city.value) {
-                searchFilter.city = filter.city.label;
-                if (filter.radius) searchFilter.radius = filter.radius;
+            if (filter.region && filter.region.value) {
+                searchFilter.location = {
+                    region: filter.region.label,
+                    cities: filter.region.cities,
+                };
+
+                if (filter.city && filter.city.value) {
+                    // searchFilter.location.city = filter.city.label;
+                    if (filter.radius) searchFilter.location.radius = filter.radius;
+                    let geocode = await geocodeByAddress(`${searchFilter.location.city}, ${searchFilter.location.region}`);
+                    if (geocode) {
+                        searchFilter.location.coordinates = [geocode.lng, geocode.lat];
+                    }
+                }
             }
+
             if (filter.type && filter.type.value) searchFilter.type = filter.type.value;
             if (filter.employeeMin && filter.employeeMin.value) searchFilter.employeeMin = numberFromStringWithUnit(filter.employeeMin.label);
             if (filter.employeeMax && filter.employeeMax.value) searchFilter.employeeMax = numberFromStringWithUnit(filter.employeeMax.label);
@@ -151,7 +163,6 @@ export default class Dashboard extends Component {
         }
 
         console.log(searchFilter);
-        this.setState({ isProcessing: true });
         let response = await requestAPI(`/companies`, "POST", searchFilter);
         let result = await response.json();
         this.setState({ isProcessing: false });

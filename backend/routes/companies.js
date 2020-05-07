@@ -250,7 +250,6 @@ router.get("/auth/forgot-password/:email", async (req, res) => {
 
 /*********** REQUEST FOR COMPANIES - START **************/
 router.post("/", async (req, res) => {
-    console.log(req.body);
     let filter = req.body;
 
     if (filter.keyword) {
@@ -262,7 +261,8 @@ router.post("/", async (req, res) => {
 
     let match = { "account.permission": { $gt: 0 } };
     if (filter.ateco) {
-        match = { ...match, "profile.ateco": filter.ateco };
+        let ateco = new RegExp(filter.ateco, "i");
+        match = { ...match, "profile.ateco": ateco };
     }
     if (filter.type) {
         match = { ...match, "profile.type": filter.type };
@@ -293,47 +293,43 @@ router.post("/", async (req, res) => {
             match = { ...match, "profile.tags.it": { $in: tags } };
         }
     }
-    if (filter.region && filter.region.length) {
-        let keywordFromAddress = [{ "profile.contact.address": new RegExp(filter.region, "i") }];
-        let keywordFromRegionAndCity = [{ "profile.contact.region": filter.region }];
-        if (filter.city && filter.city.length) {
-            keywordFromAddress = [...keywordFromAddress, { "profile.contact.address": new RegExp(filter.city, "i") }];
-            keywordFromRegionAndCity = [...keywordFromRegionAndCity, { "profile.contact.city": filter.city }];
-        }
-        match = { ...match, $or: [{ $and: keywordFromRegionAndCity }, { $and: keywordFromAddress }] };
-    }
 
-    let sort = { "profile.officialName": 1 };
-    if (filter.sort) {
-        if (filter.sort.title === "distance") {
-            sort = { distance: filter.sort.asc };
-        } else if (filter.sort.title === "employees") {
-            sort = { "profile.employees": filter.sort.asc };
-        } else if (filter.sort.title === "revenues") {
-            sort = { "profile.revenues": filter.sort.asc };
+    if (filter.location) {
+        if (filter.location.coordinates && filter.location.radius) {
+            match = {
+                ...match,
+                "profile.contact.location": {
+                    $geoWithin: {
+                        $centerSphere: [filter.location.coordinates, filter.location.radius / 6378.1],
+                    },
+                },
+            };
+        } else {
+            let citiesInRegion = filter.location.cities.map((city) => {
+                return new RegExp(`\\(${city}\\)`, "i");
+            });
+            console.log(citiesInRegion);
+            match = { ...match, $or: [{ "profile.contact.address": { $in: citiesInRegion } }, { "profile.contact.region": filter.location.region }] };
         }
-    }
-
-    let geoNear = filter.coordinates
-        ? {
-              $geoNear: {
-                  near: {
-                      type: "Point",
-                      coordinates: filter.coordinates,
-                  },
-                  distanceField: "distance",
-                  spherical: true,
-              },
-          }
-        : null;
-    if (geoNear && filter.radius) {
-        geoNear.$geoNear.maxDistance = filter.radius;
     }
 
     let query = [];
-    if (geoNear) {
-        query.push(geoNear);
+    if (filter.myLocation) {
+        query = [
+            ...query,
+            {
+                $geoNear: {
+                    near: {
+                        type: "Point",
+                        coordinates: filter.myLocation,
+                    },
+                    distanceField: "distance",
+                    spherical: true,
+                },
+            },
+        ];
     }
+
     query = [...query, { $match: match }];
 
     let count = 0;
@@ -344,6 +340,17 @@ router.post("/", async (req, res) => {
         console.log(error);
         res.status(400).json({ error: "databaseFailed" });
         return;
+    }
+
+    let sort = { "account.permission": -1 };
+    if (filter.sort) {
+        if (filter.sort.title === "distance") {
+            sort = { distance: filter.sort.asc };
+        } else if (filter.sort.title === "employees") {
+            sort = { "profile.employees": filter.sort.asc };
+        } else if (filter.sort.title === "revenues") {
+            sort = { "profile.revenues": filter.sort.asc };
+        }
     }
 
     query = [
@@ -397,7 +404,7 @@ router.post("/:id", async (req, res) => {
         result = await uploadSingleImage(dataToSave.imageData.background, id);
         if (result.error) {
             console.log(result.error);
-            res.json({ error: error });
+            res.json({ error: result.error });
             return;
         }
         dataToSave.profile.background = result;
@@ -407,7 +414,7 @@ router.post("/:id", async (req, res) => {
         result = await uploadSingleImage(dataToSave.imageData.logo, id);
         if (result.error) {
             console.log(result.error);
-            res.json({ error: error });
+            res.json({ error: result.error });
             return;
         }
         dataToSave.profile.logo = result;
@@ -417,7 +424,7 @@ router.post("/:id", async (req, res) => {
         result = await uploadMultiImages(dataToSave.imageData.productPhotos, id);
         if (result.error) {
             console.log(result.error);
-            res.json({ error: error });
+            res.json({ error: result.error });
             return;
         }
         dataToSave.profile.product.photos = result;

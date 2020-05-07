@@ -192,7 +192,7 @@ export default class RegisterForm extends Component {
         region = region ? region.label : "";
         let latitude = 0.0;
         let longitude = 0.0;
-        await geocodeByAddress(this.state.selectedCity.label, region).then((res) => {
+        await geocodeByAddress(`${this.state.selectedCity.label}, ${region}`).then((res) => {
             if (res) {
                 latitude = res.lat;
                 longitude = res.lng;

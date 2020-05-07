@@ -8,8 +8,8 @@ export const requestAPI = async (path, method, data) => {
     });
 };
 
-export const geocodeByAddress = async (city, region) => {
-    return await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${city}, ${region}&key=${process.env.REACT_APP_GOOGLE_API_KEY}`)
+export const geocodeByAddress = async (address) => {
+    return await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.REACT_APP_GOOGLE_API_KEY}`)
         .then((res) => res.json())
         .then((data) => data.results)
         .then((results) => {
