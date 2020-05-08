@@ -17,7 +17,7 @@ export default class FilterForm extends Component {
         super(props);
 
         this.state = {
-            radius: 1,
+            radius: 0,
             tags: [],
             suggestions: [],
             cities: [],

@@ -137,16 +137,23 @@ export default class Dashboard extends Component {
         if (filter) {
             if (filter.region && filter.region.value) {
                 searchFilter.location = {
-                    region: filter.region.label,
-                    cities: filter.region.cities,
+                    region: {
+                        title: filter.region.label,
+                        cities: filter.region.cities,
+                    },
                 };
 
                 if (filter.city && filter.city.value) {
-                    // searchFilter.location.city = filter.city.label;
-                    if (filter.radius) searchFilter.location.radius = filter.radius;
-                    let geocode = await geocodeByAddress(`${searchFilter.location.city}, ${searchFilter.location.region}`);
-                    if (geocode) {
-                        searchFilter.location.coordinates = [geocode.lng, geocode.lat];
+                    searchFilter.location.city = {
+                        title: filter.city.label,
+                        short: filter.city.short,
+                    };
+                    if (filter.radius) {
+                        searchFilter.location.radius = filter.radius;
+                        let geocode = await geocodeByAddress(`${filter.city.label}, ${filter.region.label}`);
+                        if (geocode) {
+                            searchFilter.location.coordinates = [geocode.lng, geocode.lat];
+                        }
                     }
                 }
             }

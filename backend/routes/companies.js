@@ -305,30 +305,40 @@ router.post("/", async (req, res) => {
                 },
             };
         } else {
-            let citiesInRegion = filter.location.cities.map((city) => {
-                return new RegExp(`\\(${city}\\)`, "i");
-            });
-            console.log(citiesInRegion);
-            match = { ...match, $or: [{ "profile.contact.address": { $in: citiesInRegion } }, { "profile.contact.region": filter.location.region }] };
+            let addressFilter = null;
+            let regionCityFilter = { "profile.contact.region": filter.location.region.title };
+            if (filter.location.city) {
+                addressFilter = [new RegExp(`\\(${filter.location.city.short}\\)`, "i")];
+                regionCityFilter = { ...regionCityFilter, "profile.contact.city": filter.location.city.title };
+            } else {
+                addressFilter = filter.location.region.cities.map((city) => {
+                    return new RegExp(`\\(${city}\\)`, "i");
+                });
+            }
+            console.log(addressFilter);
+            match = {
+                ...match,
+                $or: [{ "profile.contact.address": { $in: addressFilter } }, regionCityFilter],
+            };
         }
     }
 
     let query = [];
-    if (filter.myLocation) {
-        query = [
-            ...query,
-            {
-                $geoNear: {
-                    near: {
-                        type: "Point",
-                        coordinates: filter.myLocation,
-                    },
-                    distanceField: "distance",
-                    spherical: true,
-                },
-            },
-        ];
-    }
+    // if (filter.myLocation) {
+    //     query = [
+    //         ...query,
+    //         {
+    //             $geoNear: {
+    //                 near: {
+    //                     type: "Point",
+    //                     coordinates: filter.myLocation,
+    //                 },
+    //                 distanceField: "distance",
+    //                 spherical: true,
+    //             },
+    //         },
+    //     ];
+    // }
 
     query = [...query, { $match: match }];
 
