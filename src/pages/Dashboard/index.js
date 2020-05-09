@@ -178,6 +178,7 @@ export default class Dashboard extends Component {
             return;
         }
 
+        window.scrollTo(0, 0);
         if (filter.tags && filter.tags.length) {
             result.companies.forEach((company) => {
                 if (company.tags) {
@@ -232,14 +233,15 @@ export default class Dashboard extends Component {
     };
 
     handleChangePage(pageNumber) {
-        this.pullCompanies(pageNumber, this.state.itemsCountPerPage, this.state.selectedOrder, this.state.myLocation);
         this.setState({ activePage: pageNumber });
+        this.pullCompanies(pageNumber, this.state.itemsCountPerPage, this.state.selectedOrder, this.state.myLocation);
     }
 
     handleClickSearch = async (filter) => {
         sessionStorage.setItem(SESSION_FILTER, JSON.stringify(filter));
         this.setState({
             updateFilterForm: false,
+            activePage: 1,
         });
         this.pullCompanies(1, this.state.itemsCountPerPage, this.state.selectedOrder, this.state.myLocation);
     };

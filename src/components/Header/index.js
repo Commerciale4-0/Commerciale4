@@ -221,6 +221,8 @@ class Header extends Component {
                 <div className="search-bar" ref={this.searchBar}>
                     <i className="fa fa-search"></i>
                     <input
+                        type="text"
+                        id="search-bar"
                         placeholder={STRINGS.companySearch}
                         onKeyDown={this.handleKeyDown}
                         onChange={this.handleKeyChange}

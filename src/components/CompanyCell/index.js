@@ -19,15 +19,15 @@ export default class CompanyCell extends Component {
     }
 
     componentDidMount = () => {
-        let distanceWidth = this.spanDistance.current.offsetWidth + 2;
-        if (this.spanDistance.current.offsetWidth > this.spanISO.current.offsetWidth) {
-            this.spanISO.current.style.width = distanceWidth + "px";
-        }
-        if (this.spanISO.current.offsetWidth > this.spanDistance.current.offsetWidth) {
-            distanceWidth = this.spanISO.current.offsetWidth + 2;
-            this.spanDistance.current.style.width = distanceWidth + "px";
-        }
-        this.spanAddress.current.style.width = `calc(100% - ${distanceWidth}px)`;
+        // let distanceWidth = this.spanDistance.current.offsetWidth + 2;
+        // if (this.spanDistance.current.offsetWidth > this.spanISO.current.offsetWidth) {
+        //     this.spanISO.current.style.width = distanceWidth + "px";
+        // }
+        // if (this.spanISO.current.offsetWidth > this.spanDistance.current.offsetWidth) {
+        //     distanceWidth = this.spanISO.current.offsetWidth + 2;
+        //     this.spanDistance.current.style.width = distanceWidth + "px";
+        // }
+        // this.spanAddress.current.style.width = `calc(100% - ${distanceWidth}px)`;
     };
 
     handleClickReadMore = () => {};
@@ -56,11 +56,10 @@ export default class CompanyCell extends Component {
                                 ? company.profile.contact.city + "," + company.profile.contact.region
                                 : "---"}
                         </span>
-                        <span ref={this.spanDistance} className="distance">
+                        {/* <span ref={this.spanDistance} className="distance">
                             <i className="fa fa-map-signs" />
-                            {/* {company.distance ? `${parseFloat(company.distance / 1000).toFixed(2)} km` : "---"} */}
-                            {`${parseFloat(company.distance / 1000).toFixed(2)} km`}
-                        </span>
+                            {company.distance ? `${parseFloat(company.distance / 1000).toFixed(2)} km` : "---"}
+                        </span> */}
                     </div>
                     <hr />
                     <div className="d-flex justify-content-between">

@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const { uploadSingleImage, uploadMultiImages, deleteImages } = require("../aws-s3");
 const { encrypt, sendEmail, Utils } = require("../utils");
-
+const initData = [];
 const Company = require("../models/company.model");
 
 /*********** REQUEST FOR INIT/TEST - START **************/
@@ -31,7 +31,7 @@ router.get("/test/convert", async (req, res) => {
 
                 let newCompany = Company(data);
                 try {
-                    result = await newCompany.save();
+                    await newCompany.save();
                 } catch (error) {
                     console.log(error);
                 }
@@ -88,10 +88,9 @@ router.get("/test/:offset/:count", async (req, res) => {
     let offset = parseInt(req.params.offset);
     let count = parseInt(req.params.count);
 
-    let result = "fail";
     console.log(initData.length);
     while (true) {
-        result = await writeDB(offset, count);
+        await writeDB(offset, count);
         offset += count;
         console.log(offset, count);
         if (offset >= 1) {
@@ -141,6 +140,7 @@ router.post("/auth/register", async (req, res) => {
         } else {
             newCompany.account.email = data.account.email;
             newCompany.account.password = data.account.password;
+            newCompany.account.permission = 0;
             newCompany.profile.pec = data.profile.pec;
             newCompany.profile.ateco = data.profile.ateco;
             newCompany.profile.contact.region = data.profile.contact.region;
