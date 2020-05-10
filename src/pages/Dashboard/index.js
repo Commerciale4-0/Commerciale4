@@ -6,7 +6,7 @@ import CompanyCell from "../../components/CompanyCell";
 import { Dropdown } from "react-bootstrap";
 // import Sidebar from "../../components/Sidebar";
 import Pagination from "react-js-pagination";
-import { orderTags, numberFromStringWithUnit, SESSION_LOGGED_COMPANY, SESSION_FILTER, ORDERS } from "../../utils";
+import { orderTags, numberFromStringWithUnit, SESSION_LOGGED_COMPANY, SESSION_FILTER, ORDERS, SESSION_LOCAION_ERROR } from "../../utils";
 import SpinnerView from "../../components/SpinnerView";
 import { LangConsumer } from "../../utils/LanguageContext";
 import { STRINGS } from "../../utils/strings";
@@ -92,7 +92,7 @@ export default class Dashboard extends Component {
         }
 
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(this.positionSuccessHandler, this.positionErrorHandler, {enableHighAccuracy: true, maximumAge: 10000});
+            navigator.geolocation.getCurrentPosition(this.positionSuccessHandler, this.positionErrorHandler, { enableHighAccuracy: true, maximumAge: 10000 });
         } else {
             this.pullCompanies(this.state.activePage, this.state.itemsCountPerPage, this.state.selectedOrder);
         }
@@ -105,9 +105,12 @@ export default class Dashboard extends Component {
     };
 
     positionErrorHandler = (err) => {
-        alert("Please make sure to be enabled location service. This is needed to search companies by location."); 
+        if (!sessionStorage.getItem(SESSION_LOCAION_ERROR)) {
+            sessionStorage.setItem(SESSION_LOCAION_ERROR, true);
+            alert("Please make sure to be enabled location service. This is needed to search companies by location.");
+        }
         this.pullCompanies(this.state.activePage, this.state.itemsCountPerPage, this.state.selectedOrder);
-    }
+    };
 
     pullCompanies = async (pageNumber, count, sort, myLocation) => {
         let filter = JSON.parse(sessionStorage.getItem(SESSION_FILTER));
@@ -184,7 +187,7 @@ export default class Dashboard extends Component {
         }
 
         window.scrollTo(0, 0);
-        if (filter.tags && filter.tags.length) {
+        if (filter && filter.tags && filter.tags.length) {
             result.companies.forEach((company) => {
                 if (company.tags) {
                     if (lang === "en") {
