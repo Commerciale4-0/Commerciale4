@@ -109,7 +109,7 @@ class Header extends Component {
         if (e.key === "Enter") {
             const { searchedCompanies, cursor } = this.state;
             if (searchedCompanies && searchedCompanies.length) {
-                e.target.value = searchedCompanies[cursor].officialName;
+                e.target.value = searchedCompanies[cursor].profile.officialName;
                 if (searchedCompanies[cursor].account.permission === 2) {
                     window.location.href = `/company/${searchedCompanies[cursor]._id}`;
                 } else {
