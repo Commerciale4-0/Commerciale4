@@ -42,7 +42,7 @@ export default class CompanyDetail extends Component {
         }
 
         let filter = JSON.parse(sessionStorage.getItem(SESSION_FILTER));
-        if (filter.tags && filter.tags.length && result.tags) {
+        if (filter && filter.tags && filter.tags.length && result.tags) {
             if (lang === "en") {
                 result.tags.en = orderTags(result.tags.en, filter.tags);
             } else {

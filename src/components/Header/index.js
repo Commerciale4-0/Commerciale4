@@ -110,8 +110,8 @@ class Header extends Component {
             const { searchedCompanies, cursor } = this.state;
             if (searchedCompanies && searchedCompanies.length) {
                 e.target.value = searchedCompanies[cursor].officialName;
-                if (searchedCompanies[cursor].id) {
-                    window.location.href = `/company/${searchedCompanies[cursor].id}`;
+                if (searchedCompanies[cursor].account.permission === 2) {
+                    window.location.href = `/company/${searchedCompanies[cursor]._id}`;
                 } else {
                     this.setState({ companyToPreview: searchedCompanies[cursor], searchedCompanies: null, cursor: 0 });
                     this.refKey.current.value = "";
@@ -161,7 +161,7 @@ class Header extends Component {
 
     handleClickCompany = (company) => {
         this.refKey.current.value = company.profile.officialName;
-        if (company.id) {
+        if (company._id) {
             window.location.href = `/company/${company._id}`;
         } else {
             this.setState({ companyToPreview: company, searchedCompanies: null, cursor: 0 });
