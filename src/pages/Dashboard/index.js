@@ -92,17 +92,22 @@ export default class Dashboard extends Component {
         }
 
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(this.showPosition);
+            navigator.geolocation.getCurrentPosition(this.positionSuccessHandler, this.positionErrorHandler, {enableHighAccuracy: true, maximumAge: 10000});
         } else {
             this.pullCompanies(this.state.activePage, this.state.itemsCountPerPage, this.state.selectedOrder);
         }
     };
 
-    showPosition = (position) => {
+    positionSuccessHandler = (position) => {
         let myLocation = [position.coords.longitude, position.coords.latitude];
         this.setState({ myLocation });
         this.pullCompanies(this.state.activePage, this.state.itemsCountPerPage, this.state.selectedOrder, myLocation);
     };
+
+    positionErrorHandler = (err) => {
+        alert("Please make sure to be enabled location service. This is needed to search companies by location."); 
+        this.pullCompanies(this.state.activePage, this.state.itemsCountPerPage, this.state.selectedOrder);
+    }
 
     pullCompanies = async (pageNumber, count, sort, myLocation) => {
         let filter = JSON.parse(sessionStorage.getItem(SESSION_FILTER));
