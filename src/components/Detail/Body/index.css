@@ -107,6 +107,8 @@
         margin: 0;
         padding: 12px;
         box-shadow: none !important;
+        background: transparent;
+
         /* margin-top: 41px; */
         min-height: 0;
     }
@@ -153,31 +155,11 @@
         display: flex;
         justify-content: space-between;
     }
-    /* .detail-body .info-panel .-employees,
-	.detail-body .info-panel .-ateco {
-		width: 40%;
-	}
-	.detail-body .info-panel .-revenues {
-		width: 35%;
-	}
-	.detail-body .info-panel .-iso {
-		width: 25%;
-	}
-	.detail-body .info-panel .-type {
-		width: 60%;
-    } */
 
     .detail-body .info-panel .multi-values {
         margin: 0;
-    }
-
-    .detail-body .info-panel .multi-values label {
         font-size: 13px;
     }
-    /* .detail-body .info-panel > div {
-		display: flex;
-		justify-content: space-between;
-	} */
 
     .detail-body .menu {
         padding: 8px 10px;

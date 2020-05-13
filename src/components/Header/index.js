@@ -172,7 +172,7 @@ class Header extends Component {
 
     handleClickCompany = (company) => {
         this.refKey.current.value = company.profile.officialName;
-        if (company._id) {
+        if (company.account.permission === 2) {
             window.location.href = `/company/${company._id}`;
         } else {
             this.setState({ companyToPreview: company, searchedCompanies: null, cursor: 0 });
@@ -285,7 +285,9 @@ class Header extends Component {
                             </Col>
                         ) : isInDashboard ? (
                             <Col className="item user" sm={2}>
-                                <input type="button" value="Register" onClick={() => this.handleClickRegister()} />
+                                <button className="btn-register" onClick={() => this.handleClickRegister()}>
+                                    {STRINGS.register}
+                                </button>
                             </Col>
                         ) : (
                             <></>
