@@ -49,6 +49,13 @@
     font-size: 15px;
     padding: 0 8px;
 }
+.header .item.user input {
+    background: white;
+    line-height: 1.2;
+    min-width: 140px;
+    color: var(--colorText);
+    font-size: 15px;
+}
 
 .search-bar > input {
     height: 36px;

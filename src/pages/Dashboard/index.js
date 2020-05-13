@@ -173,7 +173,10 @@ export default class Dashboard extends Component {
             if (filter.revenueMax && filter.revenueMax.value) searchFilter.revenueMax = numberFromStringWithUnit(filter.revenueMax.label);
             if (filter.ateco) searchFilter.ateco = filter.ateco.value;
             if (filter.tags && filter.tags.length) {
-                lang === "en" ? (searchFilter.tags = { en: filter.tags }) : (searchFilter.tags = { it: filter.tags });
+                let tags = filter.tags.map((tag) => {
+                    return tag.name;
+                });
+                lang === "en" ? (searchFilter.tags = { en: tags }) : (searchFilter.tags = { it: tags });
             }
         }
 

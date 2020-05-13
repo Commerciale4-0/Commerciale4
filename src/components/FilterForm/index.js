@@ -5,7 +5,7 @@ import ReactTags from "react-tag-autocomplete";
 import { Row, Col } from "react-bootstrap";
 
 import "./index.css";
-import { N_EMPOYEES, REVENUES, COMPANY_TYPES, REGIONS, citiesInRegion, maxsFromMin, minsFromMax } from "../../utils";
+import { N_EMPOYEES, REVENUES, COMPANY_TYPES, REGIONS, maxsFromMin, minsFromMax, CITIES } from "../../utils";
 import MySelect from "../Custom/MySelect";
 // import SearchInput from "../SearchInput";
 import { STRINGS } from "../../utils/strings";
@@ -47,34 +47,42 @@ export default class FilterForm extends Component {
     }
 
     componentWillReceiveProps = (props) => {
-        if (props.initialFilter && props.update) {
-            this.setState({
-                selectedCity: props.initialFilter.city,
-                selectedRegion: props.initialFilter.region,
-                selectedCode: props.initialFilter.ateco,
-                radius: props.initialFilter.radius,
-                selectedType: props.initialFilter.type,
-                selectedEmployeeMin: props.initialFilter.employeeMin,
-                selectedEmployeeMax: props.initialFilter.employeeMax,
-                selectedRevenueMin: props.initialFilter.revenueMin,
-                selectedRevenueMax: props.initialFilter.revenueMax,
-                tags: props.initialFilter.tags,
-                tagsPlaceholder: STRINGS.searchWithTags,
-            });
+        const { initialFilter, update } = props;
+        let {
+            cities,
+            regions,
+            tags,
+            selectedCity,
+            selectedRegion,
+            selectedCode,
+            selectedType,
+            selectedEmployeeMin,
+            selectedEmployeeMax,
+            selectedRevenueMin,
+            selectedRevenueMax,
+            radius,
+            isEnableRadius,
+        } = this.state;
 
-            if (props.initialFilter.region) {
-                let cities = this.getCitiesInRegion(props.initialFilter.region);
-                this.setState({ cities: cities });
-                if (props.initialFilter.city && props.initialFilter.city.value) {
-                    this.setState({ isEnableRadius: true });
+        if (initialFilter && update) {
+            if (initialFilter.region) {
+                cities = this.getCitiesInRegion(initialFilter.region);
+                if (initialFilter.city && initialFilter.city.value) {
+                    isEnableRadius = true;
                 }
             }
-        }
-        this.resetValuesWithLang();
-    };
 
-    resetValuesWithLang = () => {
-        const { selectedType, selectedEmployeeMin, selectedEmployeeMax, selectedRevenueMin, selectedRevenueMax, selectedRegion, selectedCity, selectedCode } = this.state;
+            selectedCity = initialFilter.city;
+            selectedRegion = initialFilter.region;
+            selectedCode = initialFilter.ateco;
+            radius = initialFilter.radius;
+            selectedType = initialFilter.type;
+            selectedEmployeeMin = initialFilter.employeeMin;
+            selectedEmployeeMax = initialFilter.employeeMax;
+            selectedRevenueMin = initialFilter.revenueMin;
+            selectedRevenueMax = initialFilter.revenueMax;
+            tags = initialFilter.tags;
+        }
 
         const types = [{ value: 0, label: STRINGS.select }, ...COMPANY_TYPES()];
         const minEmployees = N_EMPOYEES();
@@ -84,61 +92,80 @@ export default class FilterForm extends Component {
         const atecoCodes = STRINGS.atecoList;
 
         let noValue = { value: 0, label: STRINGS.select };
-
-        let regions = this.state.regions.slice(0);
-        let cities = this.state.cities.slice(0);
         regions[0] = noValue;
         cities[0] = noValue;
 
-        this.setState({ regions, cities, types, minEmployees, maxEmployees, minRevenues, maxRevenues, atecoCodes });
-        this.resetTagsPlaceholder(this.state.tags);
+        this.resetTagsPlaceholder(tags);
 
         if (selectedRegion && selectedRegion.value === 0) {
-            this.setState({ selectedRegion: noValue });
+            selectedRegion = noValue;
         }
+
         if (selectedCity && selectedCity.value === 0) {
-            this.setState({ selectedCity: noValue });
+            selectedCity = noValue;
         }
 
         types.forEach((elem) => {
             if (selectedType && elem.value === selectedType.value) {
-                this.setState({ selectedType: elem });
+                selectedType = elem;
             }
         });
         minEmployees.forEach((elem) => {
             if (selectedEmployeeMin && elem.value === selectedEmployeeMin.value) {
-                this.setState({ selectedEmployeeMin: elem });
+                selectedEmployeeMin = elem;
             }
         });
         maxEmployees.forEach((elem) => {
             if (selectedEmployeeMax && elem.value === selectedEmployeeMax.value) {
-                this.setState({ selectedEmployeeMax: elem });
+                selectedEmployeeMax = elem;
             }
         });
         minRevenues.forEach((elem) => {
             if (selectedRevenueMin && elem.value === selectedRevenueMin.value) {
-                this.setState({ selectedRevenueMin: elem });
+                selectedRevenueMin = elem;
             }
         });
         maxRevenues.forEach((elem) => {
             if (selectedRevenueMax && elem.value === selectedRevenueMax.value) {
-                this.setState({ selectedRevenueMax: elem });
+                selectedRevenueMax = elem;
             }
         });
         atecoCodes.forEach((elem) => {
             if (selectedCode && elem.value === selectedCode.value) {
-                this.setState({ selectedCode: elem });
+                selectedCode = elem;
             }
+        });
+
+        this.setState({
+            regions,
+            cities,
+            types,
+            tags,
+            minEmployees,
+            maxEmployees,
+            minRevenues,
+            maxRevenues,
+            atecoCodes,
+            selectedRegion,
+            selectedCity,
+            selectedType,
+            selectedEmployeeMin,
+            selectedEmployeeMax,
+            selectedRevenueMin,
+            selectedRevenueMax,
+            selectedCode,
+            radius,
+            isEnableRadius,
         });
     };
 
     getCitiesInRegion = (region) => {
-        let cities = [{ value: 0, label: STRINGS.select }];
+        let cities = [];
         if (region.value) {
-            cities = [{ value: 0, label: STRINGS.select }, ...citiesInRegion(region.value)];
+            cities = CITIES.filter((city) => city.region === region.value);
         }
 
-        return cities;
+        return [{ value: 0, label: STRINGS.select, region: 0, short: "Select" }, ...cities];
     };
 
     handleSliderChange = (radius) => {

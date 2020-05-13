@@ -109,13 +109,13 @@ class LoginForm extends Component {
                 <div className="input-row">
                     <div className="mx-auto">
                         <img src="images/login/username.png" alt="" />
-                        <input type="text" name="email" id="email" placeholder={STRINGS.email} ref={this.refEmail} autoComplete="email" />
+                        <input type="text" name="email" id="email" placeholder={STRINGS.email} ref={this.refEmail} />
                     </div>
                 </div>
                 <div className="input-row">
                     <div className="mx-auto">
                         <img src="images/login/pass.png" alt="" />
-                        <input type="password" name="password" id="password" placeholder={STRINGS.password} ref={this.refPassword} autoComplete="password" />
+                        <input type="password" name="pwd" id="password" placeholder={STRINGS.password} ref={this.refPassword} autoComplete="new-password" />
                     </div>
                 </div>
                 {bottomPanelSM}

@@ -51,9 +51,9 @@ class App extends Component {
     setLocalization() {
         let lang = sessionStorage.getItem(SESSION_LANG);
         if (!lang) {
-            sessionStorage.setItem(SESSION_LANG, "en");
+            sessionStorage.setItem(SESSION_LANG, "it");
         }
-        STRINGS.setLanguage(lang ? lang : "en");
+        STRINGS.setLanguage(lang ? lang : "it");
     }
     selectLang = (lang) => {
         this.setState({

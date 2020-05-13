@@ -672,6 +672,7 @@ export default class ProfileCompany extends Component {
                     </div>
                     <div className="info-row">
                         <span>{STRINGS.revenues}:</span>
+                        <input type="password" name="pwd" id="password" autoComplete="new-password" style={{ display: "none" }} />
                         <input ref={this.refRevenue} type="number" defaultValue={profile && profile.revenues} onChange={this.handleChangeRevenues} />
                         <div className="number-hint">€&nbsp;&nbsp;&nbsp;{hintRevenues}</div>
                     </div>

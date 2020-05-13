@@ -1056,15 +1056,17 @@ export const getAtecoStringWithCode = (code) => {
     return matchedArray[0].label;
 };
 
-export const citiesInRegion = (regionId) => {
-    let cities = [];
-    for (let i in CITIES) {
-        if (regionId === CITIES[i].region) {
-            cities.push(CITIES[i]);
-        }
-    }
-    return cities;
-};
+// export const citiesInRegion = (regionId) => {
+//     let cities = CITIES.map(city => city.region === regionId)
+//     let cities = [];
+//     console.log(regionId)
+//     for (let i in CITIES) {
+//         if (regionId === CITIES[i].region) {
+//             cities.push(CITIES[i]);
+//         }
+//     }
+//     return cities;
+// };
 
 export const citiesByAsc = () => {
     return CITIES.sort((a, b) => {

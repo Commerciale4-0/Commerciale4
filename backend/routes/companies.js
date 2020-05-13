@@ -280,17 +280,21 @@ router.post("/", async (req, res) => {
         match = { ...match, "profile.revenues": { $lte: filter.revenueMax } };
     }
 
+    let queryOr = [];
     if (filter.tags) {
         if (filter.tags.en) {
             let tags = filter.tags.en.map((tag) => {
                 return new RegExp(tag, "i");
             });
-            match = { ...match, "profile.tags.en": { $in: tags } };
+            console.log(tags);
+            queryOr = [...queryOr, { $or: [{ "profile.tags.en": { $in: tags } }, { "account.permission": 1, "profile.introduction.it": { $in: tags } }] }];
+            // match = { ...match, $or: [{ "profile.tags.en": { $in: tags } }, { "account.permission": 1, "profile.introduction.it": { $in: tags } }] };
         } else if (filter.tags.it) {
             let tags = filter.tags.it.map((tag) => {
                 return new RegExp(tag, "i");
             });
-            match = { ...match, "profile.tags.it": { $in: tags } };
+            queryOr = [...queryOr, { $or: [{ "profile.tags.it": { $in: tags } }, { "account.permission": 1, "profile.introduction.it": { $in: tags } }] }];
+            // match = { ...match, $or: [{ "profile.tags.it": { $in: tags } }, { "account.permission": 1, "profile.introduction.it": { $in: tags } }] };
         }
     }
 
@@ -316,13 +320,13 @@ router.post("/", async (req, res) => {
                 });
             }
             console.log(addressFilter);
-            match = {
-                ...match,
-                $or: [{ "profile.contact.address": { $in: addressFilter } }, regionCityFilter],
-            };
+            queryOr = [...queryOr, { $or: [{ "profile.contact.address": { $in: addressFilter } }, regionCityFilter] }];
         }
     }
 
+    if (queryOr.length) {
+        match = { ...match, $and: queryOr };
+    }
     let query = [];
     // if (filter.myLocation) {
     //     query = [

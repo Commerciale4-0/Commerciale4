@@ -102,7 +102,11 @@ export default class DetailBody extends Component {
         const MENUS = [
             { id: 0, title: STRINGS.aboutUs, icon: "fa-user" },
             { id: 1, title: STRINGS.productSearvice, icon: "fa-cogs" },
-            { id: 2, title: isMobile ? STRINGS.contactsInfo : STRINGS.contacts, icon: "fa-info-circle" },
+            {
+                id: 2,
+                title: isMobile ? STRINGS.contactsInfo : STRINGS.contacts,
+                icon: "fa-info-circle",
+            },
         ];
         const menuPanel = (
             <div className="menu-panel" ref={this.menuPanel}>
@@ -135,7 +139,7 @@ export default class DetailBody extends Component {
         const isoPanel = !isMobile && (
             <div className="multi-values">
                 <span>{STRINGS.iso}</span>
-                <div>
+                <div className="font-size-style">
                     {company &&
                         company.profile &&
                         company.profile.iso &&
@@ -151,18 +155,18 @@ export default class DetailBody extends Component {
         const infoPanel = (
             <div className="info-panel">
                 <div className="row-on-mobile">
-                    <p>
+                    <p className={isMobile ? "" : "font-size-style"}>
                         <i className="fa fa-users" />
                         {company && company.profile && stringWithUnitFromNumber(company.profile.employees)}
                     </p>
-                    <p>
+                    <p className={isMobile ? "" : "font-size-style"}>
                         <i className="fa fa-line-chart" />
                         {company && company.profile && stringWithUnitFromNumber(company.profile.revenues)}
                     </p>
                     {isoPanel}
                     <div className="multi-values">
                         <span className="pt-0">{STRINGS.ateco}</span>
-                        <div>
+                        <div className={isMobile ? "" : "font-size-style"}>
                             {company && company.profile && company.profile.ateco ? (
                                 isMobile ? (
                                     company.profile.ateco

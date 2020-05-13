@@ -24,6 +24,7 @@ class Header extends Component {
             prevScrollpos: window.pageYOffset,
             visible: true,
             companyToPreview: null,
+            isInDashboard: false,
         };
     }
 
@@ -32,6 +33,12 @@ class Header extends Component {
         window.addEventListener("resize", this.handleWindowResize);
         if (this.props.autoHide) {
             window.addEventListener("scroll", this.handleWindowScroll);
+        }
+
+        if (window.location.pathname.search("/dashboard") !== -1) {
+            this.setState({
+                isInDashboard: true,
+            });
         }
     };
 
@@ -113,7 +120,11 @@ class Header extends Component {
                 if (searchedCompanies[cursor].account.permission === 2) {
                     window.location.href = `/company/${searchedCompanies[cursor]._id}`;
                 } else {
-                    this.setState({ companyToPreview: searchedCompanies[cursor], searchedCompanies: null, cursor: 0 });
+                    this.setState({
+                        companyToPreview: searchedCompanies[cursor],
+                        searchedCompanies: null,
+                        cursor: 0,
+                    });
                     this.refKey.current.value = "";
                 }
             }
@@ -190,9 +201,8 @@ class Header extends Component {
     };
 
     render() {
-        const { isExpanded, searchedCompanies, cursor, isMobile, visible, companyToPreview } = this.state;
+        const { isExpanded, isInDashboard, searchedCompanies, cursor, isMobile, visible, companyToPreview } = this.state;
         const { needSearchBar, isTransparent } = this.props;
-        // console.log(isTransparent);
 
         const menusInNotLoggedin = [
             { id: 1, title: STRINGS.login, link: "/login" },
@@ -220,6 +230,7 @@ class Header extends Component {
             <div>
                 <div className="search-bar" ref={this.searchBar}>
                     <i className="fa fa-search"></i>
+
                     <input
                         type="text"
                         id="search-bar"
@@ -272,11 +283,21 @@ class Header extends Component {
                                     <Dropdown.Item onClick={() => this.handleClickLogout()}>{STRINGS.logout}</Dropdown.Item>
                                 </DropdownButton>
                             </Col>
+                        ) : isInDashboard ? (
+                            <Col className="item user" sm={2}>
+                                <input type="button" value="Register" onClick={() => this.handleClickRegister()} />
+                            </Col>
                         ) : (
                             <></>
                         )}
 
-                        <Col className="item lang d-flex align-items-center" sm={{ span: "2", offset: loggedCompany ? "0" : "2" }}>
+                        <Col
+                            className="item lang d-flex align-items-center"
+                            sm={{
+                                span: "2",
+                                offset: loggedCompany || isInDashboard ? "0" : "2",
+                            }}
+                        >
                             <Lang onChange={this.handleChangeLang} />
                         </Col>
                     </Row>
