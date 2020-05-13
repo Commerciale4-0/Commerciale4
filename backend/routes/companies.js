@@ -282,20 +282,15 @@ router.post("/", async (req, res) => {
 
     let queryOr = [];
     if (filter.tags) {
-        if (filter.tags.en) {
-            let tags = filter.tags.en.map((tag) => {
-                return new RegExp(tag, "i");
-            });
-            console.log(tags);
-            queryOr = [...queryOr, { $or: [{ "profile.tags.en": { $in: tags } }, { "account.permission": 1, "profile.introduction.it": { $in: tags } }] }];
-            // match = { ...match, $or: [{ "profile.tags.en": { $in: tags } }, { "account.permission": 1, "profile.introduction.it": { $in: tags } }] };
-        } else if (filter.tags.it) {
-            let tags = filter.tags.it.map((tag) => {
-                return new RegExp(tag, "i");
-            });
-            queryOr = [...queryOr, { $or: [{ "profile.tags.it": { $in: tags } }, { "account.permission": 1, "profile.introduction.it": { $in: tags } }] }];
-            // match = { ...match, $or: [{ "profile.tags.it": { $in: tags } }, { "account.permission": 1, "profile.introduction.it": { $in: tags } }] };
-        }
+        let tags = filter.tags.en ? filter.tags.en : filter.tags.it;
+        let tagsEx = [];
+        let tagsExForIntro = [];
+        tags.forEach((tag) => {
+            tagsEx.push(new RegExp(tag, "i"));
+            tagsExForIntro.push({ "profile.introduction.it": new RegExp(tag, "i") });
+        });
+        let or1 = filter.tags.en ? { "profile.tags.en": { $in: tagsEx } } : { "profile.tags.it": { $in: tagsEx } };
+        queryOr = [...queryOr, { $or: [or1, { "account.permission": 1, $and: tagsExForIntro }] }];
     }
 
     if (filter.location) {
