@@ -656,9 +656,9 @@ export default class ProfileCompany extends Component {
                         </div>
                         <div className="d-flex justify-content-center">
                             <div className="tag-hint">
-                                {STRINGS.examples}: <label>lasercut</label>
-                                <label>welding</label>
-                                <label>CNC</label>
+                                {STRINGS.examples}: <label>VERNICIATURA</label>
+                                <label>SALDATURA</label>
+                                <label>ALLUMINIO</label>
                             </div>
                         </div>
                     </div>

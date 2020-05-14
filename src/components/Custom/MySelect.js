@@ -50,7 +50,7 @@ export default class MySelect extends Component {
                 onChange={onChange}
                 options={options}
                 isMulti={isMulti}
-                isClearable={false}
+                isClearable={true}
                 placeholder={placeholder}
                 theme={(theme) => ({
                     ...theme,

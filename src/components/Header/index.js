@@ -285,7 +285,7 @@ class Header extends Component {
                             </Col>
                         ) : isInDashboard ? (
                             <Col className="item user" sm={2}>
-                                <button className="btn-register" onClick={() => this.handleClickRegister()}>
+                                <button className="txt-upper btn-register" onClick={() => this.handleClickRegister()}>
                                     {STRINGS.register}
                                 </button>
                             </Col>

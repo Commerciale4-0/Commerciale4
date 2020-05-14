@@ -56,7 +56,6 @@
     min-width: 140px;
     color: var(--colorPrimary);
     height: 36px;
-    font-weight: 400;
 }
 .search-bar > input {
     height: 36px;

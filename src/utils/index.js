@@ -35,16 +35,16 @@ export const ORDERS = () => {
             title: `↓ ${STRINGS.employees}`,
             icon: null,
         },
-        {
-            id: 5,
-            title: `↑ ${STRINGS.nearest}`,
-            icon: null,
-        },
-        {
-            id: 6,
-            title: `↓ ${STRINGS.farthest}`,
-            icon: null,
-        },
+        // {
+        //     id: 5,
+        //     title: `↑ ${STRINGS.nearest}`,
+        //     icon: null,
+        // },
+        // {
+        //     id: 6,
+        //     title: `↓ ${STRINGS.farthest}`,
+        //     icon: null,
+        // },
     ];
 };
 
@@ -94,10 +94,6 @@ export const ISO = [
 
 export const N_EMPOYEES = () => {
     return [
-        {
-            value: 0,
-            label: STRINGS.noLimit,
-        },
         {
             value: 1,
             label: "3",
@@ -151,10 +147,6 @@ export const N_EMPOYEES = () => {
 
 export const REVENUES = () => {
     return [
-        {
-            value: 0,
-            label: STRINGS.noLimit,
-        },
         {
             value: 1,
             label: "0",
@@ -1081,13 +1073,7 @@ export const regionsByAsc = () => {
 };
 
 export const maxsFromMin = (minId, items) => {
-    let maxs = [];
-    for (let i in items) {
-        if (items[i].value > minId || items[i].value === 0) {
-            maxs.push(items[i]);
-        }
-    }
-    return maxs;
+    return items.filter((item) => item.value > minId);
 };
 
 export const minsFromMax = (maxId, items) => {
@@ -1095,13 +1081,7 @@ export const minsFromMax = (maxId, items) => {
         return items;
     }
 
-    let mins = [];
-    for (let i in items) {
-        if (items[i].value < maxId || items[i].value === 0) {
-            mins.push(items[i]);
-        }
-    }
-    return mins;
+    return items.filter((item) => item.value < maxId);
 };
 
 export const distanceFromCoords = (lat1, lon1, lat2, lon2, unit = "K") => {

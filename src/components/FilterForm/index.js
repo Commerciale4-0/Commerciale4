@@ -21,8 +21,7 @@ export default class FilterForm extends Component {
             tags: [],
             suggestions: [],
             cities: [],
-            regions: [{ value: 0, label: STRINGS.select }, ...REGIONS],
-            types: [{ value: 0, label: STRINGS.select }, ...COMPANY_TYPES()],
+            types: COMPANY_TYPES(),
             minEmployees: N_EMPOYEES(),
             maxEmployees: N_EMPOYEES(),
             minRevenues: REVENUES(),
@@ -50,7 +49,6 @@ export default class FilterForm extends Component {
         const { initialFilter, update } = props;
         let {
             cities,
-            regions,
             tags,
             selectedCity,
             selectedRegion,
@@ -84,26 +82,14 @@ export default class FilterForm extends Component {
             tags = initialFilter.tags;
         }
 
-        const types = [{ value: 0, label: STRINGS.select }, ...COMPANY_TYPES()];
+        const types = COMPANY_TYPES();
         const minEmployees = N_EMPOYEES();
         const maxEmployees = N_EMPOYEES();
         const minRevenues = REVENUES();
         const maxRevenues = REVENUES();
         const atecoCodes = STRINGS.atecoList;
 
-        let noValue = { value: 0, label: STRINGS.select };
-        regions[0] = noValue;
-        cities[0] = noValue;
-
         this.resetTagsPlaceholder(tags);
-
-        if (selectedRegion && selectedRegion.value === 0) {
-            selectedRegion = noValue;
-        }
-
-        if (selectedCity && selectedCity.value === 0) {
-            selectedCity = noValue;
-        }
 
         types.forEach((elem) => {
             if (selectedType && elem.value === selectedType.value) {
@@ -137,7 +123,6 @@ export default class FilterForm extends Component {
         });
 
         this.setState({
-            regions,
             cities,
             types,
             tags,
@@ -160,12 +145,10 @@ export default class FilterForm extends Component {
     };
 
     getCitiesInRegion = (region) => {
-        let cities = [];
-        if (region.value) {
-            cities = CITIES.filter((city) => city.region === region.value);
+        if (region) {
+            return CITIES.filter((city) => city.region === region.value);
         }
-
-        return [{ value: 0, label: STRINGS.select, region: 0, short: "Select" }, ...cities];
+        return [];
     };
 
     handleSliderChange = (radius) => {
@@ -180,17 +163,14 @@ export default class FilterForm extends Component {
         this.setState({ selectedRegion });
         let cities = this.getCitiesInRegion(selectedRegion);
         this.setState({
-            selectedCity: cities[0],
+            selectedCity: cities.length ? cities[0] : null,
             cities: cities,
             isEnableRadius: false,
         });
     };
 
     handleCityChange = (selectedCity) => {
-        this.setState({ selectedCity });
-        this.setState({
-            isEnableRadius: selectedCity.value !== 0,
-        });
+        this.setState({ selectedCity, isEnableRadius: selectedCity != null });
     };
 
     resetTagsPlaceholder = (tags) => {
@@ -240,7 +220,7 @@ export default class FilterForm extends Component {
     handleEmployeeMinChange = (selectedEmployeeMin) => {
         this.setState({ selectedEmployeeMin });
 
-        let values = maxsFromMin(selectedEmployeeMin.value, N_EMPOYEES());
+        let values = maxsFromMin(selectedEmployeeMin ? selectedEmployeeMin.value : 0, N_EMPOYEES());
         this.setState({
             maxEmployees: values,
         });
@@ -249,7 +229,7 @@ export default class FilterForm extends Component {
     handleEmployeeMaxChange = (selectedEmployeeMax) => {
         this.setState({ selectedEmployeeMax });
 
-        let values = minsFromMax(selectedEmployeeMax.value, N_EMPOYEES());
+        let values = minsFromMax(selectedEmployeeMax ? selectedEmployeeMax.value : 0, N_EMPOYEES());
         this.setState({
             minEmployees: values,
         });
@@ -258,7 +238,7 @@ export default class FilterForm extends Component {
     handleRevenueMinChange = (selectedRevenueMin) => {
         this.setState({ selectedRevenueMin });
 
-        let values = maxsFromMin(selectedRevenueMin.value, REVENUES);
+        let values = maxsFromMin(selectedRevenueMin ? selectedRevenueMin.value : 0, REVENUES());
         this.setState({
             maxRevenues: values,
         });
@@ -267,7 +247,7 @@ export default class FilterForm extends Component {
     handleRevenueMaxChange = (selectedRevenueMax) => {
         this.setState({ selectedRevenueMax });
 
-        let values = minsFromMax(selectedRevenueMax.value, REVENUES);
+        let values = minsFromMax(selectedRevenueMax ? selectedRevenueMax.value : 0, REVENUES());
         this.setState({
             minRevenues: values,
         });
@@ -311,7 +291,6 @@ export default class FilterForm extends Component {
             radius,
             tags,
             suggestions,
-            regions,
             cities,
             types,
             minEmployees,
@@ -345,7 +324,7 @@ export default class FilterForm extends Component {
                 </Row>
                 <Row className="px-2 mb-1">
                     <Col sm={isInDashboard ? 12 : 6} xs={12} className="mb-2">
-                        <MySelect value={selectedRegion} onChange={this.handleRegionChange} options={regions} placeholder={STRINGS.region} />
+                        <MySelect value={selectedRegion} onChange={this.handleRegionChange} options={REGIONS} placeholder={STRINGS.region} />
                     </Col>
                     <Col sm={isInDashboard ? 12 : 6} xs={12} className="mb-2">
                         <MySelect value={selectedCity} onChange={this.handleCityChange} options={cities} placeholder={STRINGS.city} />
@@ -387,9 +366,16 @@ export default class FilterForm extends Component {
                             />
                         </div>
                         <div className="tag-hint">
-                            {STRINGS.examples} : <label>LASERCUT</label>
-                            <label>WELDING</label>
-                            <label>CNC</label>
+                            <div className="d-flex">
+                                {STRINGS.examples}
+                                <span className="ml-1 mr-1">:</span>
+                            </div>
+                            <div>
+                                <label>VERNICIATURA</label>
+                                <label>SALDATURA</label>
+                                <label>ALLUMINIO</label>
+                            </div>
+
                             {/* <span style={{ float: "right" }}>(Max:7)</span>
                             (Max:5) */}
                         </div>
