@@ -347,11 +347,11 @@ export default class FilterForm extends Component {
                         <i className="fa fa-info-circle pr-2" /> {STRINGS.companyInfo}
                     </Col>
                 </Row>
-                <Row className="px-2">
+                {/* <Row className="px-2">
                     <Col>
                         <MySelect value={selectedType} onChange={this.handleTypeChange} options={types} placeholder={STRINGS.typeOfCompany} />
                     </Col>
-                </Row>
+                </Row> */}
                 <Row className="mt-2 px-2">
                     <Col>
                         <div>

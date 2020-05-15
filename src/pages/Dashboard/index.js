@@ -268,7 +268,7 @@ export default class Dashboard extends Component {
     handleClickGrid = () => {
         this.pullCompanies(1, 30, this.state.selectedOrder, this.state.myLocation);
         this.setState({
-            viewMode: 1,
+            viewMode: 0,
             itemsCountPerPage: 30,
         });
     };
