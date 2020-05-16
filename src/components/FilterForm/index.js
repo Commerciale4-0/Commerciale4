@@ -79,7 +79,7 @@ export default class FilterForm extends Component {
             selectedEmployeeMax = initialFilter.employeeMax;
             selectedRevenueMin = initialFilter.revenueMin;
             selectedRevenueMax = initialFilter.revenueMax;
-            tags = initialFilter.tags;
+            tags = initialFilter.tags ? initialFilter.tags : [];
         }
 
         const types = COMPANY_TYPES();

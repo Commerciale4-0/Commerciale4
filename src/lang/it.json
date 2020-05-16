@@ -165,6 +165,7 @@
     "pecExist": "The PEC address already exists.",
     "notApproved": "The account has not been approved yet.",
     "postFailed": "An error occured due to create a post.",
+    "showAll": "Mostra tutti",
     "atecoList": [
         { "value": "0", "label": "Altro codice" },
         { "value": "24.10", "label": "24.10 - Siderurgia" },

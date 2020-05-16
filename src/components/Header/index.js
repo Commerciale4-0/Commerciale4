@@ -4,7 +4,7 @@ import "./index.css";
 import Sidebar from "../Sidebar";
 // import SearchInput from "../SearchInput";
 import { requestAPI } from "../../utils/api";
-import { SESSION_LOGGED_COMPANY } from "../../utils";
+import { SESSION_LOGGED_COMPANY, SESSION_FILTER } from "../../utils";
 import Lang from "../Lang";
 import { STRINGS } from "../../utils/strings";
 import CompanyReadMore from "../CompanyReadMore";
@@ -192,12 +192,18 @@ class Header extends Component {
     handleChangeLang = (lang) => {
         this.props.onSelectedLang(lang);
     };
+
     handleClickLogo = () => {
         if (window.location.pathname.search("/company/") !== -1) {
             window.location.href = "/dashboard";
         } else {
             window.location.href = "/";
         }
+    };
+
+    handleClickShowAll = () => {
+        sessionStorage.setItem(SESSION_FILTER, JSON.stringify({ keyword: this.refKey.current.value }));
+        window.location.href = "/dashboard";
     };
 
     render() {
@@ -261,6 +267,11 @@ class Header extends Component {
                         ))
                     ) : (
                         <div />
+                    )}
+                    {searchedCompanies && searchedCompanies.length > 9 && (
+                        <div className="show-all" onClick={this.handleClickShowAll}>
+                            {STRINGS.showAll}
+                        </div>
                     )}
                 </div>
             </div>

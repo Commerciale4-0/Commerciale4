@@ -252,14 +252,18 @@ router.get("/auth/forgot-password/:email", async (req, res) => {
 router.post("/", async (req, res) => {
     let filter = req.body;
 
+    let match = { "account.permission": { $gt: 0 } };
+
     if (filter.keyword) {
         let keyword = new RegExp(filter.keyword, "i");
-        let result = await Company.find({ "profile.officialName": keyword }).limit(10);
-        res.json(result);
-        return;
+        if (!filter.count) {
+            let result = await Company.find({ "profile.officialName": keyword }).limit(10);
+            res.json(result);
+            return;
+        }
+        match = { ...match, "profile.officialName": keyword };
     }
 
-    let match = { "account.permission": { $gt: 0 } };
     if (filter.ateco) {
         let ateco = new RegExp(filter.ateco, "i");
         match = { ...match, "profile.ateco": ateco };

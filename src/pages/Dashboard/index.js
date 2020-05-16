@@ -124,9 +124,7 @@ export default class Dashboard extends Component {
         };
         if (myLocation) searchFilter.myLocation = myLocation;
 
-        if (sort.id === 0) {
-            searchFilter.sort = { title: "relevance", asc: 1 };
-        } else if (sort.id === 1) {
+        if (sort.id === 1) {
             searchFilter.sort = { title: "revenues", asc: 1 };
         } else if (sort.id === 2) {
             searchFilter.sort = { title: "revenues", asc: -1 };
@@ -166,6 +164,7 @@ export default class Dashboard extends Component {
                 }
             }
 
+            if (filter.keyword) searchFilter.keyword = filter.keyword;
             if (filter.type && filter.type.value) searchFilter.type = filter.type.value;
             if (filter.employeeMin && filter.employeeMin.value) searchFilter.employeeMin = numberFromStringWithUnit(filter.employeeMin.label);
             if (filter.employeeMax && filter.employeeMax.value) searchFilter.employeeMax = numberFromStringWithUnit(filter.employeeMax.label);

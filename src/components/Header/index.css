@@ -167,3 +167,11 @@ button.expand {
         display: none;
     }
 }
+
+.popup .show-all {
+    float: right;
+    padding: 5px 10px 8px 0;
+    font-size: 1rem;
+    text-decoration: underline;
+    cursor: pointer;
+}
