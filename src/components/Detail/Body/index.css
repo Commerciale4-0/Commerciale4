@@ -32,12 +32,13 @@
 
 .detail-body .menu.active {
     color: var(--colorPrimary);
-    font-weight: 600;
+    font-weight: bold;
     /* border-left: 3px solid var(--colorPrimary); */
     background: #eee;
-    /* text-shadow: 0 0 0.04em #222; */
+    text-shadow: 0 0 0.08em #888;
     /* box-shadow: 0.1em 0.1em 0.2em #ccc; */
     border-radius: 10px;
+    font-size: 17px;
 }
 
 .detail-body .menu i {
@@ -177,6 +178,10 @@
         border-left: none;
         border-bottom: 3px solid var(--colorPrimary);
         box-shadow: none;
+        border-radius: 0;
+        background: transparent;
+        font-size: 15px;
+        text-shadow: none;
     }
 }
 .font-size-style {
