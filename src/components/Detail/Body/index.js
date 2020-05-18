@@ -112,7 +112,7 @@ export default class DetailBody extends Component {
             <div className="menu-panel" ref={this.menuPanel}>
                 {MENUS.map((menu) => (
                     <div key={menu.id} className={`menu ${selectedMenu === menu.id ? "active" : ""}`} onClick={() => this.handleChangeMenu(menu.id)}>
-                        {!isMobile && <i className={`fa ${menu.icon} pr-3`} style={{ color: "#333" }} />}
+                        {!isMobile && <i className={`fa ${menu.icon} pr-3`} />}
                         {menu.title}
                     </div>
                 ))}

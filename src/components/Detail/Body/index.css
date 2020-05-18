@@ -19,7 +19,7 @@
 }
 
 .detail-body .menu-panel {
-    padding: 20px 0 0;
+    padding: 20px 20px 0 0;
 }
 
 .detail-body .menu {
@@ -27,15 +27,17 @@
     padding: 10px;
     cursor: pointer;
     font-size: 16px;
+    color: #333;
 }
 
 .detail-body .menu.active {
     color: var(--colorPrimary);
-    font-weight: 500;
-    border-left: 3px solid var(--colorPrimary);
-    background: white;
-    text-shadow: 0 0 0.04em #222;
+    font-weight: 600;
+    /* border-left: 3px solid var(--colorPrimary); */
+    background: #eee;
+    /* text-shadow: 0 0 0.04em #222; */
     /* box-shadow: 0.1em 0.1em 0.2em #ccc; */
+    border-radius: 10px;
 }
 
 .detail-body .menu i {
@@ -43,7 +45,8 @@
     font-size: 21px;
 }
 .detail-body .menu.active i {
-    width: 37px;
+    width: 40px;
+    color: black;
 }
 
 .detail-body .info-panel {

@@ -2,6 +2,9 @@
     box-shadow: 0 0 0.5em #888;
 }
 
+.detail-product {
+    padding-bottom: 50px;
+}
 .carousel {
     /* width: 400px !important; */
     /* height: 400px; */
