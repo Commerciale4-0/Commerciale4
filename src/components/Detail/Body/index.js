@@ -116,6 +116,7 @@ export default class DetailBody extends Component {
                         {menu.title}
                     </div>
                 ))}
+                <hr />
             </div>
         );
 

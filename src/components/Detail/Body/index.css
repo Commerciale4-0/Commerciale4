@@ -51,7 +51,7 @@
 }
 
 .detail-body .info-panel {
-    padding: 50px 10px 20px 0;
+    padding: 30px 10px 20px 0;
     margin-top: 10px;
 }
 .detail-body .info-panel p {
@@ -132,6 +132,10 @@
         width: 100%;
         z-index: 10;
     }
+    .detail-body .menu-panel hr {
+        display: none;
+    }
+
     .detail-body .info-panel {
         padding: 10px;
         margin-top: 0;
