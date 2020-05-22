@@ -22,6 +22,8 @@ import { LangProvider } from "./utils/LanguageContext";
 import { STRINGS } from "./utils/strings";
 import { SESSION_LANG } from "./utils";
 
+import ReactGA from "react-ga";
+
 class App extends Component {
     state = {
         headerTransparent: false,
@@ -32,6 +34,10 @@ class App extends Component {
     };
 
     componentWillMount = () => {
+        ReactGA.initialize("UA-167422154-1");
+        ReactGA.pageview(window.location.pathname);
+
+        console.log("Test", window.location.search);
         if (window.location.pathname === "/") {
             this.setState({ headerTransparent: true });
         }
@@ -44,7 +50,6 @@ class App extends Component {
         if (window.location.pathname === "/login" || window.location.pathname === "/register" || window.location.pathname === "/forgot-password") {
             this.setState({ needSearchBar: false, needFooter: false, headerTransparent: true });
         }
-
         this.setLocalization();
     };
 
