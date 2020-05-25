@@ -1222,7 +1222,7 @@ export const getTotalCompanies = async (registeredCompanies) => {
         };
     }
     let unregisteredCompanies = await result.json();
-    console.log(unregisteredCompanies.length);
+    // console.log(unregisteredCompanies.length);
 
     let companies = registeredCompanies.slice(0);
     unregisteredCompanies.forEach((unregisteredCompany) => {

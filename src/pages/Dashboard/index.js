@@ -179,7 +179,7 @@ export default class Dashboard extends Component {
             }
         }
 
-        console.log(searchFilter);
+        // console.log(searchFilter);
         let response = await requestAPI(`/companies`, "POST", searchFilter);
         let result = await response.json();
         this.setState({ isProcessing: false });

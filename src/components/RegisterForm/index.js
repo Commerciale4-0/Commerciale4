@@ -222,7 +222,7 @@ export default class RegisterForm extends Component {
 
         let response = await requestAPI("/companies/auth/register", "POST", data);
         let result = await response.json();
-        console.log(result);
+        // console.log(result);
         if (result.error) {
             this.setAlertData(0, [{ langKey: result.error }]);
             this.setState({ isProcessing: false });
@@ -231,7 +231,7 @@ export default class RegisterForm extends Component {
 
         response = await requestAPI(`/companies/auth/email-to-user/${this.refPEC.current.value}`, "GET");
         result = await response.json();
-        console.log(result);
+        // console.log(result);
         if (result.error) {
             this.setAlertData(0, [{ langKey: result.error }]);
             this.setState({ isProcessing: false });

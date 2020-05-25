@@ -285,7 +285,7 @@ export default class ProfileCompany extends Component {
 
         dataToSave.imageData.productPhotos = newImages;
 
-        console.log(dataToSave);
+        // console.log(dataToSave);
 
         this.setState({ isProcessing: true });
         let response = await requestAPI(`/companies/${this.props.id}`, "POST", dataToSave);
@@ -295,7 +295,7 @@ export default class ProfileCompany extends Component {
             return;
         }
 
-        console.log(result);
+        // console.log(result);
 
         if (result.profile.background) {
             originPhotos.background = prefix + result.profile.background;

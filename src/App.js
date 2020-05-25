@@ -37,7 +37,6 @@ class App extends Component {
         ReactGA.initialize("UA-167422154-1");
         ReactGA.pageview(window.location.pathname);
 
-        console.log("Test", window.location.search);
         if (window.location.pathname === "/") {
             this.setState({ headerTransparent: true });
         }
