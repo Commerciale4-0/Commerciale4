@@ -115,12 +115,10 @@ export default class Dashboard extends Component {
     pullCompanies = async (pageNumber, count, sort, myLocation) => {
         let filter = JSON.parse(sessionStorage.getItem(SESSION_FILTER));
         this.setState({ filter: filter, isExpandedSidebar: false });
-
         this.setState({ isProcessing: true });
-
         let searchFilter = {
             offset: (pageNumber - 1) * count,
-            count: count,
+            count: pageNumber === 1 ? count - 1 : count,
         };
         if (myLocation) searchFilter.myLocation = myLocation;
 
@@ -178,7 +176,9 @@ export default class Dashboard extends Component {
                 lang === "en" ? (searchFilter.tags = { en: tags }) : (searchFilter.tags = { it: tags });
             }
         }
-
+        if (pageNumber === 1) {
+            searchFilter.testCompany = "012345678901";
+        }
         // console.log(searchFilter);
         let response = await requestAPI(`/companies`, "POST", searchFilter);
         let result = await response.json();
@@ -188,6 +188,11 @@ export default class Dashboard extends Component {
             return;
         }
 
+        let showCompany = false;
+        if (result.specifiedCompany && pageNumber === 1) {
+            result.companies.push.apply(result.specifiedCompany, result.companies);
+            showCompany = true;
+        }
         window.scrollTo(0, 0);
         if (filter && filter.tags && filter.tags.length) {
             result.companies.forEach((company) => {
@@ -201,7 +206,10 @@ export default class Dashboard extends Component {
             });
         }
 
-        this.setState({ numberOfCompanies: result.count, companies: result.companies });
+        this.setState({
+            numberOfCompanies: result.count,
+            companies: showCompany ? result.specifiedCompany : result.companies,
+        });
     };
 
     handleClickOrder = (item) => {

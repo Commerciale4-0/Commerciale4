@@ -163,7 +163,7 @@ export default class FilterForm extends Component {
         this.setState({ selectedRegion });
         let cities = this.getCitiesInRegion(selectedRegion);
         this.setState({
-            selectedCity: cities.length ? cities[0] : null,
+            selectedCity: null,
             cities: cities,
             isEnableRadius: false,
         });
