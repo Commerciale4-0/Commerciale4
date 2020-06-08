@@ -282,7 +282,7 @@ class Header extends Component {
                 <div className={`header ${isTransparent ? "" : "bg-fill"}`}>
                     <Row>
                         <Col className="item title" sm={4}>
-                            <img src="/images/logo.svg" className="cursor-pointer" alt="" onClick={this.handleClickLogo} />
+                            <img src="/images/logo.png" className="cursor-pointer" alt="" onClick={this.handleClickLogo} />
                         </Col>
                         <Col className="item" sm={loggedCompany ? 3 : 4}>
                             {!isMobile ? searchBar : <div />}
@@ -321,7 +321,7 @@ class Header extends Component {
                             <Lang onChange={this.handleChangeLang} />
                         </div>
                         <div className="title">
-                            <img src="/images/logo.svg" alt="" onClick={this.handleClickLogo} />
+                            <img src="/images/logo.png" alt="" onClick={this.handleClickLogo} />
                         </div>
                         <div>
                             <button className="expand" onClick={this.handleClickExpand}>
