@@ -166,10 +166,18 @@
     "notApproved": "The account has not been approved yet.",
     "postFailed": "An error occured due to create a post.",
     "showAll": "Show all",
+    "registeredCompanies": "Registered companies",
+    "unregisteredCompanies": "Not registered companies",
     "atecoList": [
         { "value": "0", "label": "Other code" },
-        { "value": "24.10", "label": "24.10 - Manufacture of basic iron and steel and of ferro-alloys" },
-        { "value": "24.20", "label": "24.20 - Manufacture of tubes, pipes, hollow profiles and related fittings, of steel" },
+        {
+            "value": "24.10",
+            "label": "24.10 - Manufacture of basic iron and steel and of ferro-alloys"
+        },
+        {
+            "value": "24.20",
+            "label": "24.20 - Manufacture of tubes, pipes, hollow profiles and related fittings, of steel"
+        },
         { "value": "24.31", "label": "24.31 - Cold drawing of bars" },
         { "value": "24.32", "label": "24.32 - Cold rolling of narrow strip" },
         { "value": "24.33", "label": "24.33 - Cold forming or folding" },
@@ -182,49 +190,154 @@
         { "value": "24.51", "label": "24.51 - Casting of iron" },
         { "value": "24.52", "label": "24.52 - Casting of steel" },
         { "value": "24.53", "label": "24.53 - Casting of light metals" },
-        { "value": "24.54", "label": "24.54 - Casting of other non-ferrous metals" },
-        { "value": "25.11", "label": "25.11 - Manufacture of metal structures and parts of structures" },
-        { "value": "25.21", "label": "25.21 - Manufacture of central heating radiators and boilers" },
-        { "value": "25.29", "label": "25.29 - Manufacture of other tanks, reservoirs and containers of metal" },
-        { "value": "25.30", "label": "25.30 - Manufacture of steam generators, except central heating hot water boilers" },
-        { "value": "25.50", "label": "25.50 - Forging, pressing, stamping and roll-forming of metal; powder metallurgy" },
+        {
+            "value": "24.54",
+            "label": "24.54 - Casting of other non-ferrous metals"
+        },
+        {
+            "value": "25.11",
+            "label": "25.11 - Manufacture of metal structures and parts of structures"
+        },
+        {
+            "value": "25.21",
+            "label": "25.21 - Manufacture of central heating radiators and boilers"
+        },
+        {
+            "value": "25.29",
+            "label": "25.29 - Manufacture of other tanks, reservoirs and containers of metal"
+        },
+        {
+            "value": "25.30",
+            "label": "25.30 - Manufacture of steam generators, except central heating hot water boilers"
+        },
+        {
+            "value": "25.50",
+            "label": "25.50 - Forging, pressing, stamping and roll-forming of metal; powder metallurgy"
+        },
         { "value": "25.61", "label": "25.61 - Treatment and coating of metals" },
         { "value": "25.62", "label": "25.62 - Machining" },
-        { "value": "25.70", "label": "25.70 - Manufacture of cutlery, tools and general hardware" },
-        { "value": "25.93", "label": "25.93 - Manufacture of wire products, chain and springs" },
+        {
+            "value": "25.70",
+            "label": "25.70 - Manufacture of cutlery, tools and general hardware"
+        },
+        {
+            "value": "25.93",
+            "label": "25.93 - Manufacture of wire products, chain and springs"
+        },
         { "value": "25.94", "label": "25.94 - Manufacture of screws and rivets" },
         { "value": "25.99", "label": "25.99 - 25.99. Manufacture of other tools" },
         { "value": "27", "label": "27 - Manufacture of electrical equipment" },
-        { "value": "28.11", "label": "28.11 - Manufacture of engines and turbines, except aircraft, vehicle and cycle engines" },
-        { "value": "28.12", "label": "28.12 - Manufacture of fluid power equipment" },
-        { "value": "28.13", "label": "28.13 - Manufacture of other pumps and compressor" },
-        { "value": "28.14", "label": "28.14 - Manufacture of other taps and valves" },
-        { "value": "28.15", "label": "28.15 - Manufacture of bearings, gears, gearing and driving elements" },
-        { "value": "28.21", "label": "28.21 - Manufacture of ovens, furnaces and furnace burners" },
-        { "value": "28.22", "label": "28.22 - Manufacture of lifting and handling equipment" },
-        { "value": "28.24", "label": "28.24 - Manufacture of power-driven hand tools" },
-        { "value": "28.25", "label": "28.25 - Manufacture of non-domestic cooling and ventilation equipment" },
-        { "value": "28.29", "label": "28.29 - Manufacture of other general-purpose machinery n.e.c." },
-        { "value": "28.30", "label": "28.30 - Manufacture of agricultural and forestry machinery" },
-        { "value": "28.41", "label": "28.41 - Manufacture of metal forming machinery" },
+        {
+            "value": "28.11",
+            "label": "28.11 - Manufacture of engines and turbines, except aircraft, vehicle and cycle engines"
+        },
+        {
+            "value": "28.12",
+            "label": "28.12 - Manufacture of fluid power equipment"
+        },
+        {
+            "value": "28.13",
+            "label": "28.13 - Manufacture of other pumps and compressor"
+        },
+        {
+            "value": "28.14",
+            "label": "28.14 - Manufacture of other taps and valves"
+        },
+        {
+            "value": "28.15",
+            "label": "28.15 - Manufacture of bearings, gears, gearing and driving elements"
+        },
+        {
+            "value": "28.21",
+            "label": "28.21 - Manufacture of ovens, furnaces and furnace burners"
+        },
+        {
+            "value": "28.22",
+            "label": "28.22 - Manufacture of lifting and handling equipment"
+        },
+        {
+            "value": "28.24",
+            "label": "28.24 - Manufacture of power-driven hand tools"
+        },
+        {
+            "value": "28.25",
+            "label": "28.25 - Manufacture of non-domestic cooling and ventilation equipment"
+        },
+        {
+            "value": "28.29",
+            "label": "28.29 - Manufacture of other general-purpose machinery n.e.c."
+        },
+        {
+            "value": "28.30",
+            "label": "28.30 - Manufacture of agricultural and forestry machinery"
+        },
+        {
+            "value": "28.41",
+            "label": "28.41 - Manufacture of metal forming machinery"
+        },
         { "value": "28.49", "label": "28.49 - Manufacture of other machine tools" },
-        { "value": "28.91", "label": "28.91 - Manufacture of machinery for metallurgy" },
-        { "value": "28.92", "label": "28.92 - Manufacture of machinery for mining, quarrying and construction" },
-        { "value": "28.93", "label": "28.93 - Manufacture of machinery for food, beverage and tobacco processing" },
-        { "value": "28.94", "label": "28.94 - Manufacture of machinery for textile, apparel and leather production" },
-        { "value": "28.95", "label": "28.95 - Manufacture of machinery for paper and paperboard production" },
-        { "value": "28.96", "label": "28.96 - Manufacture of plastics and rubber machinery" },
-        { "value": "28.99", "label": "28.99 - Manufacture of other special-purpose machinery n.e.c." },
+        {
+            "value": "28.91",
+            "label": "28.91 - Manufacture of machinery for metallurgy"
+        },
+        {
+            "value": "28.92",
+            "label": "28.92 - Manufacture of machinery for mining, quarrying and construction"
+        },
+        {
+            "value": "28.93",
+            "label": "28.93 - Manufacture of machinery for food, beverage and tobacco processing"
+        },
+        {
+            "value": "28.94",
+            "label": "28.94 - Manufacture of machinery for textile, apparel and leather production"
+        },
+        {
+            "value": "28.95",
+            "label": "28.95 - Manufacture of machinery for paper and paperboard production"
+        },
+        {
+            "value": "28.96",
+            "label": "28.96 - Manufacture of plastics and rubber machinery"
+        },
+        {
+            "value": "28.99",
+            "label": "28.99 - Manufacture of other special-purpose machinery n.e.c."
+        },
         { "value": "29.10", "label": "29.10 - Manufacture of motor vehicles" },
-        { "value": "29.20", "label": "29.20 - Manufacture of bodies (coachwork) for motor vehicles; manufacture of trailers and semi-trailers" },
-        { "value": "29.30", "label": "29.30 - Manufacture of parts and accessories for motor vehicles" },
-        { "value": "33.11", "label": "33.11 - Repair of fabricated metal products" },
+        {
+            "value": "29.20",
+            "label": "29.20 - Manufacture of bodies (coachwork) for motor vehicles; manufacture of trailers and semi-trailers"
+        },
+        {
+            "value": "29.30",
+            "label": "29.30 - Manufacture of parts and accessories for motor vehicles"
+        },
+        {
+            "value": "33.11",
+            "label": "33.11 - Repair of fabricated metal products"
+        },
         { "value": "33.12", "label": "33.12 - Repair of machinery" },
-        { "value": "33.20", "label": "33.20 - Installation of industrial machinery and equipment" },
-        { "value": "46.61", "label": "46.61 - Wholesale of agricultural machinery, equipment and supplies" },
+        {
+            "value": "33.20",
+            "label": "33.20 - Installation of industrial machinery and equipment"
+        },
+        {
+            "value": "46.61",
+            "label": "46.61 - Wholesale of agricultural machinery, equipment and supplies"
+        },
         { "value": "46.62", "label": "46.62 - Wholesale of machine tools" },
-        { "value": "46.63", "label": "46.63 - Wholesale of mining, construction and civil engineering machinery" },
-        { "value": "46.69.20", "label": "46.69.20 - Wholesale of other machinery and equipment" },
-        { "value": "46.69.99", "label": "46.69.99 - Wholesale of trade necessities n.e.c" }
+        {
+            "value": "46.63",
+            "label": "46.63 - Wholesale of mining, construction and civil engineering machinery"
+        },
+        {
+            "value": "46.69.20",
+            "label": "46.69.20 - Wholesale of other machinery and equipment"
+        },
+        {
+            "value": "46.69.99",
+            "label": "46.69.99 - Wholesale of trade necessities n.e.c"
+        }
     ]
 }

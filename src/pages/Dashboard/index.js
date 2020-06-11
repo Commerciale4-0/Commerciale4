@@ -425,11 +425,13 @@ export default class Dashboard extends Component {
           </button>
         </div>
         <div className="result-xs">
-          <div>{`${(activePage - 1) * itemsCountPerPage + 1}-${
+          <div>
+            {/* {`${(activePage - 1) * itemsCountPerPage + 1}-${
             (activePage - 1) * itemsCountPerPage +
             registeredCompanies.length +
             unRegisteredCompanies.length
-          } / ${numberOfCompanies} ${STRINGS.results}`}</div>
+          } / ${numberOfCompanies} ${STRINGS.results}`} */}
+          </div>
           <div>
             <button
               className="btn-prev secondary round mr-2"
@@ -452,7 +454,7 @@ export default class Dashboard extends Component {
     const filterBarMD = (
       <div className="filter-bar">
         <span className="result-md">
-          {`${registeredCompanies.length} ${STRINGS.results}`}
+          {`${registeredCompanies.length} ${STRINGS.results} ${STRINGS.registeredCompanies}`}
         </span>
         <div className="d-flex">
           {dropdown}
@@ -481,6 +483,11 @@ export default class Dashboard extends Component {
     const listPanel = (
       <div className="list-panel">
         <div className="row company-list">
+          <div className="filter-bar-1 result-bar-xs">
+            <span className="result-font">
+              {`${registeredCompanies.length} ${STRINGS.results} ${STRINGS.registeredCompanies}`}
+            </span>
+          </div>
           {registeredCompanies.map((company, index) => {
             return (
               <div
@@ -500,8 +507,8 @@ export default class Dashboard extends Component {
             );
           })}
           <div className="filter-bar-1">
-            <span className="result-md">
-              {`${unRegisteredCompanies.length} ${STRINGS.results}`}
+            <span className="result-font">
+              {`${unRegisteredCompanies.length} ${STRINGS.results} ${STRINGS.unregisteredCompanies}`}
             </span>
           </div>
           {unRegisteredCompanies.map((company, index) => {

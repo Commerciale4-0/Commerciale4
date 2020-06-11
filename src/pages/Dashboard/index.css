@@ -3,7 +3,9 @@
   background: #f9f9f9;
   min-height: calc(100vh - 94px);
 }
-
+.dashboard .result-font {
+  font-size: 1.2rem;
+}
 .dashboard .left-panel {
   padding-top: 10px;
   /* background: rgba(249, 177, 38, 0.7); */
@@ -108,7 +110,7 @@
     width: calc(100vw - 300px - 52px);
   }
   .dashboard .filter-bar-1 {
-    display: none;
+    /* display: none; */
   }
 }
 
@@ -180,6 +182,9 @@
   .dashboard .result-xs {
     display: none;
   }
+  .dashboard .result-bar-xs {
+    display: none;
+  }
 }
 
 @media (max-width: 576px) {
@@ -208,7 +213,9 @@
   .dashboard .filter-bar {
     display: none;
   }
-
+  .dashboard .filter-bar-1 {
+    width: 100%;
+  }
   .dashboard .company-list {
     /* max-height: calc(100vh - 234px); */
     max-height: inherit;
