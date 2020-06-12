@@ -240,7 +240,7 @@ export default class RegisterForm extends Component {
 
         response = await requestAPI("/companies/auth/email-to-admin", "POST", data);
         result = await response.json();
-        console.log(result);
+        // console.log(result);
         if (result.error) {
             this.setAlertData(0, [{ langKey: result.error }]);
             this.setState({ isProcessing: false });
