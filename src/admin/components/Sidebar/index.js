@@ -33,7 +33,7 @@ function Sidebar() {
         <div className="sidebar-main container">
             <div className="d-flex pt-4 h-line" style={{ height: "75px" }}>
                 <Image
-                    src="/images/logo.png"
+                    src="/images/logo.svg"
                     roundedCircle
                     className="mr-2"
                     // style={{ width: "30px", height: "30px" }}

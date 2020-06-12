@@ -373,7 +373,7 @@ class Header extends Component {
             </div>
             <div className="title">
               <img
-                src="/images/logo.png"
+                src="/images/logo.svg"
                 alt=""
                 onClick={this.handleClickLogo}
               />
